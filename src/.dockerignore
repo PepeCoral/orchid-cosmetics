@@ -1,0 +1,38 @@
+# ---- Python / Django ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+db.sqlite3
+
+# ---- Virtual environments ----
+venv/
+.env/
+.venv/
+env/
+ENV/
+
+# ---- Static / media files ----
+staticfiles/
+media/
+
+# ---- Git / CI ----
+.git/
+.gitignore
+.github/
+.dockerignore
+
+# ---- IDE / Editor ----
+.idea/
+.vscode/
+
+# ---- OS / Misc ----
+.DS_Store
+Thumbs.db
+
+# ---- Cache ----
+*.bak
+*.swp
+*.tmp
