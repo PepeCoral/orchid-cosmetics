@@ -11,10 +11,16 @@ class User(models.Model):
     address = models.CharField(max_length=200, blank=True, default='')
     payMethod = models.CharField(max_length=50, blank=True, default='')
     role = models.CharField(max_length=20, blank=True, default='')
+    
+    def __str__(self):
+        return f"{self.name} {self.surname} - {self.email}"
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -26,6 +32,9 @@ class Product(models.Model):
     image_url = models.URLField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, 
                                  related_name="category_products", null=True)
+    
+    def __str__(self):
+        return self.name
 
 
 class Service(models.Model):
@@ -38,6 +47,9 @@ class Service(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, 
                                  related_name="category_services", null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, 
@@ -48,6 +60,9 @@ class Order(models.Model):
     delivery_method = models.CharField(max_length=50)
     identifier = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f"Order {self.identifier} by {self.user.name}"
+
 
 class ProductQuantity(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, 
@@ -56,6 +71,9 @@ class ProductQuantity(models.Model):
                               related_name="product_order_id")
     quantity = models.IntegerField()
 
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name} in order {self.order.identifier}"
+
 
 class ServiceQuantity(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, 
@@ -63,3 +81,6 @@ class ServiceQuantity(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, 
                               related_name="service_order_id")
     quantity = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.quantity} of {self.service.name} in order {self.order.identifier}"
