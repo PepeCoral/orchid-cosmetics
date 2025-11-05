@@ -25,7 +25,7 @@ class Product(models.Model):
     fabricator = models.CharField(max_length=100)
     image_url = models.URLField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, 
-                                 related_name="products", null=True)
+                                 related_name="category_products", null=True)
 
 
 class Service(models.Model):
@@ -36,7 +36,7 @@ class Service(models.Model):
     department = models.CharField(max_length=100)
     image_url = models.URLField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, 
-                                 related_name="services", null=True)
+                                 related_name="category_services", null=True)
 
 
 class Order(models.Model):
@@ -51,15 +51,15 @@ class Order(models.Model):
 
 class ProductQuantity(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, 
-                                related_name="product")
+                                related_name="product_id")
     order = models.ForeignKey(Order, on_delete=models.CASCADE, 
-                              related_name="order")
+                              related_name="product_order_id")
     quantity = models.IntegerField()
 
 
 class ServiceQuantity(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, 
-                                related_name="service")
+                                related_name="service_id")
     order = models.ForeignKey(Order, on_delete=models.CASCADE, 
-                              related_name="order")
+                              related_name="service_order_id")
     quantity = models.IntegerField()
