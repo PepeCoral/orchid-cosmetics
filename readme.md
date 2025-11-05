@@ -39,17 +39,29 @@ Orchid Cosmetics is a Django web application.
 ### 1.1 Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/orchid.git
-cd orchid/src
+git clone https://github.eii.us.es/FSL4030/PGPI-G1.10-orchid-cosmetics.git
+cd PGPI-G1.10-orchid-cosmetics/src
 ````
 
 ### 1.2 Create and activate a virtual environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate        # On macOS/Linux
-# OR
-venv\Scripts\activate           # On Windows
+```
+
+On macOS/Linux
+
+```bash
+source venv/bin/activate
+
+```
+
+On Windows
+
+```bash
+venv\Scripts\activate
+
+
 ```
 
 ### 1.3 Install dependencies
@@ -129,8 +141,6 @@ You can view test results in the **Actions** tab on GitHub.
 ## 💡 6. Notes
 
 * The app uses **SQLite** by default (local file `db.sqlite3`).
-* To use a different database (e.g. PostgreSQL), update `DATABASES` in `mywebapp/settings.py`.
-* Make sure to keep your `.env` secrets or credentials out of version control.
 
 ---
 
