@@ -1,8 +1,4 @@
----
 
-## 🪷 `README.md`
-
-```markdown
 # 🌸 Orchid Cosmetics — Django Web App
 
 Orchid Cosmetics is a Django web application.
