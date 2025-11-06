@@ -19,11 +19,19 @@ jobs:
 
       - name: Install dependencies
         run: |
+<<<<<<< HEAD
+=======
+          cd src
+>>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
 
       - name: Run tests
         run: |
+<<<<<<< HEAD
+=======
+          cd src
+>>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
           source venv/bin/activate
           python manage.py test

@@ -73,7 +73,10 @@ pip install -r requirements.txt
 ### 1.4 Apply migrations and run the server
 
 ```bash
+<<<<<<< HEAD
 python manage.py makemigrations
+=======
+>>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
 python manage.py migrate
 python manage.py runserver
 ```

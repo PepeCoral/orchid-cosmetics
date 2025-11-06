@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 URL configuration for demo project.
+=======
+URL configuration for orchid_proyect project.
+>>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -15,6 +19,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+<<<<<<< HEAD
 from django.urls import path, include
 
 
@@ -22,4 +27,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
 
+=======
+from django.urls import path
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+>>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
 ]

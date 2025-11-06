@@ -1,5 +1,6 @@
 from django.db import models
 
+<<<<<<< HEAD
 # Create your models here. todos los modelos estan creados
 
 
@@ -84,3 +85,6 @@ class ServiceQuantity(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.service.name} in order {self.order.identifier}"
+=======
+# Create your models here.
+>>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
