@@ -29,6 +29,6 @@ jobs:
 
       - name: Run tests
         env:
-          DJANGO_SETTINGS_MODULE: orchid.settings  # ajusta si tu módulo tiene otro nombre
+          DJANGO_SETTINGS_MODULE: orchid_proyect.settings  # ajusta si tu módulo tiene otro nombre
         run: |
           pytest -v --disable-warnings
