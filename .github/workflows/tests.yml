@@ -25,10 +25,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-django
 
       - name: Run tests
         env:
           DJANGO_SETTINGS_MODULE: orchid_proyect.settings  # ajusta si tu módulo tiene otro nombre
         run: |
-          pytest -v --disable-warnings
+          python manage.py test
