@@ -1,10 +1,9 @@
-import pytest
 from app.models import Product
 from app.repositories.product_repository import ProductRepository
+from django.test import TestCase
 
-@pytest.mark.django_db
-class TestProductRepository:
-    def setup_method(self):
+class TestProductRepository(TestCase):
+    def setUp(self):
         self.repo = ProductRepository()
 
     def test_create_product(self):
@@ -16,14 +15,14 @@ class TestProductRepository:
             fabricator="BeautyCo",
             image_url="http://example.com/lipstick.jpg"
         )
-        assert product.id is not None
-        assert product.name == "Lipstick"
-        assert product.description == "A vibrant red lipstick"
-        assert product.price == 19.99
-        assert product.stock == 100
-        assert product.fabricator == "BeautyCo"
-        assert product.image_url == "http://example.com/lipstick.jpg"
-    
+        self.assertIsNotNone(product.id)
+        self.assertEqual(product.name, "Lipstick")
+        self.assertEqual(product.description, "A vibrant red lipstick")
+        self.assertEqual(product.price, 19.99)
+        self.assertEqual(product.stock, 100)
+        self.assertEqual(product.fabricator, "BeautyCo")
+        self.assertEqual(product.image_url, "http://example.com/lipstick.jpg")
+
     def test_get_by_id(self):
         product = Product.objects.create(
             name="Mascara",
@@ -33,7 +32,7 @@ class TestProductRepository:
             fabricator="BeautyCo"
         )
         found = self.repo.get_by_id(product.id)
-        assert found == product
+        self.assertEqual(found, product)
 
     def test_get_all_products(self):
         Product.objects.create(
@@ -51,7 +50,7 @@ class TestProductRepository:
             fabricator="GlamourInc"
         )
         products = self.repo.get_all()
-        assert products.count() == 2
+        self.assertEqual(products.count(), 2)
 
     
 
@@ -64,8 +63,8 @@ class TestProductRepository:
             fabricator="GlamourInc"
         )
         updated = self.repo.update(product.id, price=11.99, stock=45)
-        assert updated.price == 11.99
-        assert updated.stock == 45
+        self.assertEqual(updated.price, 11.99)
+        self.assertEqual(updated.stock, 45)
     
     def test_delete_product(self):
         product = Product.objects.create(
@@ -76,9 +75,9 @@ class TestProductRepository:
             fabricator="BeautyCo"
         )
         deleted = self.repo.delete(product.id)
-        assert deleted is True
-        assert Product.objects.count() == 0
-    
+        self.assertTrue(deleted)
+        self.assertEqual(Product.objects.count(), 0)
+
     def test_get_products_by_category(self):
         from app.models import Category
         category = Category.objects.create(name="Makeup")
@@ -99,7 +98,6 @@ class TestProductRepository:
             category=category
         )
         products = self.repo.get_products_by_category(category.id)
-        assert products.count() == 2
-        assert product1 in products
-        assert product2 in products
+        self.assertEqual(products.count(), 2)
+        self.assertIn(product1, products)
     
