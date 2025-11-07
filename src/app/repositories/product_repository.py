@@ -1,4 +1,4 @@
-from app.repositories.baseRepository import BaseRepository
+from app.repositories.base_repository import BaseRepository
 from app.models.product import Product
 
 class ProductRepository(BaseRepository):
