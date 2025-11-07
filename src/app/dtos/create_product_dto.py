@@ -1,4 +1,3 @@
-# myapp/dtos/product_dto.py
 from dataclasses import dataclass
 from typing import Optional
 
