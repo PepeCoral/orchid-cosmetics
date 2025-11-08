@@ -52,11 +52,6 @@ class TestOrderRepository(TestCase):
         self.assertTrue(deleted)
         self.assertEqual(Order.objects.count(), 0)
 
-    def test_get_order_by_id(self):
-        order = self.create_order()
-        found_order = self.order_repo.get_order_by_id(order.id)
-        self.assertEqual(found_order, order)
-
     def test_get_orders_by_user(self):
         user_id = self.user.id
         self.create_order()
@@ -65,7 +60,7 @@ class TestOrderRepository(TestCase):
 
     def test_get_order_by_id(self):
         order = self.create_order()
-        order = self.order_repo.get_order_by_id(order.id)
+        order = self.order_repo.get_by_id(order.id)
         self.assertIsNotNone(order)
 
     def test_get_orders_by_status(self):
