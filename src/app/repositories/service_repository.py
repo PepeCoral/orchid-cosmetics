@@ -8,4 +8,4 @@ class ServiceRepository(BaseRepository):
     # Ejemplo de métodos personalizados
 
     def get_services_by_category(self, category_name):
-        return self.model.objects.filter(category__name=category_name)
+        return self.model.objects.filter(category=category_name)

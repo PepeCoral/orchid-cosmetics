@@ -69,6 +69,4 @@ class TestServiceRepository(TestCase):
         self.create_service(name="Pilates Class", category=self.category1.id)
         self.create_service(name="Haircut", category=self.category2.id)
         services = self.service_repo.get_services_by_category(self.category1.id)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAA")
-        print(services)
         self.assertEqual(services.count(), 2)
