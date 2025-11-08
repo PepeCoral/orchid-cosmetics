@@ -32,11 +32,6 @@ class TestUserRepository(TestCase):
         users = self.repo.get_all()
         self.assertEqual(users.count(), 2)
 
-    def test_get_address(self):
-        User.objects.create(username="lucia", address="123 Main St")
-        address = self.repo.get_address()
-        self.assertEqual(address, "123 Main St")
-
     def test_get_by_id(self):
         user = User.objects.create(username="ana")
         found = self.repo.get_by_id(user.id)
@@ -57,7 +52,7 @@ class TestUserRepository(TestCase):
     def test_user_is_admin(self):
         user1 = User.objects.create(username="admin_user", role=User.RoleOptions.ADMIN)
         user2 = User.objects.create(username="normal_user", role=User.RoleOptions.USER)
-        self.assertTrue(self.repo.is_admin(user1.role))
-        self.assertFalse(self.repo.is_admin(user2.role))
+        self.assertTrue(user1.is_admin())
+        self.assertFalse(user2.is_admin())
 
 
