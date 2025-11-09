@@ -1,1 +1,1 @@
-from .base_views import home,profile
+from .base_controllers import home,profile
