@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from unittest.mock import patch, MagicMock
 from app.models import Service, Category
-from app.services import ServiceService
+from app.services.service_service import ServiceService
 
 @pytest.mark.django_db
 class TestServiceService:

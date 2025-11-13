@@ -26,9 +26,6 @@ urlpatterns = [
     path('api/users/<int:user_id>/update/', views.update_user, name='update_user'),
     path('api/users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
     path('api/users/<int:user_id>/change-role/', views.change_role, name='change_role'),
-    
-    # API Home
-    path('api/', views.api_home, name='api_home'),
 
     # CRUD básico
     path('services/', views.list_services, name='list_services'),

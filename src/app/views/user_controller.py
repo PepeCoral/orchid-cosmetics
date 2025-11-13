@@ -6,8 +6,9 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 import json
-from app.models import User, RoleOptions
-from app.services import UserService
+from app.models import User
+from app.models.user import RoleOptions
+from app.services.user_service import UserService
 
 def home(request):
     return render(request, "home.html")

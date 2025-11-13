@@ -4,7 +4,8 @@ from django.db.models import Q
 import re
 from django.contrib.auth import authenticate
 from decimal import Decimal
-from app.models import User, RoleOptions
+from app.models import User
+from app.models.user import RoleOptions
 
 class UserService:
     
