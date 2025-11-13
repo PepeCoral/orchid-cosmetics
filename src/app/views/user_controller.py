@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -17,9 +17,9 @@ def profile(request):
     items = User.objects.all()
     return render(request, "profile.html", {'users': items})
 
-def is_admin(user):
+def is_admin(user: User):
     """Verifica si el usuario es administrador"""
-    return user.is_authenticated and user.role == RoleOptions.ADMIN
+    return user.is_admin()
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -69,68 +69,37 @@ def register(request):
 @require_http_methods(["POST"])
 def login(request):
     """Inicio de sesión de usuario"""
-    try:
+    # try:
         # Obtener datos del request
-        if request.content_type == 'application/json':
-            data = json.loads(request.body)
-        else:
-            data = request.POST.dict()
         
-        email = data.get('email')
-        password = data.get('password')
+    email = request.POST.cleaned_data['email']
+    password = request.POST.cleaned_data['password']
+    
+    # Autenticar usuario
+    user = UserService.authenticate_user(email, password)
+    
+    # Realizar login
+    auth_login(request, user)
+    
+       
         
-        if not email or not password:
-            return JsonResponse({
-                'success': False,
-                'error': 'Email y contraseña son requeridos'
-            }, status=400)
-        
-        # Autenticar usuario
-        user = UserService.authenticate_user(email, password)
-        
-        # Realizar login
-        auth_login(request, user)
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Login exitoso',
-            'user': {
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'address': user.address,
-                'pay_method': user.pay_method,
-                'role': user.role
-            }
-        })
-        
-    except ValidationError as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=401)
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
+    # except ValidationError as e:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'error': str(e)
+    #     }, status=401)
+    # except Exception as e:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'error': str(e)
+    #     }, status=500)
 
 @require_http_methods(["POST"])
-@login_required
+@login_required(login_url="/account/login")
 def logout(request):
-    """Cerrar sesión"""
-    try:
-        auth_logout(request)
-        return JsonResponse({
-            'success': True,
-            'message': 'Logout exitoso'
-        })
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
+    auth_logout(request)
+    return redirect("/")
+   
 
 @require_http_methods(["GET"])
 def api_home(request):
