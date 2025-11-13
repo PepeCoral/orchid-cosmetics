@@ -1,11 +1,10 @@
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ValidationError
 from django.db.models import Q 
-from .models import User
 import re
-from .models import Service, Category
+from django.contrib.auth import authenticate
 from decimal import Decimal
-
+from .models import User, RoleOptions
 
 class UserService:
     
@@ -33,21 +32,18 @@ class UserService:
             if User.objects.filter(email=user_data['email']).exists():
                 raise ValidationError("El email ya está registrado")
             
-            # Hashear contraseña
-            hashed_password = make_password(user_data['password'])
-            
-            # Crear usuario con el modelo existente
-            user = User(
-                name=user_data['name'],
-                surname=user_data.get('surname', ''),
+            # Crear usuario usando el método create_user de AbstractUser
+            user = User.objects.create_user(
+                username=user_data['email'],  # Usar email como username
                 email=user_data['email'],
-                password=hashed_password,
+                password=user_data['password'],
+                first_name=user_data['first_name'],
+                last_name=user_data.get('last_name', ''),
                 address=user_data.get('address', ''),
-                payMethod=user_data.get('payMethod', ''),
-                role=user_data.get('role', '')  # Rol vacío por defecto como en el modelo
+                pay_method=user_data.get('pay_method', ''),
+                role=user_data.get('role', RoleOptions.USER)
             )
             
-            user.save()
             return user
             
         except Exception as e:
@@ -56,12 +52,13 @@ class UserService:
     @staticmethod
     def authenticate_user(email, password):
         try:
-            user = User.objects.get(email=email)
-            if check_password(password, user.password):
+            # Usar el sistema de autenticación de Django
+            user = authenticate(username=email, password=password)
+            if user is not None:
                 return user
             else:
                 raise ValidationError("Credenciales inválidas")
-        except User.DoesNotExist:
+        except Exception:
             raise ValidationError("Credenciales inválidas")
     
     @staticmethod
@@ -89,23 +86,24 @@ class UserService:
                 if User.objects.filter(email=update_data['email']).exclude(id=user_id).exists():
                     raise ValidationError("El email ya está en uso")
                 user.email = update_data['email']
+                user.username = update_data['email']  # Actualizar username también
             
-            # Actualizar otros campos según el modelo existente
-            if 'name' in update_data:
-                user.name = update_data['name']
-            if 'surname' in update_data:
-                user.surname = update_data.get('surname', '')
+            # Actualizar campos según el modelo User
+            if 'first_name' in update_data:
+                user.first_name = update_data['first_name']
+            if 'last_name' in update_data:
+                user.last_name = update_data.get('last_name', '')
             if 'address' in update_data:
                 user.address = update_data.get('address', '')
-            if 'payMethod' in update_data:
-                user.payMethod = update_data.get('payMethod', '')
+            if 'pay_method' in update_data:
+                user.pay_method = update_data.get('pay_method', '')
             if 'role' in update_data:
-                user.role = update_data.get('role', '')
+                user.role = update_data.get('role', RoleOptions.USER)
             
-            # Hashear nueva contraseña si se proporciona
+            # Actualizar contraseña si se proporciona
             if 'password' in update_data:
                 UserService.validate_password(update_data['password'])
-                user.password = make_password(update_data['password'])
+                user.set_password(update_data['password'])
             
             user.save()
             return user
@@ -130,6 +128,12 @@ class UserService:
     def change_user_role(user_id, new_role):
         try:
             user = User.objects.get(id=user_id)
+            
+            # Validar que el rol sea uno de los permitidos
+            valid_roles = [role.value for role in RoleOptions]
+            if new_role not in valid_roles:
+                raise ValidationError(f"Rol inválido. Roles permitidos: {', '.join(valid_roles)}")
+            
             user.role = new_role
             user.save()
             return user
@@ -138,9 +142,29 @@ class UserService:
     
     @staticmethod
     def search_users(search_term):
-        """Busca usuarios por nombre, apellido o email"""
+        """Busca usuarios por first_name, last_name o email"""
         return User.objects.filter(
-            Q(name__icontains=search_term) |
-            Q(surname__icontains=search_term) |
+            Q(first_name__icontains=search_term) |
+            Q(last_name__icontains=search_term) |
             Q(email__icontains=search_term)
         )
+    
+    @staticmethod
+    def get_admin_users():
+        """Obtiene todos los usuarios administradores"""
+        return User.objects.filter(role=RoleOptions.ADMIN)
+    
+    @staticmethod
+    def get_regular_users():
+        """Obtiene todos los usuarios regulares"""
+        return User.objects.filter(role=RoleOptions.USER)
+    
+    @staticmethod
+    def promote_to_admin(user_id):
+        """Promueve un usuario a administrador"""
+        return UserService.change_user_role(user_id, RoleOptions.ADMIN)
+    
+    @staticmethod
+    def demote_to_user(user_id):
+        """Degrada un administrador a usuario regular"""
+        return UserService.change_user_role(user_id, RoleOptions.USER)

@@ -9,22 +9,27 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 import UserService  
 
-
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import ValidationError
+import json
+from .models import User, RoleOptions
+from .services import UserService
 
 def home(request):
     return render(request, "home.html")
-
 
 def profile(request):
     items = User.objects.all()
     return render(request, "profile.html", {'users': items})
 
-
-
 def is_admin(user):
     """Verifica si el usuario es administrador"""
-    return user.is_authenticated and user.role == 'admin'
-
+    return user.is_authenticated and user.role == RoleOptions.ADMIN
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -50,10 +55,11 @@ def register(request):
             'message': 'Usuario registrado exitosamente',
             'user': {
                 'id': user.id,
-                'name': user.name,
-                'surname': user.surname,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'email': user.email,
                 'address': user.address,
+                'pay_method': user.pay_method,
                 'role': user.role
             }
         }, status=201)
@@ -61,7 +67,7 @@ def register(request):
     except ValidationError as e:
         return JsonResponse({
             'success': False,
-            'errors': e.message_dict
+            'error': str(e)
         }, status=400)
     except Exception as e:
         return JsonResponse({
@@ -100,10 +106,11 @@ def login(request):
             'message': 'Login exitoso',
             'user': {
                 'id': user.id,
-                'name': user.name,
-                'surname': user.surname,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'email': user.email,
                 'address': user.address,
+                'pay_method': user.pay_method,
                 'role': user.role
             }
         })
@@ -136,8 +143,8 @@ def logout(request):
         }, status=500)
 
 @require_http_methods(["GET"])
-def home(request):
-    """Página de inicio"""
+def api_home(request):
+    """Página de inicio API"""
     return JsonResponse({
         'success': True,
         'message': 'Bienvenido a Orchid Beauty Salon',
@@ -148,10 +155,9 @@ def home(request):
         }
     })
 
-
 @require_http_methods(["GET"])
 @login_required
-def profile(request):
+def profile_api(request):
     """Obtener perfil del usuario actual"""
     try:
         user = request.user
@@ -160,13 +166,14 @@ def profile(request):
             'success': True,
             'user': {
                 'id': user.id,
-                'name': user.name,
-                'surname': user.surname,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'email': user.email,
                 'address': user.address,
-                'payMethod': user.payMethod,
+                'pay_method': user.pay_method,
                 'role': user.role,
-                'date_joined': user.date_joined.isoformat() if user.date_joined else None
+                'date_joined': user.date_joined.isoformat() if user.date_joined else None,
+                'username': user.username
             }
         })
         
@@ -196,11 +203,11 @@ def update_profile(request):
             'message': 'Perfil actualizado exitosamente',
             'user': {
                 'id': updated_user.id,
-                'name': updated_user.name,
-                'surname': updated_user.surname,
+                'first_name': updated_user.first_name,
+                'last_name': updated_user.last_name,
                 'email': updated_user.email,
                 'address': updated_user.address,
-                'payMethod': updated_user.payMethod,
+                'pay_method': updated_user.pay_method,
                 'role': updated_user.role
             }
         })
@@ -208,15 +215,13 @@ def update_profile(request):
     except ValidationError as e:
         return JsonResponse({
             'success': False,
-            'errors': e.message_dict
+            'error': str(e)
         }, status=400)
     except Exception as e:
         return JsonResponse({
             'success': False,
             'error': str(e)
         }, status=500)
-
-
 
 @require_http_methods(["GET"])
 @login_required
@@ -241,13 +246,14 @@ def list_users(request):
         for user in users:
             users_list.append({
                 'id': user.id,
-                'name': user.name,
-                'surname': user.surname,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'email': user.email,
                 'address': user.address,
-                'payMethod': user.payMethod,
+                'pay_method': user.pay_method,
                 'role': user.role,
-                'date_joined': user.date_joined.isoformat() if user.date_joined else None
+                'date_joined': user.date_joined.isoformat() if user.date_joined else None,
+                'username': user.username
             })
         
         return JsonResponse({
@@ -278,13 +284,14 @@ def get_user(request, user_id):
             'success': True,
             'user': {
                 'id': user.id,
-                'name': user.name,
-                'surname': user.surname,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'email': user.email,
                 'address': user.address,
-                'payMethod': user.payMethod,
+                'pay_method': user.pay_method,
                 'role': user.role,
-                'date_joined': user.date_joined.isoformat() if user.date_joined else None
+                'date_joined': user.date_joined.isoformat() if user.date_joined else None,
+                'username': user.username
             }
         })
         
@@ -320,11 +327,11 @@ def update_user(request, user_id):
             'message': 'Usuario actualizado exitosamente',
             'user': {
                 'id': updated_user.id,
-                'name': updated_user.name,
-                'surname': updated_user.surname,
+                'first_name': updated_user.first_name,
+                'last_name': updated_user.last_name,
                 'email': updated_user.email,
                 'address': updated_user.address,
-                'payMethod': updated_user.payMethod,
+                'pay_method': updated_user.pay_method,
                 'role': updated_user.role
             }
         })
@@ -332,7 +339,7 @@ def update_user(request, user_id):
     except ValidationError as e:
         return JsonResponse({
             'success': False,
-            'errors': e.message_dict
+            'error': str(e)
         }, status=400)
     except Exception as e:
         return JsonResponse({
@@ -408,7 +415,8 @@ def change_role(request, user_id):
             'message': f'Rol cambiado a {new_role} exitosamente',
             'user': {
                 'id': updated_user.id,
-                'name': updated_user.name,
+                'first_name': updated_user.first_name,
+                'last_name': updated_user.last_name,
                 'email': updated_user.email,
                 'role': updated_user.role
             }
@@ -425,7 +433,6 @@ def change_role(request, user_id):
             'error': str(e)
         }, status=500)
 
-
 @require_http_methods(["GET"])
 def check_auth(request):
     """Verificar si el usuario está autenticado"""
@@ -434,9 +441,9 @@ def check_auth(request):
         'authenticated': request.user.is_authenticated,
         'user': {
             'id': request.user.id,
-            'name': request.user.name,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
             'email': request.user.email,
             'role': request.user.role
         } if request.user.is_authenticated else None
     })
-    
