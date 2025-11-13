@@ -1,14 +1,3 @@
-import json
-from django.shortcuts import render, HttpResponse
-from .models import User
-from django.http import JsonResponse
-from django.core.exceptions import ValidationError
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-import UserService  
-
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
