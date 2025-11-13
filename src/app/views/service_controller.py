@@ -4,8 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 import json
-from .services import ServiceService
-from .models import Service
+from app.services import ServiceService
+from app.models import Service
 
 @csrf_exempt
 @require_http_methods(["POST"])

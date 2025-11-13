@@ -5,9 +5,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from unittest.mock import patch, MagicMock
-from .models import User, RoleOptions
-from .views import *
-from .services import UserService
+from app.models import User, RoleOptions
+from app.views import *
+from app.services import UserService
 from src.app.views.user_controller import api_home, change_role, check_auth, delete_user, get_user, home, is_admin, list_users, login, logout, profile, profile_api, register, update_profile, update_user
 
 User = get_user_model()

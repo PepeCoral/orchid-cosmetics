@@ -2,8 +2,8 @@ import pytest
 from decimal import Decimal
 from django.core.exceptions import ValidationError
 from unittest.mock import patch, MagicMock
-from .models import Service, Category
-from .services import ServiceService
+from app.models import Service, Category
+from app.services import ServiceService
 
 @pytest.mark.django_db
 class TestServiceService:

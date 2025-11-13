@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from .models import Service, Category
+from app.models import Service, Category
 from src.app import models
 
 class ServiceService:
