@@ -152,7 +152,6 @@ class ServiceService():
                 'category': update_data.get('category', service.category_id),
                 'image_url': update_data.get('image_url', service.image_url)
             }
-            
             ServiceService.validate_service_data(data_to_validate)
             
             # Verificar nombre duplicado

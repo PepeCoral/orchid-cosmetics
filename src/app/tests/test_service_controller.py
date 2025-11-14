@@ -30,7 +30,7 @@ class TestServiceController(TestCase):
             'category': self.category.id
         }
 
-    @patch('app.views.ServiceService.create_service')
+    @patch('app.services.ServiceService.create_service')
     def test_create_service_success(self, mock_create_service):
         """Test de creación exitosa de servicio"""
         # Mock del servicio creado
@@ -38,7 +38,7 @@ class TestServiceController(TestCase):
         mock_service.id = 1
         mock_service.name = 'Hair Cut'
         mock_service.description = 'Professional hair cutting service'
-        mock_service.price = Decimal('25.00')
+        mock_service.price = 25.00
         mock_service.duration_minutes = 30
         mock_service.department = 'Hair Salon'
         mock_service.image_url = 'https://example.com/haircut.jpg'
@@ -61,7 +61,7 @@ class TestServiceController(TestCase):
         assert response_data['service']['name'] == 'Hair Cut'
         mock_create_service.assert_called_once_with(self.valid_service_data)
 
-    @patch('app.views.ServiceService.create_service')
+    @patch('app.services.ServiceService.create_service')
     def test_create_service_validation_error(self, mock_create_service):
         """Test de creación con error de validación"""
         mock_create_service.side_effect = ValidationError("Nombre inválido")
@@ -79,7 +79,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == False
         assert 'error' in response_data
 
-    @patch('app.views.ServiceService.create_service')
+    @patch('app.services.ServiceService.create_service')
     def test_create_service_exception(self, mock_create_service):
         """Test de creación con excepción general"""
         mock_create_service.side_effect = Exception("Error de base de datos")
@@ -96,14 +96,14 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == False
 
-    @patch('app.views.ServiceService.get_service_by_id')
+    @patch('app.services.ServiceService.get_service_by_id')
     def test_get_service_success(self, mock_get_service):
         """Test de obtención exitosa de servicio"""
         mock_service = MagicMock()
         mock_service.id = 1
         mock_service.name = 'Hair Cut'
         mock_service.description = 'Professional service'
-        mock_service.price = Decimal('25.00')
+        mock_service.price = 25.00
         mock_service.duration_minutes = 30
         mock_service.department = 'Hair Salon'
         mock_service.image_url = 'https://example.com/image.jpg'
@@ -121,7 +121,7 @@ class TestServiceController(TestCase):
         assert response_data['service']['name'] == 'Hair Cut'
         assert response_data['service']['category_name'] == 'Hair Care'
 
-    @patch('app.views.ServiceService.get_service_by_id')
+    @patch('app.services.ServiceService.get_service_by_id')
     def test_get_service_not_found(self, mock_get_service):
         """Test de obtención de servicio inexistente"""
         mock_get_service.side_effect = ValidationError("Servicio no encontrado")
@@ -133,7 +133,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == False
 
-    @patch('app.views.ServiceService.get_all_services')
+    @patch('app.services.ServiceService.get_all_services')
     def test_list_services_success(self, mock_get_all_services):
         """Test de listado exitoso de servicios"""
         mock_services = [
@@ -141,7 +141,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Service 1',
                 description='Desc 1',
-                price=Decimal('20.00'),
+                price=20.00,
                 duration_minutes=30,
                 department='Dept 1',
                 image_url='',
@@ -152,7 +152,7 @@ class TestServiceController(TestCase):
                 id=2,
                 name='Service 2',
                 description='Desc 2',
-                price=Decimal('30.00'),
+                price=30.00,
                 duration_minutes=45,
                 department='Dept 2',
                 image_url='',
@@ -171,7 +171,7 @@ class TestServiceController(TestCase):
         assert len(response_data['services']) == 2
         assert response_data['count'] == 2
 
-    @patch('app.views.ServiceService.get_services_by_category')
+    @patch('app.services.ServiceService.get_services_by_category')
     def test_get_services_by_category_success(self, mock_get_by_category):
         """Test de obtención de servicios por categoría exitosa"""
         mock_services = [
@@ -179,7 +179,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Service 1',
                 description='Desc 1',
-                price=Decimal('20.00'),
+                price=20.00,
                 duration_minutes=30,
                 department='Dept 1',
                 image_url='',
@@ -198,7 +198,7 @@ class TestServiceController(TestCase):
         assert response_data['category_id'] == 1
         assert len(response_data['services']) == 1
 
-    @patch('app.views.ServiceService.get_services_by_category')
+    @patch('app.services.ServiceService.get_services_by_category')
     def test_get_services_by_category_not_found(self, mock_get_by_category):
         """Test de obtención de servicios por categoría inexistente"""
         mock_get_by_category.side_effect = ValidationError("Categoría no encontrada")
@@ -210,7 +210,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == False
 
-    @patch('app.views.ServiceService.get_services_by_department')
+    @patch('app.services.ServiceService.get_services_by_department')
     def test_get_services_by_department_success(self, mock_get_by_department):
         """Test de obtención de servicios por departamento"""
         mock_services = [
@@ -218,7 +218,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Hair Service',
                 description='Hair desc',
-                price=Decimal('25.00'),
+                price=25.00,
                 duration_minutes=30,
                 department='Hair Salon',
                 image_url='',
@@ -237,14 +237,14 @@ class TestServiceController(TestCase):
         assert response_data['department'] == 'Hair Salon'
         assert len(response_data['services']) == 1
 
-    @patch('app.views.ServiceService.update_service')
+    @patch('app.services.ServiceService.update_service')
     def test_update_service_success(self, mock_update_service):
         """Test de actualización exitosa de servicio"""
         mock_updated_service = MagicMock()
         mock_updated_service.id = 1
         mock_updated_service.name = 'Updated Service'
         mock_updated_service.description = 'Updated description'
-        mock_updated_service.price = Decimal('30.00')
+        mock_updated_service.price = 30.00
         mock_updated_service.duration_minutes = 45
         mock_updated_service.department = 'Updated Dept'
         mock_updated_service.image_url = ''
@@ -272,7 +272,7 @@ class TestServiceController(TestCase):
         assert response_data['message'] == 'Servicio actualizado exitosamente'
         assert response_data['service']['name'] == 'Updated Service'
 
-    @patch('app.views.ServiceService.update_service')
+    @patch('app.services.ServiceService.update_service')
     def test_update_service_validation_error(self, mock_update_service):
         """Test de actualización con error de validación"""
         mock_update_service.side_effect = ValidationError("Nombre duplicado")
@@ -291,7 +291,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == False
 
-    @patch('app.views.ServiceService.delete_service')
+    @patch('app.services.ServiceService.delete_service')
     def test_delete_service_success(self, mock_delete_service):
         """Test de eliminación exitosa de servicio"""
         mock_delete_service.return_value = True
@@ -304,7 +304,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == True
         assert response_data['message'] == 'Servicio eliminado exitosamente'
 
-    @patch('app.views.ServiceService.delete_service')
+    @patch('app.services.ServiceService.delete_service')
     def test_delete_service_not_found(self, mock_delete_service):
         """Test de eliminación de servicio inexistente"""
         mock_delete_service.side_effect = ValidationError("Servicio no encontrado")
@@ -316,7 +316,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == False
 
-    @patch('app.views.ServiceService.search_services')
+    @patch('app.services.ServiceService.search_services')
     def test_search_services_success(self, mock_search_services):
         """Test de búsqueda exitosa de servicios"""
         mock_services = [
@@ -324,7 +324,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Hair Cut',
                 description='Hair cutting service',
-                price=Decimal('25.00'),
+                price=25.00,
                 duration_minutes=30,
                 department='Hair Salon',
                 image_url='',
@@ -353,7 +353,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == False
         assert 'parámetro de búsqueda' in response_data['error']
 
-    @patch('app.views.ServiceService.get_services_by_price_range')
+    @patch('app.services.ServiceService.get_services_by_price_range')
     def test_get_services_by_price_range_success(self, mock_get_by_price):
         """Test de obtención por rango de precios exitosa"""
         mock_services = [
@@ -361,7 +361,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Service 1',
                 description='Desc 1',
-                price=Decimal('25.00'),
+                price=25.00,
                 duration_minutes=30,
                 department='Dept 1',
                 image_url='',
@@ -400,7 +400,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == False
         assert 'precios deben ser números válidos' in response_data['error']
 
-    @patch('app.views.ServiceService.get_services_by_price_range')
+    @patch('app.services.ServiceService.get_services_by_price_range')
     def test_get_services_by_price_range_validation_error(self, mock_get_by_price):
         """Test de obtención por rango de precios con error de validación"""
         mock_get_by_price.side_effect = ValidationError("Precio mínimo mayor al máximo")
@@ -412,7 +412,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == False
 
-    @patch('app.views.ServiceService.get_services_by_duration')
+    @patch('app.services.ServiceService.get_services_by_duration')
     def test_get_services_by_duration_success(self, mock_get_by_duration):
         """Test de obtención por duración exitosa"""
         mock_services = [
@@ -420,7 +420,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Quick Service',
                 description='Quick desc',
-                price=Decimal('15.00'),
+                price=15.00,
                 duration_minutes=15,
                 department='Dept 1',
                 image_url='',
@@ -458,7 +458,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == False
         assert 'duración debe ser un número entero válido' in response_data['error']
 
-    @patch('app.views.ServiceService.get_popular_services')
+    @patch('app.services.ServiceService.get_popular_services')
     def test_get_popular_services_success(self, mock_get_popular):
         """Test de obtención de servicios populares"""
         mock_services = [
@@ -466,7 +466,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Popular Service',
                 description='Popular desc',
-                price=Decimal('25.00'),
+                price=25.00,
                 duration_minutes=30,
                 department='Dept 1',
                 image_url='',
@@ -484,7 +484,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == True
         assert response_data['limit'] == 5
 
-    @patch('app.views.ServiceService.get_popular_services')
+    @patch('app.services.ServiceService.get_popular_services')
     def test_get_popular_services_default_limit(self, mock_get_popular):
         """Test de obtención de servicios populares con límite por defecto"""
         mock_services = []
@@ -497,7 +497,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['limit'] == 10
 
-    @patch('app.views.ServiceService.get_popular_services')
+    @patch('app.services.ServiceService.get_popular_services')
     def test_get_popular_services_invalid_limit(self, mock_get_popular):
         """Test de obtención de servicios populares con límite inválido"""
         mock_services = []
@@ -510,7 +510,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['limit'] == 10  # Debería usar el valor por defecto
 
-    @patch('app.views.ServiceService.get_services_sorted_by_price')
+    @patch('app.services.ServiceService.get_services_sorted_by_price')
     def test_get_services_sorted_by_price_ascending(self, mock_sorted_price):
         """Test de servicios ordenados por precio ascendente"""
         mock_services = [
@@ -518,7 +518,7 @@ class TestServiceController(TestCase):
                 id=1,
                 name='Cheap Service',
                 description='Desc 1',
-                price=Decimal('10.00'),
+                price=10.00,
                 duration_minutes=15,
                 department='Dept 1',
                 image_url='',
@@ -529,7 +529,7 @@ class TestServiceController(TestCase):
                 id=2,
                 name='Expensive Service',
                 description='Desc 2',
-                price=Decimal('50.00'),
+                price=50.00,
                 duration_minutes=60,
                 department='Dept 2',
                 image_url='',
@@ -547,7 +547,7 @@ class TestServiceController(TestCase):
         assert response_data['success'] == True
         assert response_data['order'] == 'ascending'
 
-    @patch('app.views.ServiceService.get_services_sorted_by_price')
+    @patch('app.services.ServiceService.get_services_sorted_by_price')
     def test_get_services_sorted_by_price_descending(self, mock_sorted_price):
         """Test de servicios ordenados por precio descendente"""
         mock_services = []
@@ -560,7 +560,7 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['order'] == 'descending'
 
-    @patch('app.views.ServiceService.get_services_sorted_by_duration')
+    @patch('app.services.ServiceService.get_services_sorted_by_duration')
     def test_get_services_sorted_by_duration(self, mock_sorted_duration):
         """Test de servicios ordenados por duración"""
         mock_services = []
@@ -573,8 +573,8 @@ class TestServiceController(TestCase):
         response_data = json.loads(response.content)
         assert response_data['success'] == True
 
-    @patch('app.views.ServiceService.get_services_with_category')
-    @patch('app.views.ServiceService.get_services_without_category')
+    @patch('app.services.ServiceService.get_services_with_category')
+    @patch('app.services.ServiceService.get_services_without_category')
     def test_service_categories_overview(self, mock_without_category, mock_with_category):
         """Test de resumen de servicios por categoría"""
         mock_with_category.return_value = [
