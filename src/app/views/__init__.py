@@ -1,7 +1,7 @@
 from .base_controllers import home,profile
 
 from .user_controller import (
-    register, login, logout, profile_api, update_profile,
+    register, login, logout, update_profile,
     list_users, get_user, update_user, delete_user, change_role,
     check_auth
 )

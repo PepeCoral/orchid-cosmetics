@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, HttpResponse
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import login as auth_login, logout as auth_logout
@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 import json
 from app.models import User
-from app.models.user import RoleOptions
 from app.services.user_service import UserService
+from app.forms.user_register_form import UserRegisterForm
 
 def home(request):
     return render(request, "home.html")
@@ -19,84 +19,43 @@ def profile(request):
 
 def is_admin(user: User):
     """Verifica si el usuario es administrador"""
-    return user.is_admin()
+    return user.is_authenticated and user.is_admin()
 
-def register_page(request):
-    """Renderiza la página de registro"""
-    return render(request, "register.html")
+
 
 @csrf_exempt
 @require_http_methods(["POST", "GET"])
-def register(request):
-    """Registro de nuevo usuario"""
-    if( request.method == "GET"):
-        return render(request, "register.html")
-    try:
-        # Obtener datos del request
-        if request.content_type == 'application/json':
-            data = json.loads(request.body)
-        else:
-            data = request.POST.dict()
-        
-        # Crear usuario
-        print(data)
-        user = UserService.create_user(data)
-        print("user",user)
-        # Auto-login después del registro (opcional)
-        if request.user.is_authenticated:
-            auth_logout(request)
-        auth_login(request, user)
-        
-        return redirect("/")
-        
-    except ValidationError as e:
-        # Puedes mostrar errores en pantalla usando mensajes
-        return render(request, "signup.html", {"error": str(e)})
-
-    except Exception as e:
-        return render(
-            request, 
-            "signup.html", 
-            {"error": f"Error inesperado: {str(e)}"}
-        )
-
-@csrf_exempt
-@require_http_methods(["POST", "GET"])
-def login(request):
-    # try:
-        # Obtener datos del request
-    if request.method == "GET":
-        return render(request, "login.html")
-    
-    if request.method == "POST":
-        if request.content_type == 'application/json':
-            data = json.loads(request.body)
-        else:
-            data = request.POST.dict()
-        
-        print(data)
-        email = data['email']
-        password = data['password']
-        
-    
-    # Autenticar usuario
-        user = UserService.authenticate_user(email, password)
-    
-    # Realizar login
-        auth_login(request, user)
+def register(request: HttpRequest):
+   
+    if not request.user.is_anonymous:
         return redirect("/profile")
-     
-        
-    # except ValidationError as e:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'error': str(e)
-    #     }, status=401)
-    # except Exception as e:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'error': str(e)
-    #     }, status=500)
+    
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            validate_access = UserService.get_user_by_username(username=username)
+            if validate_access is not None:
+                return render(request, "register.html", {'usernameAlreadyUse': True, "form":form})
+            user = UserService.create_user(form.cleaned_data)
+            auth_login(request=request,user=user)
+            return redirect("/profile",  "register.html",)
+        else:
+            return render(request,"register.html",context={"form":form})
+            
+    form = UserRegisterForm() 
+    return render(request,template_name="register.html",context={"form":form})
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def login(request):
+    email = request.POST.cleaned_data['email']
+    password = request.POST.cleaned_data['password']
+    user = UserService.authenticate_user(email, password)
+    
+    auth_login(request, user)
 
 
 @require_http_methods(["POST", "GET"])
@@ -106,46 +65,7 @@ def logout(request):
     return redirect("/")
    
 
-@require_http_methods(["GET"])
-def api_home(request):
-    """Página de inicio API"""
-    return JsonResponse({
-        'success': True,
-        'message': 'Bienvenido a Orchid Beauty Salon',
-        'endpoints': {
-            'auth': ['/register/', '/login/', '/logout/', '/profile/'],
-            'users': ['/users/', '/users/<id>/', '/users/<id>/update/', '/users/<id>/delete/', '/users/<id>/change-role/'],
-            'services': ['/services/', '/services/<id>/', '/services/search/', '/services/category/<id>/']
-        }
-    })
 
-@require_http_methods(["GET"])
-@login_required
-def profile_api(request):
-    """Obtener perfil del usuario actual"""
-    try:
-        user = request.user
-        
-        return JsonResponse({
-            'success': True,
-            'user': {
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'address': user.address,
-                'pay_method': user.pay_method,
-                'role': user.role,
-                'date_joined': user.date_joined.isoformat() if user.date_joined else None,
-                'username': user.username
-            }
-        })
-        
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
 
 @csrf_exempt
 @require_http_methods(["PUT", "PATCH"])
