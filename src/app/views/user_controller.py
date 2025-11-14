@@ -21,10 +21,16 @@ def is_admin(user: User):
     """Verifica si el usuario es administrador"""
     return user.is_admin()
 
+def register_page(request):
+    """Renderiza la página de registro"""
+    return render(request, "register.html")
+
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "GET"])
 def register(request):
     """Registro de nuevo usuario"""
+    if( request.method == "GET"):
+        return render(request, "register.html")
     try:
         # Obtener datos del request
         if request.content_type == 'application/json':
@@ -33,55 +39,53 @@ def register(request):
             data = request.POST.dict()
         
         # Crear usuario
+        print(data)
         user = UserService.create_user(data)
-        
+        print("user",user)
         # Auto-login después del registro (opcional)
         if request.user.is_authenticated:
             auth_logout(request)
         auth_login(request, user)
         
-        return JsonResponse({
-            'success': True,
-            'message': 'Usuario registrado exitosamente',
-            'user': {
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'address': user.address,
-                'pay_method': user.pay_method,
-                'role': user.role
-            }
-        }, status=201)
+        return redirect("/")
         
     except ValidationError as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=400)
+        # Puedes mostrar errores en pantalla usando mensajes
+        return render(request, "signup.html", {"error": str(e)})
+
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
+        return render(
+            request, 
+            "signup.html", 
+            {"error": f"Error inesperado: {str(e)}"}
+        )
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "GET"])
 def login(request):
-    """Inicio de sesión de usuario"""
     # try:
         # Obtener datos del request
+    if request.method == "GET":
+        return render(request, "login.html")
+    
+    if request.method == "POST":
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+        else:
+            data = request.POST.dict()
         
-    email = request.POST.cleaned_data['email']
-    password = request.POST.cleaned_data['password']
+        print(data)
+        email = data['email']
+        password = data['password']
+        
     
     # Autenticar usuario
-    user = UserService.authenticate_user(email, password)
+        user = UserService.authenticate_user(request,email, password)
     
     # Realizar login
-    auth_login(request, user)
-    
-       
+        auth_login(request, user)
+        return redirect("/profile")
+     
         
     # except ValidationError as e:
     #     return JsonResponse({
@@ -94,7 +98,8 @@ def login(request):
     #         'error': str(e)
     #     }, status=500)
 
-@require_http_methods(["POST"])
+
+@require_http_methods(["POST", "GET"])
 @login_required(login_url="/account/login")
 def logout(request):
     auth_logout(request)

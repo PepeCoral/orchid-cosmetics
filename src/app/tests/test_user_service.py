@@ -1,12 +1,15 @@
-import pytest
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from unittest.mock import patch, MagicMock
-from .models import User, RoleOptions
-from .services import UserService
 
-@pytest.mark.django_db
-class TestUserService:
+from django.test import TestCase
+from app.models.user import User, RoleOptions
+from app.services.user_service import UserService
+
+
+class TestUserService(TestCase):
+    def setUp(self):
+        self.user_service = UserService()
 
     def test_validate_email_success(self):
         """Test que valida emails correctos"""
@@ -31,7 +34,7 @@ class TestUserService:
         ]
         
         for email in invalid_emails:
-            with pytest.raises(ValidationError, match="Formato de email inválido"):
+            with self.assertRaises(ValidationError, msg="Formato de email inválido"):
                 UserService.validate_email(email)
 
     def test_validate_password_success(self):
@@ -39,15 +42,21 @@ class TestUserService:
         valid_passwords = ['123456', 'password123', 'securepass']
         
         for password in valid_passwords:
-            assert UserService.validate_password(password) == True
+            assert UserService.validate_password(password, password) == True
 
     def test_validate_password_too_short(self):
         """Test que rechaza contraseñas muy cortas"""
         short_passwords = ['12345', 'abc', 'p', '']
         
         for password in short_passwords:
-            with pytest.raises(ValidationError, match="La contraseña debe tener al menos 6 caracteres"):
-                UserService.validate_password(password)
+            with self.assertRaises(ValidationError, msg="La contraseña debe tener al menos 6 caracteres"):
+                UserService.validate_password(password, password)
+
+    def test_validate_password_mismatch(self):
+        password = 'password123'
+        confirm_password = 'password124'
+        with self.assertRaises(ValidationError, msg="Las contraseñas no coinciden"):
+            UserService.validate_password(password, confirm_password)
 
     def test_create_user_success(self):
         """Test de creación exitosa de usuario"""
@@ -194,6 +203,7 @@ class TestUserService:
         user_data = {
             'email': 'update@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'Original',
             'last_name': 'Name'
         }
@@ -249,7 +259,7 @@ class TestUserService:
         user2 = UserService.create_user(user2_data)
         
         # Intentar cambiar email del usuario2 al email del usuario1
-        with pytest.raises(ValidationError, match="El email ya está en uso"):
+        with self.assertRaises(ValidationError, msg="El email ya está en uso"):
             UserService.update_user(user2.id, {'email': 'user1@example.com'})
 
     def test_update_user_password(self):
@@ -257,12 +267,13 @@ class TestUserService:
         user_data = {
             'email': 'passupdate@example.com',
             'password': 'oldpassword',
+            'confirm_password': 'oldpassword',
             'first_name': 'Test'
         }
         
         user = UserService.create_user(user_data)
         
-        update_data = {'password': 'newpassword123'}
+        update_data = {'password': 'newpassword123', 'confirm_password': 'newpassword123'}
         updated_user = UserService.update_user(user.id, update_data)
         
         # Verificar que la nueva contraseña funciona
@@ -270,7 +281,7 @@ class TestUserService:
 
     def test_update_user_not_found(self):
         """Test de actualización de usuario inexistente"""
-        with pytest.raises(ValidationError, match="Usuario no encontrado"):
+        with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             UserService.update_user(999, {'first_name': 'Updated'})
 
     def test_delete_user_success(self):

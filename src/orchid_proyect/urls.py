@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD
 URL configuration for demo project.
-=======
-URL configuration for orchid_proyect project.
->>>>>>> 56922cb6739d34c05bdc57d56701856416f7f594
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/

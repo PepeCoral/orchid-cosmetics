@@ -7,8 +7,10 @@ urlpatterns = [
     # Páginas HTML (Template views)
     path('', views.home, name='home'),
     path('profile/', views.profile, name='profile'),
-    path("login/", auth_views.LoginView.as_view(template_name="login.html", next_page="/profile"), name='login'),
+    #path("login/", auth_views.LoginView.as_view(template_name="login.html", next_page="/profile"), name='login'),
+    path("login/", views.login, name='login'),
     path("logout/", views.logout, name='logout'),
+    path("register/", views.user_controller.register, name="register"),
     
     # Autenticación API (JSON)
     path('api/auth/register/', views.register, name='api_register'),

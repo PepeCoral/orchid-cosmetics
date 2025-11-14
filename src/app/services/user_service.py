@@ -6,8 +6,11 @@ from django.contrib.auth import authenticate
 from decimal import Decimal
 from app.models import User
 from app.models.user import RoleOptions
+from app.repositories.user_repository import UserRepository
 
 class UserService:
+    def __init__(self):
+        self.repository = UserRepository()
     
     @staticmethod
     def validate_email(email):
@@ -17,9 +20,11 @@ class UserService:
         return True
     
     @staticmethod
-    def validate_password(password):
+    def validate_password(password, confirm_password):
         if len(password) < 6:
             raise ValidationError("La contraseña debe tener al menos 6 caracteres")
+        if password != confirm_password:
+            raise ValidationError("Las contraseñas no coinciden")
         return True
     
     @staticmethod
@@ -27,12 +32,12 @@ class UserService:
         try:
             # Validaciones básicas
             UserService.validate_email(user_data['email'])
-            UserService.validate_password(user_data['password'])
+            UserService.validate_password(user_data['password'], user_data['confirm_password'])
             
             # Verificar si el email ya existe
             if User.objects.filter(email=user_data['email']).exists():
                 raise ValidationError("El email ya está registrado")
-            
+            print("creando usuario")
             # Crear usuario usando el método create_user de AbstractUser
             user = User.objects.create_user(
                 username=user_data['email'],  # Usar email como username
@@ -51,14 +56,15 @@ class UserService:
             raise ValidationError(f"Error al crear usuario: {str(e)}")
     
     @staticmethod
-    def authenticate_user(email, password):
+    def authenticate_user(request, username, password):
         try:
             # Usar el sistema de autenticación de Django
-            user = authenticate(username=email, password=password)
-            if user is not None:
-                return user
-            else:
+            user = authenticate(request=request, username=username, password=password)
+            print("autenticando usuario", user)
+            if user is None:
                 raise ValidationError("Credenciales inválidas")
+            
+            return user
         except Exception:
             raise ValidationError("Credenciales inválidas")
     
@@ -103,7 +109,7 @@ class UserService:
             
             # Actualizar contraseña si se proporciona
             if 'password' in update_data:
-                UserService.validate_password(update_data['password'])
+                UserService.validate_password(update_data['password'], update_data['confirm_password'])
                 user.set_password(update_data['password'])
             
             user.save()

@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
+class RoleOptions(models.TextChoices):
+        USER = 'User'
+        ADMIN = 'Admin'
 
 
 class User(AbstractUser):
-    class RoleOptions(models.TextChoices):
-        USER = 'User'
-        ADMIN = 'Admin'
+    
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, blank=True)
@@ -20,3 +20,5 @@ class User(AbstractUser):
     
     def is_admin(self):
         return self.role == RoleOptions.ADMIN
+
+

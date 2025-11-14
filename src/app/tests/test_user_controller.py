@@ -1,6 +1,6 @@
 import pytest
 import json
-from django.test import RequestFactory, Client
+from django.test import RequestFactory, Client, TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
@@ -9,14 +9,12 @@ from app.models import User
 from app.models.user import RoleOptions
 from app.views import *
 from app.services.user_service import UserService
-from src.app.views.user_controller import api_home, change_role, check_auth, delete_user, get_user, home, is_admin, list_users, login, logout, profile, profile_api, register, update_profile, update_user
+from app.views.user_controller import api_home, change_role, check_auth, delete_user, get_user, home, is_admin, list_users, login, logout, profile, profile_api, register, update_profile, update_user
 
-User = get_user_model()
 
-@pytest.mark.django_db
-class TestViewController:
-
-    def setup_method(self):
+class TestViewController(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
         self.factory = RequestFactory()
         self.client = Client()
 
