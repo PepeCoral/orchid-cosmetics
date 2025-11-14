@@ -80,7 +80,7 @@ def login(request):
         
     
     # Autenticar usuario
-        user = UserService.authenticate_user(request,email, password)
+        user = UserService.authenticate_user(email, password)
     
     # Realizar login
         auth_login(request, user)
