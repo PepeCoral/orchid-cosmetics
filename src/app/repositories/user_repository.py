@@ -7,10 +7,3 @@ class UserRepository(BaseRepository):
 
     def get_by_email(self, email):
         return self.model.objects.filter(email=email)
-
-    def get_address(self):
-        return self.model.objects.values_list('address', flat=True).distinct()
-    
-
-    
-
