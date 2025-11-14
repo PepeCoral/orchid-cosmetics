@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      {% block title %}
-        Orchid Cosmetics
-      {% endblock %}
-    </title>
+    <title>{% block title %} Orchid Cosmetics {% endblock %}</title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -49,24 +45,33 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Categorías/Productos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Catálogo de Productos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Carrito de Compra</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Categorías/Productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Catálogo de Productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Carrito de Compra</a>
+          </li>
 
           {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="/profile">Perfil</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">Perfil</a>
+          </li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="/register">Sign Up</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Sign Up</a>
+          </li>
           {% endif %}
         </ul>
       </div>
     </nav>
 
-    <div class="container mt-4">
-      {% block content %}
-      {% endblock %}
-    </div>
+    <div class="container mt-4">{% block content %} {% endblock %}</div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

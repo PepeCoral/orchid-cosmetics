@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 import json
 from app.models import User
-from app.models.user import RoleOptions
 from app.services.user_service import UserService
 
 def home(request):
@@ -19,7 +18,7 @@ def profile(request):
 
 def is_admin(user: User):
     """Verifica si el usuario es administrador"""
-    return user.is_admin()
+    return user.is_authenticated and user.is_admin()
 
 def register_page(request):
     """Renderiza la página de registro"""
@@ -61,31 +60,18 @@ def register(request):
         )
 
 @csrf_exempt
-@require_http_methods(["POST", "GET"])
+@require_http_methods(["POST"])
 def login(request):
     # try:
         # Obtener datos del request
-    if request.method == "GET":
-        return render(request, "login.html")
-    
-    if request.method == "POST":
-        if request.content_type == 'application/json':
-            data = json.loads(request.body)
-        else:
-            data = request.POST.dict()
-        
-        print(data)
-        email = data['email']
-        password = data['password']
-        
+    email = request.POST.cleaned_data['email']
+    password = request.POST.cleaned_data['password']
     
     # Autenticar usuario
-        user = UserService.authenticate_user(request,email, password)
+    user = UserService.authenticate_user(email, password)
     
     # Realizar login
-        auth_login(request, user)
-        return redirect("/profile")
-     
+    auth_login(request, user)
         
     # except ValidationError as e:
     #     return JsonResponse({
