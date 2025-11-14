@@ -14,10 +14,6 @@ def profile(request):
     items = User.objects.all()
     return render(request, "profile.html", {'users': items})
 
-def register_page(request):
-    """Renderiza la página de registro"""
-    return render(request, "register.html")
-
 @csrf_exempt
 @require_http_methods(["POST", "GET"])
 def register(request):
