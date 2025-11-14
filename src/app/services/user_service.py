@@ -8,7 +8,7 @@ from app.models import User
 from app.models.user import RoleOptions
 from app.repositories.user_repository import UserRepository
 
-class UserService:
+class UserService():
     def __init__(self):
         self.repository = UserRepository()
     
@@ -56,10 +56,10 @@ class UserService:
             raise ValidationError(f"Error al crear usuario: {str(e)}")
     
     @staticmethod
-    def authenticate_user(request, username, password):
+    def authenticate_user(username, password):
         try:
             # Usar el sistema de autenticación de Django
-            user = authenticate(request=request, username=username, password=password)
+            user = authenticate(username=username, password=password)
             print("autenticando usuario", user)
             if user is None:
                 raise ValidationError("Credenciales inválidas")
@@ -157,9 +157,9 @@ class UserService:
     def search_users(search_term):
         """Busca usuarios por first_name, last_name o email"""
         return User.objects.filter(
-            Q(first_name__icontains=search_term) |
-            Q(last_name__icontains=search_term) |
-            Q(email__icontains=search_term)
+            Q(first_name=search_term) |
+            Q(last_name=search_term) |
+            Q(email=search_term)
         )
     
     @staticmethod

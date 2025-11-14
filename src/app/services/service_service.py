@@ -5,7 +5,7 @@ from app import models
 from app.models import Service, Category
 
 
-class ServiceService:
+class ServiceService():
     
     @staticmethod
     def validate_service_data(service_data):
@@ -23,6 +23,8 @@ class ServiceService:
         price = service_data.get('price')
         if price is None:
             errors['price'] = "El precio es obligatorio"
+        elif not isinstance(price,float):
+            errors['price'] = "Precio debe ser numérico"
         else:
             try:
                 price_decimal = Decimal(str(price))
@@ -150,7 +152,6 @@ class ServiceService:
                 'category': update_data.get('category', service.category_id),
                 'image_url': update_data.get('image_url', service.image_url)
             }
-            
             ServiceService.validate_service_data(data_to_validate)
             
             # Verificar nombre duplicado

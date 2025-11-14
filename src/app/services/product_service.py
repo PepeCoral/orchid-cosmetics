@@ -3,7 +3,7 @@
 from users.repositories.product_repository import ProductRepository
 from django.core.exceptions import ValidationError
 
-class ProductService:
+class ProductService():
     def __init__(self):
         self.repository = ProductRepository()
 

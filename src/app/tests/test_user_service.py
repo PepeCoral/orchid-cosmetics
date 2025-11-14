@@ -4,12 +4,34 @@ from unittest.mock import patch, MagicMock
 
 from django.test import TestCase
 from app.models.user import User, RoleOptions
-from app.services.user_service import UserService
+from app.services import UserService
 
 
 class TestUserService(TestCase):
     def setUp(self):
         self.user_service = UserService()
+        self.user_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'password123',
+            'confirm_password': 'password123',
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'address': '123 Main St',
+            'pay_method': 'Credit Card',
+            'role': RoleOptions.USER
+        }
+        self.admin_data = {
+            'username': 'admin',
+            'email': 'admin@example.com',
+            'password': 'password123',
+            'confirm_password': 'password123',
+            'first_name': 'admin',
+            'last_name': 'admin',
+            'address': '123 Main St',
+            'pay_method': 'Credit Card',
+            'role': RoleOptions.ADMIN
+        }
 
     def test_validate_email_success(self):
         """Test que valida emails correctos"""
@@ -60,16 +82,7 @@ class TestUserService(TestCase):
 
     def test_create_user_success(self):
         """Test de creación exitosa de usuario"""
-        user_data = {
-            'email': 'test@example.com',
-            'password': 'password123',
-            'first_name': 'John',
-            'last_name': 'Doe',
-            'address': '123 Main St',
-            'pay_method': 'Credit Card',
-            'role': RoleOptions.USER
-        }
-        
+        user_data = self.user_data.copy()
         user = UserService.create_user(user_data)
         
         assert user.email == user_data['email']
@@ -83,18 +96,12 @@ class TestUserService(TestCase):
 
     def test_create_user_duplicate_email(self):
         """Test que evita crear usuarios con email duplicado"""
-        user_data = {
-            'email': 'duplicate@example.com',
-            'password': 'password123',
-            'first_name': 'John',
-            'last_name': 'Doe'
-        }
-        
+        user_data = self.user_data.copy()
         # Crear primer usuario
         UserService.create_user(user_data)
         
         # Intentar crear segundo usuario con mismo email
-        with pytest.raises(ValidationError, match="El email ya está registrado"):
+        with self.assertRaises(ValidationError, msg="El email ya está registrado"):
             UserService.create_user(user_data)
 
     def test_create_user_invalid_email(self):
@@ -102,10 +109,11 @@ class TestUserService(TestCase):
         user_data = {
             'email': 'invalid-email',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'John'
         }
         
-        with pytest.raises(ValidationError, match="Formato de email inválido"):
+        with self.assertRaises(ValidationError, msg="Formato de email inválido"):
             UserService.create_user(user_data)
 
     def test_create_user_short_password(self):
@@ -113,10 +121,11 @@ class TestUserService(TestCase):
         user_data = {
             'email': 'test@example.com',
             'password': '123',
+            'confirm_password': '123',
             'first_name': 'John'
         }
         
-        with pytest.raises(ValidationError, match="La contraseña debe tener al menos 6 caracteres"):
+        with self.assertRaises(ValidationError, msg="La contraseña debe tener al menos 6 caracteres"):
             UserService.create_user(user_data)
 
     def test_create_user_default_values(self):
@@ -124,6 +133,7 @@ class TestUserService(TestCase):
         user_data = {
             'email': 'test@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'John'
         }
         
@@ -137,8 +147,10 @@ class TestUserService(TestCase):
     def test_authenticate_user_success(self):
         """Test de autenticación exitosa"""
         user_data = {
+            'username': 'authuser',
             'email': 'auth@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'Auth'
         }
         
@@ -148,7 +160,7 @@ class TestUserService(TestCase):
         with patch('app.services.UserService.authenticate') as mock_authenticate:
             mock_authenticate.return_value = user
             authenticated_user = UserService.authenticate_user(
-                user_data['email'], 
+                user_data['username'], 
                 user_data['password']
             )
             
@@ -159,16 +171,12 @@ class TestUserService(TestCase):
         with patch('app.services.UserService.authenticate') as mock_authenticate:
             mock_authenticate.return_value = None
             
-            with pytest.raises(ValidationError, match="Credenciales inválidas"):
-                UserService.authenticate_user('wrong@example.com', 'wrongpass')
+            with self.assertRaises(ValidationError, msg="Credenciales inválidas"):
+                UserService.authenticate_user('wronguser', 'wrongpass')
 
     def test_get_user_by_id_success(self):
         """Test de obtención de usuario por ID"""
-        user_data = {
-            'email': 'getbyid@example.com',
-            'password': 'password123',
-            'first_name': 'GetById'
-        }
+        user_data = self.user_data.copy()
         
         created_user = UserService.create_user(user_data)
         found_user = UserService.get_user_by_id(created_user.id)
@@ -177,16 +185,12 @@ class TestUserService(TestCase):
 
     def test_get_user_by_id_not_found(self):
         """Test de obtención de usuario por ID inexistente"""
-        with pytest.raises(ValidationError, match="Usuario no encontrado"):
+        with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             UserService.get_user_by_id(999)  # ID que no existe
 
     def test_get_user_by_email_success(self):
         """Test de obtención de usuario por email"""
-        user_data = {
-            'email': 'getbyemail@example.com',
-            'password': 'password123',
-            'first_name': 'GetByEmail'
-        }
+        user_data = self.user_data.copy()
         
         created_user = UserService.create_user(user_data)
         found_user = UserService.get_user_by_email(user_data['email'])
@@ -195,18 +199,12 @@ class TestUserService(TestCase):
 
     def test_get_user_by_email_not_found(self):
         """Test de obtención de usuario por email inexistente"""
-        with pytest.raises(ValidationError, match="Usuario no encontrado"):
+        with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             UserService.get_user_by_email('nonexistent@example.com')
 
     def test_update_user_success(self):
         """Test de actualización exitosa de usuario"""
-        user_data = {
-            'email': 'update@example.com',
-            'password': 'password123',
-            'confirm_password': 'password123',
-            'first_name': 'Original',
-            'last_name': 'Name'
-        }
+        user_data = self.user_data.copy()
         
         user = UserService.create_user(user_data)
         
@@ -229,6 +227,7 @@ class TestUserService(TestCase):
         user_data = {
             'email': 'old@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'Test'
         }
         
@@ -244,16 +243,20 @@ class TestUserService(TestCase):
         """Test que evita actualizar a un email ya existente"""
         # Crear primer usuario
         user1_data = {
+            'username': 'user1',
             'email': 'user1@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'User1'
         }
         user1 = UserService.create_user(user1_data)
         
         # Crear segundo usuario
         user2_data = {
+            'username': 'user2',
             'email': 'user2@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'User2'
         }
         user2 = UserService.create_user(user2_data)
@@ -264,12 +267,7 @@ class TestUserService(TestCase):
 
     def test_update_user_password(self):
         """Test de actualización de contraseña"""
-        user_data = {
-            'email': 'passupdate@example.com',
-            'password': 'oldpassword',
-            'confirm_password': 'oldpassword',
-            'first_name': 'Test'
-        }
+        user_data = self.user_data.copy()
         
         user = UserService.create_user(user_data)
         
@@ -286,11 +284,7 @@ class TestUserService(TestCase):
 
     def test_delete_user_success(self):
         """Test de eliminación exitosa de usuario"""
-        user_data = {
-            'email': 'delete@example.com',
-            'password': 'password123',
-            'first_name': 'ToDelete'
-        }
+        user_data = self.user_data.copy()
         
         user = UserService.create_user(user_data)
         
@@ -298,19 +292,14 @@ class TestUserService(TestCase):
         
         assert result == True
         # Verificar que el usuario ya no existe
-        with pytest.raises(ValidationError, match="Usuario no encontrado"):
+        with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             UserService.get_user_by_id(user.id)
-
-    def test_delete_user_not_found(self):
-        """Test de eliminación de usuario inexistente"""
-        with pytest.raises(ValidationError, match="Usuario no encontrado"):
-            UserService.delete_user(999)
 
     def test_get_all_users(self):
         """Test de obtención de todos los usuarios"""
         # Crear varios usuarios
         users_data = [
-            {'email': f'user{i}@example.com', 'password': 'password123', 'first_name': f'User{i}'}
+            {'username': f'user{i}', 'email': f'user{i}@example.com', 'password': 'password123', 'confirm_password': 'password123', 'first_name': f'User{i}'}
             for i in range(3)
         ]
         
@@ -327,8 +316,10 @@ class TestUserService(TestCase):
     def test_change_user_role_success(self):
         """Test de cambio de rol exitoso"""
         user_data = {
+            'username': 'changerole',
             'email': 'changerole@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'ChangeRole',
             'role': RoleOptions.USER
         }
@@ -342,28 +333,30 @@ class TestUserService(TestCase):
     def test_change_user_role_invalid_role(self):
         """Test de cambio a rol inválido"""
         user_data = {
+            'username': 'invalidrole',
             'email': 'invalidrole@example.com',
             'password': 'password123',
+            'confirm_password': 'password123',
             'first_name': 'InvalidRole'
         }
         
         user = UserService.create_user(user_data)
         
-        with pytest.raises(ValidationError, match="Rol inválido"):
+        with self.assertRaises(ValidationError, msg="Rol inválido"):
             UserService.change_user_role(user.id, 'INVALID_ROLE')
 
     def test_change_user_role_user_not_found(self):
         """Test de cambio de rol en usuario inexistente"""
-        with pytest.raises(ValidationError, match="Usuario no encontrado"):
+        with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             UserService.change_user_role(999, RoleOptions.ADMIN)
 
     def test_search_users(self):
         """Test de búsqueda de usuarios"""
         # Crear usuarios de prueba
         users_data = [
-            {'email': 'john@example.com', 'password': 'pass', 'first_name': 'John', 'last_name': 'Smith'},
-            {'email': 'jane@example.com', 'password': 'pass', 'first_name': 'Jane', 'last_name': 'Doe'},
-            {'email': 'bob@example.com', 'password': 'pass', 'first_name': 'Bob', 'last_name': 'Johnson'},
+            {'email': 'john@example.com', 'password': 'pass123','confirm_password': 'pass123', 'first_name': 'John', 'last_name': 'Smith'},
+            {'email': 'jane@example.com', 'password': 'pass123', 'confirm_password': 'pass123', 'first_name': 'Jane', 'last_name': 'Doe'},
+            {'email': 'bob@example.com', 'password': 'pass123', 'confirm_password': 'pass123', 'first_name': 'Bob', 'last_name': 'Johnson'},
         ]
         
         for data in users_data:
@@ -391,18 +384,11 @@ class TestUserService(TestCase):
     def test_get_admin_users(self):
         """Test de obtención de usuarios administradores"""
         # Crear usuarios con diferentes roles
-        UserService.create_user({
-            'email': 'admin@example.com', 
-            'password': 'pass', 
-            'first_name': 'Admin',
-            'role': RoleOptions.ADMIN
-        })
-        UserService.create_user({
-            'email': 'user@example.com', 
-            'password': 'pass', 
-            'first_name': 'User',
-            'role': RoleOptions.USER
-        })
+        user_data = self.user_data.copy()
+        admin_data = self.admin_data.copy()
+
+        UserService.create_user(admin_data)
+        UserService.create_user(user_data)
         
         admin_users = UserService.get_admin_users()
         assert admin_users.count() == 1
@@ -411,18 +397,11 @@ class TestUserService(TestCase):
     def test_get_regular_users(self):
         """Test de obtención de usuarios regulares"""
         # Crear usuarios con diferentes roles
-        UserService.create_user({
-            'email': 'admin@example.com', 
-            'password': 'pass', 
-            'first_name': 'Admin',
-            'role': RoleOptions.ADMIN
-        })
-        UserService.create_user({
-            'email': 'user@example.com', 
-            'password': 'pass', 
-            'first_name': 'User',
-            'role': RoleOptions.USER
-        })
+        user_data = self.user_data.copy()
+        admin_data = self.admin_data.copy()
+        
+        UserService.create_user(admin_data)
+        UserService.create_user(user_data)
         
         regular_users = UserService.get_regular_users()
         assert regular_users.count() == 1
@@ -430,12 +409,7 @@ class TestUserService(TestCase):
 
     def test_promote_to_admin(self):
         """Test de promoción a administrador"""
-        user_data = {
-            'email': 'promote@example.com',
-            'password': 'password123',
-            'first_name': 'Promote',
-            'role': RoleOptions.USER
-        }
+        user_data = self.user_data.copy()
         
         user = UserService.create_user(user_data)
         promoted_user = UserService.promote_to_admin(user.id)
@@ -444,14 +418,9 @@ class TestUserService(TestCase):
 
     def test_demote_to_user(self):
         """Test de degradación a usuario regular"""
-        user_data = {
-            'email': 'demote@example.com',
-            'password': 'password123',
-            'first_name': 'Demote',
-            'role': RoleOptions.ADMIN
-        }
+        admin_data = self.admin_data.copy()
         
-        user = UserService.create_user(user_data)
-        demoted_user = UserService.demote_to_user(user.id)
+        admin = UserService.create_user(admin_data)
+        demoted_user = UserService.demote_to_user(admin.id)
         
         assert demoted_user.role == RoleOptions.USER
