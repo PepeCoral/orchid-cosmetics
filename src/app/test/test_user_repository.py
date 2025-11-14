@@ -1,4 +1,4 @@
-from app.models.user import User
+from app.models.user import User, RoleOptions
 from app.repositories.user_repository import UserRepository
 from django.test import TestCase
 
@@ -17,14 +17,14 @@ class TestUserRepository(TestCase):
             last_name="gomez",
             address="456 Elm St",
             pay_method="credit card",
-            role=User.RoleOptions.ADMIN
+            role=RoleOptions.ADMIN
         )
         self.assertIsNotNone(user.id)
         self.assertEqual(user.username, "sofia")
         self.assertEqual(user.last_name, "gomez")
         self.assertEqual(user.address, "456 Elm St")
         self.assertEqual(user.pay_method, "credit card")
-        self.assertEqual(user.role, User.RoleOptions.ADMIN)
+        self.assertEqual(user.role, RoleOptions.ADMIN)
         
     def test_get_all_users(self):
         User.objects.create(username="maria")
@@ -50,8 +50,8 @@ class TestUserRepository(TestCase):
 
 
     def test_user_is_admin(self):
-        user1 = User.objects.create(username="admin_user", role=User.RoleOptions.ADMIN)
-        user2 = User.objects.create(username="normal_user", role=User.RoleOptions.USER)
+        user1 = User.objects.create(username="admin_user", role=RoleOptions.ADMIN)
+        user2 = User.objects.create(username="normal_user", role=RoleOptions.USER)
         self.assertTrue(user1.is_admin())
         self.assertFalse(user2.is_admin())
 

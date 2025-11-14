@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
+class RoleOptions(models.TextChoices):
+        USER = 'User'
+        ADMIN = 'Admin'
 
 
 class User(AbstractUser):
-    class RoleOptions(models.TextChoices):
-        USER = 'User'
-        ADMIN = 'Admin'
+    
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, blank=True)
@@ -16,7 +16,9 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=RoleOptions.choices, default=RoleOptions.USER)
     
     def __str__(self):
-        return f"{self.username} {self.last_name} - {self.email}"
-
+        return f"{self.first_name} {self.last_name} - {self.email}"
+    
     def is_admin(self):
-        return self.role == User.RoleOptions.ADMIN
+        return self.role == RoleOptions.ADMIN
+
+
