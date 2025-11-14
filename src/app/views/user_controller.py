@@ -14,10 +14,6 @@ def profile(request):
     items = User.objects.all()
     return render(request, "profile.html", {'users': items})
 
-def is_admin(user: User):
-    """Verifica si el usuario es administrador"""
-    return user.is_admin()
-
 def register_page(request):
     """Renderiza la página de registro"""
     return render(request, "register.html")
