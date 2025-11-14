@@ -40,13 +40,13 @@ class UserService:
             print("creando usuario")
             # Crear usuario usando el método create_user de AbstractUser
             user = User.objects.create_user(
-                username=user_data['email'],  # Usar email como username
+                username=user_data['username'],  
                 email=user_data['email'],
                 password=user_data['password'],
                 first_name=user_data['first_name'],
-                last_name=user_data.get('last_name', ''),
-                address=user_data.get('address', ''),
-                pay_method=user_data.get('pay_method', ''),
+                last_name=user_data.get('last_name'),
+                address=user_data.get('address', None),
+                pay_method=user_data.get('pay_method', None),
                 role=user_data.get('role', RoleOptions.USER)
             )
             
@@ -81,6 +81,12 @@ class UserService:
             return User.objects.get(email=email)
         except User.DoesNotExist:
             raise ValidationError("Usuario no encontrado")
+        
+    def get_user_by_username(username: str) -> User | None:
+        try:
+            return User.objects.get(username__exact=username)
+        except User.DoesNotExist:
+            return None
     
     @staticmethod
     def update_user(user_id, update_data):

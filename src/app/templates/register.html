@@ -6,77 +6,85 @@
   <div class="card shadow-sm">
     <div class="card-body">
       <h3 class="text-center mb-4">Crear Cuenta</h3>
-
+     
       <form method="POST" action="{% url 'register' %}">
         {% csrf_token %}
         <div class="form-group">
-          <label for="first_name">Nombre de usuario</label>
-          <input
-            type="text"
-            class="form-control"
-            id="first_name"
-            name="first_name"
-            placeholder="Añade un nombre"
-            required
-          />
+          <label for="username">{{form.username.label_tag}}</label>
+          {{form.username}}
+          {% if form.username.errors %}
+          <div class="error">
+            {{ form.username.errors }}
+          </div>
+          {% endif %}
+           {% if usernameAlreadyUse %}
+           <div class="error">Username already in use</div>
+          {% endif %}
         </div>
         <div class="form-group">
-          <label for="last_name">Apellido</label>
-          <input
-            type="text"
-            class="form-control"
-            id="last_name"
-            name="last_name"
-            placeholder="Añade un apellido"
-            required
-          />
+          <label for="first_name">{{form.first_name.label_tag}}</label>
+          {{form.first_name}}
+          {% if form.first_name.errors %}
+          <div class="error">
+            {{ form.first_name.errors }}
+          </div>
+          {% endif %}
         </div>
         <div class="form-group">
-          <label for="username">Nombre de usuario</label>
-          <input
-            type="text"
-            class="form-control"
-            id="username"
-            name="username"
-            placeholder="Elige un nombre de usuario"
-            required
-          />
+           <label for="last_name">{{form.last_name.label_tag}}</label>
+          {{form.last_name}}
+          {% if form.last_name.errors %}
+          <div class="error">
+            {{ form.last_name.errors }}
+          </div>
+          {% endif %}
         </div>
 
         <div class="form-group">
-          <label for="email">Correo electrónico</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            name="email"
-            placeholder="Introduce tu correo"
-            required
-          />
+          <label for="email">{{form.email.label_tag}}</label>
+          {{form.email}}
+          {% if form.email.errors %}
+          <div class="error">
+            {{ form.email.errors }}
+          </div>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="address">{{form.address.label_tag}}</label>
+          {{form.address}}
+          {% if form.address.errors %}
+          <div class="error">
+            {{ form.address.errors }}
+          </div>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="pay_method">{{form.pay_method.label_tag}}</label>
+          {{form.pay_method}}
+          {% if form.pay_method.errors %}
+          <div class="error">
+            {{ form.pay_method.errors }}
+          </div>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="password">{{form.password.label_tag}}</label>
+          {{form.password}}
+          {% if form.password.errors %}
+          <div class="error">
+            {{ form.password.errors }}
+          </div>
+          {% endif %}
         </div>
 
         <div class="form-group">
-          <label for="password">Contraseña</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-            placeholder="Crea una contraseña"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="confirm_password">Repetir contraseña</label>
-          <input
-            type="password"
-            class="form-control"
-            id="confirm_password"
-            name="confirm_password"
-            placeholder="Confirma la contraseña"
-            required
-          />
+          <label for="confirm_password">{{form.confirm_password.label_tag}}</label>
+          {{form.confirm_password}}
+          {% if form.confirm_password.errors %}
+          <div class="error">
+            {{ form.confirm_password.errors }}
+          </div>
+          {% endif %}
         </div>
 
         <button type="submit" class="btn btn-success btn-block mt-3">

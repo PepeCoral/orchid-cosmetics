@@ -18,7 +18,9 @@
           <label for="password">{{form.password.label_tag}}</input></label>
           {{form.password}}
         </div>
-
+        {% if form.errors %}
+          <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
         <button type="submit" class="btn btn-primary btn-block mt-3">
           Iniciar sesión
         </button>

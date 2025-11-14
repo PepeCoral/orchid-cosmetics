@@ -12,22 +12,6 @@ urlpatterns = [
     path("logout/", views.logout, name='logout'),
     path("register/", views.user_controller.register, name="register"),
     
-    # Autenticación API (JSON)
-    path('api/auth/register/', views.register, name='api_register'),
-    path('api/auth/login/', views.login, name='api_login'),
-    path('api/auth/logout/', views.logout, name='api_logout'),
-    path('api/auth/check-auth/', views.check_auth, name='check_auth'),
-    
-    # Perfil de usuario API
-    path('api/profile/', views.profile_api, name='profile_api'),
-    path('api/profile/update/', views.update_profile, name='update_profile'),
-    
-    # Gestión de usuarios (solo admin)
-    path('api/users/', views.list_users, name='list_users'),
-    path('api/users/<int:user_id>/', views.get_user, name='get_user'),
-    path('api/users/<int:user_id>/update/', views.update_user, name='update_user'),
-    path('api/users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
-    path('api/users/<int:user_id>/change-role/', views.change_role, name='change_role'),
 
     # CRUD básico
     path('services/', views.list_services, name='list_services'),
