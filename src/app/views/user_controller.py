@@ -20,18 +20,15 @@ def register(request):
     """Registro de nuevo usuario"""
     if( request.method == "GET"):
         return render(request, "register.html")
+
     try:
-        # Obtener datos del request
         if request.content_type == 'application/json':
             data = json.loads(request.body)
         else:
             data = request.POST.dict()
 
-        # Crear usuario
-        print(data)
         user = UserService.create_user(data)
-        print("user",user)
-        # Auto-login después del registro (opcional)
+
         if request.user.is_authenticated:
             auth_logout(request)
         auth_login(request, user)
@@ -39,7 +36,6 @@ def register(request):
         return redirect("/")
 
     except ValidationError as e:
-        # Puedes mostrar errores en pantalla usando mensajes
         return render(request, "signup.html", {"error": str(e)})
 
     except Exception as e:
