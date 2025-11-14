@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from unittest.mock import patch, MagicMock
 from app.models import Service, Category
 from app.views import *
+from app.services import user_service, service_service
 from app.views.service_controller import create_service, delete_service, get_popular_services, get_service, get_services_by_category, get_services_by_department, get_services_by_duration, get_services_by_price_range, get_services_sorted_by_duration, get_services_sorted_by_price, list_services, search_services, service_categories_overview, update_service
 
 
@@ -284,7 +285,7 @@ class TestServiceController(TestCase):
             content_type='application/json'
         )
         
-        response = update_service(request, 1)
+        response = service_service.update_service(request, 1)
         
         assert response.status_code == 400
         response_data = json.loads(response.content)
