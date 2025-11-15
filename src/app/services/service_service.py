@@ -16,19 +16,18 @@ class ServiceService():
         try:
 
             files = request.FILES
-
             service = Service(
                 name=service_data['name'],
                 description=service_data['description'],
                 price=service_data['price'],
                 duration_minutes=service_data['duration_minutes'],
                 department=service_data['department'],
-                image_url=files.get('image_url')
+                image_url=files.get('image')
             )
-            
             service.save()
             if 'categories' in service_data:
                 service.categories.set(service_data['categories'])
+
             return service
             
         except ValidationError:

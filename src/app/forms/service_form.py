@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from app.models import User
+from app.models import Category
 from django.core.validators import MaxLengthValidator,URLValidator, MinLengthValidator, DecimalValidator
 
 
@@ -12,7 +12,10 @@ class ServiceForm(forms.Form):
     duration_minutes = forms.IntegerField(label="Duracion", required=True)
     department = forms.CharField(label="Departamento",validators=[MaxLengthValidator(200,"Departament too long")],required=False)
     image = forms.ImageField(label="Imagen del servicio",required=False)
-    category = forms.CharField(label="Introduzca una categoria", required=False)
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(),
+                                      widget=forms.SelectMultiple,
+                                      required=False,
+                                      label="Categorias")
     
     def clean(self):
         cleaned_data = super().clean()

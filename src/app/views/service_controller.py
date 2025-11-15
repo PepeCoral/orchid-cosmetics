@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 import json
+from app.services.category_service import CategoryService
 from app.services.service_service import ServiceService
 from app.forms.service_form import ServiceForm
 from django.shortcuts import redirect, render
@@ -16,6 +17,7 @@ def create_service(request):
     if request.method == 'POST':
         form = ServiceForm(request.POST, request.FILES)
         if form.is_valid():
+            print(form.cleaned_data)
             ServiceService.create_service(request,form.cleaned_data)
             return redirect("/services", "service/list.html")
         else:
@@ -28,7 +30,8 @@ def create_service(request):
 def get_service(request, service_id):
     """Obtener un servicio por ID"""
     service = ServiceService.get_service_by_id(service_id)
-    return render(request, "services/detail.html", {"servicio":service})
+    categories = service.categories.all()
+    return render(request, "services/detail.html", {"servicio":service, "categories": categories})
 
 @require_http_methods(["GET"])
 def list_services(request):

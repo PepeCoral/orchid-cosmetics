@@ -16,7 +16,7 @@ class ProductService():
             price=product_data['price'],
             stock=product_data['stock'],
             fabricator=product_data['fabricator'],
-            image_url=files.get('image_url')
+            image_url=files.get('image')
         )
         product.save()
 

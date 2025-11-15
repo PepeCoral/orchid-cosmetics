@@ -17,7 +17,12 @@
     <p><strong>Duración:</strong> {{ servicio.duration_minutes }}</p>
     <p><strong>Departamento:</strong> {{ servicio.department }}</p>
     <p><strong>Imagen:</strong> {{ servicio.image_url }}</p>
-    <p><strong>Categoría:</strong> {{ servicio.category }}</p>
+    <p><strong>Categorias:</strong>
+        {% for cat in categories %}
+            <p>{{ cat }}</p>
+        {% endfor %}
+    </p>
+    
 
 </div>
 

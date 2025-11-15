@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from django import forms
+from app.models.category import Category
 from django.core.validators import MaxLengthValidator,URLValidator, MinLengthValidator, DecimalValidator
 
 
@@ -11,7 +12,10 @@ class ProductForm(forms.Form):
     stock = forms.IntegerField(label="Stock", required=True)
     fabricator = forms.CharField(label="Fabricante",validators=[MaxLengthValidator(200,"Fabricator too long")],required=False)
     image = forms.ImageField(label="Imagen del producto",required=False)
-    category = forms.CharField(label="Introduzca una categoria", required=False)
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(),
+                                      widget=forms.SelectMultiple,
+                                      required=False,
+                                      label="Categorias")
     
     def clean(self):
         cleaned_data = super().clean()

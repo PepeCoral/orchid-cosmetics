@@ -13,21 +13,6 @@ class UserService():
         self.repository = UserRepository()
     
     @staticmethod
-    def validate_email(email):
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(pattern, email):
-            raise ValidationError("Formato de email inválido")
-        return True
-    
-    @staticmethod
-    def validate_password(password, confirm_password):
-        if len(password) < 6:
-            raise ValidationError("La contraseña debe tener al menos 6 caracteres")
-        if password != confirm_password:
-            raise ValidationError("Las contraseñas no coinciden")
-        return True
-    
-    @staticmethod
     def create_user(user_data):
         try:
             # Validaciones básicas

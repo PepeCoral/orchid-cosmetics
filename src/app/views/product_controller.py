@@ -29,8 +29,8 @@ def create_product(request):
 def get_product(request, product_id):
     """Obtener un servicio por ID"""
     product = product_serv.get_product_by_id(product_id)
-    print(product)
-    return render(request, "product/detail.html", {"producto":product})
+    categories = product.categories.all()
+    return render(request, "product/detail.html", {"producto":product, "categories":categories})
 
 @require_http_methods(["GET"])
 def list_products(request):

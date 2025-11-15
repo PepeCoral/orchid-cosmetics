@@ -16,7 +16,11 @@
     <p><strong>Precio:</strong> {{ producto.price }}</p>
     <p><strong>Stock:</strong> {{ producto.stock }}</p>
     <p><strong>Fabricante:</strong> {{ producto.fabricator }}</p>
-    <p><strong>Categoría:</strong> {{ producto.category }}</p>
+    <p><strong>Categorias:</strong>
+        {% for cat in categories %}
+            <p>{{ cat }}</p>
+        {% endfor %}
+    </p>
 
 </div>
 

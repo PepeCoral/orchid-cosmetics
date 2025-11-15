@@ -1,5 +1,5 @@
 from django.db import models 
-from .category import Category
+from app.models.category import Category
 from .order import Order
 from django.core.validators import MinValueValidator
 
@@ -16,6 +16,8 @@ class Service(models.Model):
     def __str__(self):
         return self.name
     
+    def set_category(self, category):
+        self.categories.add(category)
 
 class ServiceQuantity(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)

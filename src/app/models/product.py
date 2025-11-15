@@ -1,6 +1,6 @@
 from django.db import models
-from .category import Category
-from .order import Order
+from app.models.category import Category
+from app.models.order import Order
 from django.core.validators import MinValueValidator
 
 class Product(models.Model):
