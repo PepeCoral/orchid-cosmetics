@@ -8,6 +8,6 @@ from .user_controller import (
 from .service_controller import (
     create_service, get_service, list_services
 )
-from .product_controllers.py import (
+from .product_controller import (
     create_product, get_product, list_products
 )

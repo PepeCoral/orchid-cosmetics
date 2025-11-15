@@ -1,5 +1,6 @@
 from app.repositories.product_repository import ProductRepository
 from django.core.exceptions import ValidationError
+from app.models import Product
 
 class ProductService():
     def __init__(self):
@@ -9,7 +10,14 @@ class ProductService():
         # 🔹 Regla de negocio: no se permiten nombres duplicados
         files = request.FILES
 
-        product = self.repository.create(product_data)
+        product = Product(
+            name=product_data['name'],
+            description=product_data['description'],
+            price=product_data['price'],
+            stock=product_data['stock'],
+            fabricator=product_data['fabricator'],
+            image_url=files.get('image_url')
+        )
         product.save()
 
         if 'categories' in product_data:

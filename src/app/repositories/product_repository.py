@@ -7,3 +7,4 @@ class ProductRepository(BaseRepository):
 
     def get_products_by_category(self, category_id):
         return self.model.objects.filter(category_id=category_id)
+    
