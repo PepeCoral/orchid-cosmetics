@@ -11,3 +11,6 @@ from .service_controller import (
 from .product_controller import (
     create_product, get_product, list_products
 )
+from .category_controllers import (
+    create_category,list_categories
+)

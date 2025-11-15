@@ -17,22 +17,22 @@ def create_service(request):
         form = ServiceForm(request.POST, request.FILES)
         if form.is_valid():
             ServiceService.create_service(request,form.cleaned_data)
-            return redirect("/services", "service.html")
+            return redirect("/services", "service/list.html")
         else:
-            return render(request, "createservice.html", {"form": form})
+            return render(request, "services/create.html", {"form": form})
     
     form = ServiceForm()
-    return render(request,"createservice.html", context={"form":form})
+    return render(request,"services/create.html", context={"form":form})
 
 @require_http_methods(["GET"])
 def get_service(request, service_id):
     """Obtener un servicio por ID"""
     service = ServiceService.get_service_by_id(service_id)
-    return render(request, "detailservices.html", {"servicio":service})
+    return render(request, "services/detail.html", {"servicio":service})
 
 @require_http_methods(["GET"])
 def list_services(request):
     """Listar todos los servicios"""
     services = ServiceService.get_all_services()
-    return render(request, "services.html", {"servicios": services})
+    return render(request, "services/list.html", {"servicios": services})
     

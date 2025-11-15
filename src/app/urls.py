@@ -21,6 +21,9 @@ urlpatterns = [
     path('products/', views.list_products, name='list_products'),
     path('products/create/', views.create_product, name='create_product'),
     path('products/<int:product_id>/', views.get_product, name='get_product'),
+
+    path('categories/',views.list_categories, name='list_categories'),
+    path('categories/create/',views.create_category, name='create_category')
     # path('services/<int:service_id>/update/', views.update_service, name='update_service'),
     # path('services/<int:service_id>/delete/', views.delete_service, name='delete_service'),
     

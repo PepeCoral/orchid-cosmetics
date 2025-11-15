@@ -18,9 +18,9 @@ def create_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product_serv.create_product(request,form.cleaned_data)
-            return redirect("/products", "products.html")
+            return redirect("/products", "product/list.html")
         else:
-            return render(request, "createproduct.html", {"form": form})
+            return render(request, "product/create.html", {"form": form})
     
     form = ProductForm()
     return render(request,"product/create.html", context={"form":form})
