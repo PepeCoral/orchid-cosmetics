@@ -70,14 +70,13 @@ class ServiceService():
             raise ValidationError(errors)
         
     @staticmethod
-    def create_service(service_data):
+    def create_service(request,service_data):
         """
         Crea un nuevo servicio
         """
         try:
-            
-            if(service_data['image_url'] == None):
-                service_data['image_url'] = ""
+
+            files = request.FILES
 
             service = Service(
                 name=service_data['name'],
@@ -85,11 +84,12 @@ class ServiceService():
                 price=service_data['price'],
                 duration_minutes=service_data['duration_minutes'],
                 department=service_data['department'],
-                image_url=service_data.get('image_url'),
-                category_id=service_data.get('category')
+                image_url=files.get('image_url')
             )
             
             service.save()
+            if 'categories' in service_data:
+                service.categories.set(service_data['categories'])
             return service
             
         except ValidationError:
@@ -112,7 +112,7 @@ class ServiceService():
         """
         Obtiene todos los servicios con sus categorías
         """
-        return Service.objects.all().select_related('category')
+        return Service.objects.all().prefetch_related('categories')
     
     @staticmethod
     def get_services_by_category(category_id):
@@ -121,7 +121,7 @@ class ServiceService():
         """
         try:
             category = Category.objects.get(id=category_id)
-            return Service.objects.filter(category=category).select_related('category')
+            return Service.objects.filter(category=category).prefetch_related('categories')
         except Category.DoesNotExist:
             raise ValidationError("Categoría no encontrada")
     
@@ -130,7 +130,7 @@ class ServiceService():
         """
         Obtiene servicios por departamento (case-insensitive)
         """
-        return Service.objects.filter(department__iexact=department).select_related('category')
+        return Service.objects.filter(department__iexact=department).prefetch_related('categories')
     
     @staticmethod
     def update_service(service_id, update_data):
@@ -203,7 +203,7 @@ class ServiceService():
             Q(name__icontains=search_term) |
             Q(description__icontains=search_term) |
             Q(department__icontains=search_term)
-        ).select_related('category')
+        ).prefetch_related('categories')
     
     @staticmethod
     def get_services_by_price_range(min_price, max_price):
@@ -216,7 +216,7 @@ class ServiceService():
         return Service.objects.filter(
             price__gte=min_price,
             price__lte=max_price
-        ).select_related('category').order_by('price')
+        ).prefetch_related('categories').order_by('price')
     
     @staticmethod
     def get_services_by_duration(max_duration):
@@ -225,21 +225,21 @@ class ServiceService():
         """
         return Service.objects.filter(
             duration_minutes__lte=max_duration
-        ).select_related('category').order_by('duration_minutes')
+        ).prefetch_related('categories').order_by('duration_minutes')
     
     @staticmethod
     def get_popular_services(limit=10):
         """
         Obtiene servicios populares (puedes personalizar la lógica de popularidad)
         """
-        return Service.objects.all().select_related('category')[:limit]
+        return Service.objects.all().prefetch_related('categories')[:limit]
     
     @staticmethod
     def get_services_with_category():
         """
         Obtiene todos los servicios que tienen categoría asignada
         """
-        return Service.objects.filter(category__isnull=False).select_related('category')
+        return Service.objects.filter(category__isnull=False).prefetch_related('categories')
     
     @staticmethod
     def get_services_without_category():
@@ -253,7 +253,7 @@ class ServiceService():
         """
         Obtiene servicios por una lista de IDs
         """
-        return Service.objects.filter(id__in=service_ids).select_related('category')
+        return Service.objects.filter(id__in=service_ids).prefetch_related('categories')
     
     @staticmethod
     def get_service_count_by_department():
@@ -268,7 +268,7 @@ class ServiceService():
         Obtiene servicios ordenados por precio
         """
         order_by = 'price' if ascending else '-price'
-        return Service.objects.all().select_related('category').order_by(order_by)
+        return Service.objects.all().prefetch_related('categories').order_by(order_by)
     
     @staticmethod
     def get_services_sorted_by_duration(ascending=True):
@@ -276,4 +276,4 @@ class ServiceService():
         Obtiene servicios ordenados por duración
         """
         order_by = 'duration_minutes' if ascending else '-duration_minutes'
-        return Service.objects.all().select_related('category').order_by(order_by)
+        return Service.objects.all().prefetch_related('categories').order_by(order_by)

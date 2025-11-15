@@ -16,7 +16,7 @@ def create_service(request):
     if request.method == 'POST':
         form = ServiceForm(request.POST, request.FILES)
         if form.is_valid():
-            ServiceService.create_service(form.cleaned_data)
+            ServiceService.create_service(request,form.cleaned_data)
             return redirect("/services", "service.html")
         else:
             return render(request, "createservice.html", {"form": form})
