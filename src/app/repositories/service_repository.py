@@ -5,8 +5,6 @@ class ServiceRepository(BaseRepository):
     def __init__(self):
         super().__init__(Service)
 
-    # Ejemplo de métodos personalizados
-
     def get_services_by_category_name(self, category_name:str):
         return self.model.objects.filter(categories__iexact=category_name)
     
