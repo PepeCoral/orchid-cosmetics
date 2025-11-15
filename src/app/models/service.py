@@ -1,26 +1,25 @@
 from django.db import models 
 from .category import Category
 from .order import Order
+from django.core.validators import MinValueValidator
 
 class Service(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    duration_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.0)])
+    duration_minutes = models.IntegerField(validators=[MinValueValidator(0)])
     department = models.CharField(max_length=100)
     image_url = models.ImageField(upload_to='services/',blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, 
-                                 related_name="category_services", null=True)
+    categories = models.ManyToManyField(Category)
+
 
     def __str__(self):
         return self.name
     
 
 class ServiceQuantity(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, 
-                                related_name="service_id")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, 
-                              related_name="service_order_id")
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
     def __str__(self):
