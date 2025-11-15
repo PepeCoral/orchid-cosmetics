@@ -8,7 +8,7 @@ class Service(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     duration_minutes = models.IntegerField()
     department = models.CharField(max_length=100)
-    image_url = models.URLField(blank=True)
+    image_url = models.URLField(null=True)
     categories = models.ManyToManyField(Category)
 
 
