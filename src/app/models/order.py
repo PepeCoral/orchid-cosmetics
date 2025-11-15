@@ -17,6 +17,9 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=StatusOptions.choices, default=StatusOptions.PENDING)
     delivery_method = models.CharField(max_length=50)
     identifier = models.CharField(max_length=100, unique=True)
+    products = models.ManyToManyField("Product", through="ProductQuantity")
+    services = models.ManyToManyField("Service", through="ServiceQuantity")
+
 
     def __str__(self):
         return f"Order {self.identifier} by {self.user.username}"

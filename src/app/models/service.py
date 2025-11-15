@@ -9,18 +9,16 @@ class Service(models.Model):
     duration_minutes = models.IntegerField()
     department = models.CharField(max_length=100)
     image_url = models.URLField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, 
-                                 related_name="category_services", null=True)
+    categories = models.ManyToManyField(Category)
+
 
     def __str__(self):
         return self.name
     
 
 class ServiceQuantity(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, 
-                                related_name="service_id")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, 
-                              related_name="service_order_id")
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
     def __str__(self):

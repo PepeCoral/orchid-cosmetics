@@ -9,17 +9,16 @@ class Product(models.Model):
     stock = models.IntegerField()
     fabricator = models.CharField(max_length=100)
     image_url = models.URLField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE,
-                                 related_name="category_products", null=True)
+    categories = models.ManyToManyField(Category)
+
+
 
     def __str__(self):
         return self.name
 
 class ProductQuantity(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,
-                                related_name="product_id")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE,
-                              related_name="product_order_id")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
     def __str__(self):
