@@ -35,3 +35,4 @@ def list_services(request):
     """Listar todos los servicios"""
     services = ServiceService.get_all_services()
     return render(request, "services.html", {"servicios": services})
+    
