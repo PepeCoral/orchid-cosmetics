@@ -9,7 +9,7 @@ class Service(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.0)])
     duration_minutes = models.IntegerField(validators=[MinValueValidator(0)])
     department = models.CharField(max_length=100)
-    image_url = models.ImageField(upload_to='services/',blank=True, null=True)
+    image_url = models.ImageField(upload_to='services/', null=True)
     categories = models.ManyToManyField(Category)
 
 
