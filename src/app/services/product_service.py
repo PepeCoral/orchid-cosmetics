@@ -1,6 +1,4 @@
-# users/services/user_service.py
-
-from users.repositories.product_repository import ProductRepository
+from app.repositories.product_repository import ProductRepository
 from django.core.exceptions import ValidationError
 
 class ProductService():
