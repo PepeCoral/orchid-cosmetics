@@ -75,11 +75,9 @@ class ServiceService():
         Crea un nuevo servicio
         """
         try:
-            ServiceService.validate_service_data(service_data)
-
-            # Verificar si ya existe un servicio con el mismo nombre
-            if Service.objects.filter(name=service_data['name']).exists():
-                raise ValidationError("Ya existe un servicio con este nombre")
+            
+            if(service_data['image_url'] == None):
+                service_data['image_url'] = ""
 
             service = Service(
                 name=service_data['name'],
@@ -87,7 +85,7 @@ class ServiceService():
                 price=service_data['price'],
                 duration_minutes=service_data['duration_minutes'],
                 department=service_data['department'],
-                image_url=service_data.get('image_url', ''),
+                image_url=service_data.get('image_url'),
                 category_id=service_data.get('category')
             )
             

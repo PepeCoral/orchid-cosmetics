@@ -8,7 +8,7 @@ class Service(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     duration_minutes = models.IntegerField()
     department = models.CharField(max_length=100)
-    image_url = models.URLField(blank=True)
+    image_url = models.ImageField(upload_to='services/',blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, 
                                  related_name="category_services", null=True)
 

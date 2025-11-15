@@ -37,7 +37,6 @@ class UserService():
             # Verificar si el email ya existe
             if User.objects.filter(email=user_data['email']).exists():
                 raise ValidationError("El email ya está registrado")
-            print("creando usuario")
             # Crear usuario usando el método create_user de AbstractUser
             user = User.objects.create_user(
                 username=user_data['username'],  
@@ -60,7 +59,6 @@ class UserService():
         try:
             # Usar el sistema de autenticación de Django
             user = authenticate(username=username, password=password)
-            print("autenticando usuario", user)
             if user is None:
                 raise ValidationError("Credenciales inválidas")
             

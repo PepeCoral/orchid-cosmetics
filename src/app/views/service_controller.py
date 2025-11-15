@@ -5,114 +5,37 @@ from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 import json
 from app.services.service_service import ServiceService
-
+from app.forms.service_form import ServiceForm
+from django.shortcuts import redirect, render
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "GET"])
 def create_service(request):
     """Crear un nuevo servicio"""
-    try:
-        # Obtener datos del request
-        if request.content_type == 'application/json':
-            data = json.loads(request.body)
+
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, request.FILES)
+        if form.is_valid():
+            ServiceService.create_service(form.cleaned_data)
+            return redirect("/services", "service.html")
         else:
-            data = request.POST.dict()
-        
-        # Crear servicio
-        service = ServiceService.create_service(data)
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Servicio creado exitosamente',
-            'service': {
-                'id': service.id,
-                'name': service.name,
-                'description': service.description,
-                'price': str(service.price),
-                'duration_minutes': service.duration_minutes,
-                'department': service.department,
-                'image_url': service.image_url,
-                'category_id': service.category_id,
-                'category_name': service.category.name if service.category else None
-            }
-        }, status=201)
-        
-    except ValidationError as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=400)
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': f'Error al crear el servicio: {str(e)}'
-        }, status=500)
+            return render(request, "createservice.html", {"form": form})
+    
+    form = ServiceForm()
+    return render(request,"createservice.html", context={"form":form})
 
 @require_http_methods(["GET"])
 def get_service(request, service_id):
     """Obtener un servicio por ID"""
-    try:
-        service = ServiceService.get_service_by_id(service_id)
-        
-        return JsonResponse({
-            'success': True,
-            'service': {
-                'id': service.id,
-                'name': service.name,
-                'description': service.description,
-                'price': str(service.price),
-                'duration_minutes': service.duration_minutes,
-                'department': service.department,
-                'image_url': service.image_url,
-                'category_id': service.category_id,
-                'category_name': service.category.name if service.category else None,
-                'created_at': service.created_at.isoformat() if hasattr(service, 'created_at') else None
-            }
-        })
-        
-    except ValidationError as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=404)
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
+    service = ServiceService.get_service_by_id(service_id)
+    return render(request, "detailservices.html", {"servicio":service})
 
 @require_http_methods(["GET"])
 def list_services(request):
     """Listar todos los servicios"""
-    try:
-        services = ServiceService.get_all_services()
-        
-        services_list = []
-        for service in services:
-            services_list.append({
-                'id': service.id,
-                'name': service.name,
-                'description': service.description,
-                'price': str(service.price),
-                'duration_minutes': service.duration_minutes,
-                'department': service.department,
-                'image_url': service.image_url,
-                'category_id': service.category_id,
-                'category_name': service.category.name if service.category else None
-            })
-        
-        return JsonResponse({
-            'success': True,
-            'services': services_list,
-            'count': len(services_list)
-        })
-        
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
-
+    services = ServiceService.get_all_services()
+    return render(request, "services.html", {"servicios": services})
+    
 @require_http_methods(["GET"])
 def get_services_by_category(request, category_id):
     """Obtener servicios por categoría"""

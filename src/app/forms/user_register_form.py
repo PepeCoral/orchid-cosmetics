@@ -24,6 +24,14 @@ class UserRegisterForm(forms.Form):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         confirm_password = cleaned_data.get("confirm_password")
+        email = self.cleaned_data["email"]
+        username = self.cleaned_data["username"]
 
         if password and confirm_password and password != confirm_password:
             self.add_error("confirm_password", "Las contraseñas no coinciden")
+
+        if User.objects.filter(email=email).exists():
+            self.add_error("email", "el email ya esta en uso")
+
+        if User.objects.filter(username=username).exists():
+            self.add_error("username", "el nombre de usuario ya esta en uso")

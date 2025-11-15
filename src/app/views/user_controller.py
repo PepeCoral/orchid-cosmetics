@@ -45,6 +45,7 @@ def register(request: HttpRequest):
             return render(request,"register.html",context={"form":form})
             
     form = UserRegisterForm() 
+    print(form)
     return render(request,template_name="register.html",context={"form":form})
 
 
