@@ -17,21 +17,21 @@ urlpatterns = [
     path('services/', views.list_services, name='list_services'),
     path('services/create/', views.create_service, name='create_service'),
     path('services/<int:service_id>/', views.get_service, name='get_service'),
-    path('services/<int:service_id>/update/', views.update_service, name='update_service'),
-    path('services/<int:service_id>/delete/', views.delete_service, name='delete_service'),
+    # path('services/<int:service_id>/update/', views.update_service, name='update_service'),
+    # path('services/<int:service_id>/delete/', views.delete_service, name='delete_service'),
     
-    # Búsqueda y filtros
-    path('services/search/', views.search_services, name='search_services'),
-    path('services/category/<int:category_id>/', views.get_services_by_category, name='services_by_category'),
-    path('services/department/<str:department>/', views.get_services_by_department, name='services_by_department'),
-    path('services/price-range/', views.get_services_by_price_range, name='services_by_price_range'),
-    path('services/duration/', views.get_services_by_duration, name='services_by_duration'),
+    # # Búsqueda y filtros
+    # path('services/search/', views.search_services, name='search_services'),
+    # path('services/category/<int:category_id>/', views.get_services_by_category, name='services_by_category'),
+    # path('services/department/<str:department>/', views.get_services_by_department, name='services_by_department'),
+    # path('services/price-range/', views.get_services_by_price_range, name='services_by_price_range'),
+    # path('services/duration/', views.get_services_by_duration, name='services_by_duration'),
     
-    # Ordenamiento
-    path('services/sorted/price/', views.get_services_sorted_by_price, name='services_sorted_by_price'),
-    path('services/sorted/duration/', views.get_services_sorted_by_duration, name='services_sorted_by_duration'),
+    # # Ordenamiento
+    # path('services/sorted/price/', views.get_services_sorted_by_price, name='services_sorted_by_price'),
+    # path('services/sorted/duration/', views.get_services_sorted_by_duration, name='services_sorted_by_duration'),
     
-    # Otros
-    path('services/popular/', views.get_popular_services, name='popular_services'),
-    path('services/categories-overview/', views.service_categories_overview, name='service_categories_overview'),
+    # # Otros
+    # path('services/popular/', views.get_popular_services, name='popular_services'),
+    # path('services/categories-overview/', views.service_categories_overview, name='service_categories_overview'),
 ]
