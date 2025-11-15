@@ -19,8 +19,14 @@ class Product(models.Model):
 
 class ProductQuantity(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
 
     def __str__(self):
-        return f"{self.quantity} of {self.product.name} in order {self.order.identifier}"
+        return f"{self.quantity} of {self.product.name} in order {self.order}"
+    
+    def set_product(self, product):
+        self.product_id.set(product.id)
+    
+    def set_order(self, order):
+        self.order.set(order)

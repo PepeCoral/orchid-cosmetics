@@ -4,10 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 import json
+from app.services.order_service import QuantityService
 from app.services.category_service import CategoryService
 from app.services.service_service import ServiceService
 from app.forms.service_form import ServiceForm
 from django.shortcuts import redirect, render
+
+
 
 @csrf_exempt
 @require_http_methods(["POST", "GET"])
@@ -26,11 +29,15 @@ def create_service(request):
     form = ServiceForm()
     return render(request,"services/create.html", context={"form":form})
 
-@require_http_methods(["GET"])
+@csrf_exempt
+@require_http_methods(["GET","POST"])
 def get_service(request, service_id):
     """Obtener un servicio por ID"""
     service = ServiceService.get_service_by_id(service_id)
     categories = service.categories.all()
+    if request.method=="POST":
+        qs  = QuantityService()
+        qs.create_service_quantity(service)
     return render(request, "services/detail.html", {"servicio":service, "categories": categories})
 
 @require_http_methods(["GET"])

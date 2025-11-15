@@ -21,7 +21,7 @@ class Service(models.Model):
 
 class ServiceQuantity(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
 
     def __str__(self):
