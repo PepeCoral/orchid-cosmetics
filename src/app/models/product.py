@@ -9,7 +9,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(validators=[MinValueValidator(0, "No puede haber stock negativo")])
     fabricator = models.CharField(max_length=100)
-    image_url = models.URLField(null=True)
+    image_url = models.ImageField(upload_to='products/',null=True)
     categories = models.ManyToManyField(Category)
 
 

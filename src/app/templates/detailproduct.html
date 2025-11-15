@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Detalles del Producto</h2>
+
+<div class="card p-4 mb-3 shadow-sm" style="max-width: 600px;">
+
+    {% if producto.image_url %}
+        <img src="{{ producto.image_url.url }}" 
+            alt="{{ producto.name }}" 
+            style="max-width: 400px; border-radius: 8px;">
+    {% endif %}
+
+    <p><strong>Nombre:</strong> {{ product.name }}</p>
+    <p><strong>Descripción:</strong> {{ product.description }}</p>
+    <p><strong>Precio:</strong> {{ product.price }}</p>
+    <p><strong>Stock:</strong> {{ product.stock }}</p>
+    <p><strong>Fabricante:</strong> {{ product.fabricator }}</p>
+    <p><strong>Categoría:</strong> {{ producto.category }}</p>
+
+</div>
+
+<a href="/products" class="btn btn-secondary mt-3">Volver a la lista</a>
+{% endblock %}
