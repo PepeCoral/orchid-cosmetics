@@ -23,17 +23,17 @@ def create_product(request):
             return render(request, "createproduct.html", {"form": form})
     
     form = ProductForm()
-    return render(request,"createproduct.html", context={"form":form})
+    return render(request,"product/create.html", context={"form":form})
 
 @require_http_methods(["GET"])
 def get_product(request, product_id):
     """Obtener un servicio por ID"""
     product = product_serv.get_product_by_id(product_id)
     print(product)
-    return render(request, "detailproduct.html", {"producto":product})
+    return render(request, "product/detail.html", {"producto":product})
 
 @require_http_methods(["GET"])
 def list_products(request):
     """Listar todos los servicios"""
     product = product_serv.get_all_products()
-    return render(request, "products.html", {"productos": product})
+    return render(request, "product/list.html", {"productos": product})
