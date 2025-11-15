@@ -6,40 +6,33 @@ from app.models import Service, Category
 from app.repositories import product_repository as ProductRepository
 from app.repositories.product_quantity_repository import ProductQuantityRepository
 from app.repositories.service_quantity_repository import ServiceQuantityRepository
-from app.models import ServiceQuantity, ProductQuantity, Order, Product, Service
+from app.models import ServiceQuantity, ProductQuantity, Order, Product, Service, User
 
 
 class OrderService():
     
     
     @staticmethod
-    def create_category(category_data):
+    def create_order(order_data):
         """
         Crea un nuevo servicio
         """
-        category = Category(name=category_data['name'])
-        category.save()
-        return category
+        qs = QuantityService()
+
+        user = User.objects.get(id=1)
+        order = Order(
+            user=user,
+            address=order_data['address'],
+            payMethod=order_data['payMethod'],
+            delivery_method=order_data['delivery_method']
+            )
+        order.save()
+        qs.assign_quantities_to_order(order)
+        return order
             
-    
     @staticmethod
-    def get_category_by_id(category_id):
-        """
-        Obtiene un servicio por su ID
-        """
-        return Category.objects.get(id=category_id)
-    
-    @staticmethod
-    def get_category_by_name(name):
-        return Category.objects.get(name=name)
-    
-    @staticmethod
-    def get_all_categories():
-        """
-        Obtiene todos los servicios con sus categorías
-        """
-        return Category.objects.all()
-    
+    def get_all_orders():
+        return Order.objects.all()
 class QuantityService():
     def __init__(self):
         self.prod_quantity_repo = ProductQuantityRepository()
@@ -85,5 +78,18 @@ class QuantityService():
             else:
                 dicc[product.product]+=totalQuant
             
-        return dicc     
+        return dicc
+
+    def assign_quantities_to_order(self, order):
+    # Productos sin orden asignada
+        product_quantities = ProductQuantity.objects.filter(order__isnull=True)
+        for pq in product_quantities:
+            pq.order = order
+            pq.save()
+
+    # Servicios sin orden asignada
+        service_quantities = ServiceQuantity.objects.filter(order__isnull=True)
+        for sq in service_quantities:
+            sq.order = order
+            sq.save()
         

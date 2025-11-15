@@ -25,7 +25,9 @@ urlpatterns = [
     path('categories/',views.list_categories, name='list_categories'),
     path('categories/create/',views.create_category, name='create_category'),
     
-    path('cash/', views.get_all_quantity, name="get_all_quantity")
+    path('cash/', views.get_all_quantity, name="get_all_quantity"),
+    path('orders/create/', views.create_order, name="create_order"),
+    path('orders/', views.get_all_orders, name="get_all_orders"),
     # path('services/<int:service_id>/update/', views.update_service, name='update_service'),
     # path('services/<int:service_id>/delete/', views.delete_service, name='delete_service'),
     

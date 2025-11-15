@@ -15,5 +15,5 @@ from .category_controllers import (
     create_category,list_categories
 )
 from .order_controller import(
-    get_all_quantity
+    get_all_quantity, create_order, get_all_orders
 )
