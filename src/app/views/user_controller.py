@@ -41,8 +41,6 @@ def register(request: HttpRequest):
 @csrf_exempt
 @require_http_methods(["POST"])
 def login(request):
-    # try:
-        # Obtener datos del request
     if request.method == "GET":
         return render(request, "login.html")
 
@@ -57,24 +55,11 @@ def login(request):
         password = data['password']
 
 
-    # Autenticar usuario
         user = UserService.authenticate_user(request,email, password)
 
-    # Realizar login
         auth_login(request, user)
         return redirect("/profile")
 
-
-    # except ValidationError as e:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'error': str(e)
-    #     }, status=401)
-    # except Exception as e:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'error': str(e)
-    #     }, status=500)
 
 
 @require_http_methods(["POST", "GET"])
