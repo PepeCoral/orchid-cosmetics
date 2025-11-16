@@ -1,8 +1,5 @@
 from .base_controllers import home,profile
 
-from .user_controller import (
-  logout
-)
 from .service_controller import (
     create_service, get_service, list_services
 )

@@ -1,6 +1,6 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login
 
 from app.forms.user_register_form import UserRegisterForm
 from app.services.user_service import UserService
@@ -29,7 +29,7 @@ class UserRegisterView(View):
 
         try:
             user = self.user_service.create_user(form.cleaned_data)
-            auth_login(request, user)
+            login(request, user)
             return redirect("/profile")
         except Exception as e:
             return render(
