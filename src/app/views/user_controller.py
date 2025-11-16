@@ -25,19 +25,21 @@ def register(request: HttpRequest):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
             validate_access = UserService.get_user_by_username(username=username)
+
             if validate_access is not None:
                 return render(request, "register.html", {'usernameAlreadyUse': True, "form":form})
+
             user = UserService.create_user(form.cleaned_data)
             auth_login(request=request,user=user)
+
             return redirect("/profile",  "register.html",)
         else:
             return render(request,"register.html",context={"form":form})
 
     form = UserRegisterForm()
-    print(form)
     return render(request,template_name="register.html",context={"form":form})
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def login(request):
