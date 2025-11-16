@@ -9,4 +9,8 @@ class UserProfileView(View):
         self.user_service = UserService()
 
     def get(self, request):
+
+      if request.user.is_anonymous:
+        return redirect("/login")
+
       return render(request, "profile.html")
