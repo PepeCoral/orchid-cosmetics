@@ -27,11 +27,6 @@ def register(request: HttpRequest):
         if not form.is_valid():
             return render(request, "register.html", context={"form":form})
 
-        username = form.cleaned_data["username"]
-        validate_access = UserService.get_user_by_username(username=username)
-
-        if validate_access is not None:
-            return render(request, "register.html", {'usernameAlreadyUse': True, "form":form})
 
         user = UserService.create_user(form.cleaned_data)
         auth_login(request=request,user=user)
