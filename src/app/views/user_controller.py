@@ -14,27 +14,27 @@ def profile(request):
     items = User.objects.all()
     return render(request, "profile.html", {'users': items})
 
-@csrf_exempt
-@require_http_methods(["POST", "GET"])
-def register(request: HttpRequest):
+# @csrf_exempt
+# def register(request: HttpRequest):
 
-    if not request.user.is_anonymous:
-        return redirect("/profile")
+#     if not request.user.is_anonymous:
+#         return redirect("/profile")
 
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+#     if request.method == 'POST':
+#         form = UserRegisterForm(request.POST)
 
-        if not form.is_valid():
-            return render(request, "register.html", context={"form":form})
+#         if not form.is_valid():
+#             return render(request, "register.html", context={"form":form})
 
+#         try:
+#           user = UserService.create_user(form.cleaned_data)
+#           auth_login(request=request,user=user)
+#           return redirect("/profile",  "register.html",)
+#         except:
+#           pass
 
-        user = UserService.create_user(form.cleaned_data)
-        auth_login(request=request,user=user)
-
-        return redirect("/profile",  "register.html",)
-
-    form = UserRegisterForm()
-    return render(request,template_name="register.html",context={"form":form})
+#     form = UserRegisterForm()
+#     return render(request,template_name="register.html",context={"form":form})
 
 @csrf_exempt
 @require_http_methods(["POST"])
