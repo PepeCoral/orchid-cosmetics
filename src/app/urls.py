@@ -5,13 +5,17 @@ from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
 
+from app.views.admin.admin_panel_view import AdminPanelView
+
 urlpatterns = [
     # Páginas HTML (Template views)
     path('', views.home, name='home'),
     path('profile/', UserProfileView.as_view(), name='profile'),
-    path("login/", auth_views.LoginView.as_view(template_name="login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
+    path("login/", auth_views.LoginView.as_view(template_name="user/login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
     path("logout/", UserLogoutView.as_view(), name='logout'),
     path("register/", UserRegisterView.as_view(), name="register"),
+
+    path("admin/", AdminPanelView.as_view(), name="admin"),
 
 
     # CRUD básico

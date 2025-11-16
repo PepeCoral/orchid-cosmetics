@@ -11,6 +11,4 @@ def home(request):
 
 @login_required
 def profile(request):
-    return render(request, "profile.html", {"user": request.user})
-
-
+    return render(request, "user/profile.html", {"user": request.user})
