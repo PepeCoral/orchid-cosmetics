@@ -10,33 +10,23 @@ from app.repositories.user_repository import UserRepository
 
 class UserService():
     def __init__(self):
-        self.repository = UserRepository()
+        self.user_repository = UserRepository()
 
-    def create_user(user_data):
-        try:
-            # Validaciones básicas
-            UserService.validate_email(user_data['email'])
-            UserService.validate_password(user_data['password'], user_data['confirm_password'])
+    def create_user(self, user_data):
+        if self.user_repository.get_by_username(user_data["username"]) is not None:
+          raise ValidationError("Username already in use")
 
-            # Verificar si el email ya existe
-            if User.objects.filter(email=user_data['email']).exists():
-                raise ValidationError("El email ya está registrado")
-            # Crear usuario usando el método create_user de AbstractUser
-            user = User.objects.create_user(
-                username=user_data['username'],
-                email=user_data['email'],
-                password=user_data['password'],
-                first_name=user_data['first_name'],
-                last_name=user_data.get('last_name'),
-                address=user_data.get('address', None),
-                pay_method=user_data.get('pay_method', None),
-                role=user_data.get('role', RoleOptions.USER)
-            )
+        if self.user_repository.get_by_email(user_data["email"]) is not None:
+          raise ValidationError("Email already in use")
 
-            return user
+        if user_data["password"] != user_data["confirm_password"]:
+          raise ValidationError("Passwords do not match")
 
-        except Exception as e:
-            raise ValidationError(f"Error al crear usuario: {str(e)}")
+
+        data = user_data.copy()
+        data.pop("confirm_password", None)
+
+        return self.user_repository.create(**data)
 
     @staticmethod
     def authenticate_user(username, password):

@@ -6,7 +6,7 @@ from app.forms.user_register_form import UserRegisterForm
 from app.services.user_service import UserService
 
 
-class RegisterView(View):
+class UserRegisterView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.user_service = UserService()
@@ -35,5 +35,5 @@ class RegisterView(View):
             return render(
                 request,
                 "register.html",
-                {"form": form, "error": "An unexpected error occurred."}
+                {"form": form, "error": str(e)}
             )
