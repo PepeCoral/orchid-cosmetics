@@ -1,8 +1,7 @@
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-
-from app.forms.user_register_form import UserRegisterForm
+from app.forms.user.user_register_form import UserRegisterForm
 from app.services.user_service import UserService
 
 

@@ -1,11 +1,6 @@
-from decimal import Decimal
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.core.exceptions import ValidationError
-import json
 from app.services.order_service import QuantityService
-from app.services.category_service import CategoryService
 from app.services.service_service import ServiceService
 from app.forms.service_form import ServiceForm
 from django.shortcuts import redirect, render
@@ -25,7 +20,7 @@ def create_service(request):
             return redirect("/services", "service/list.html")
         else:
             return render(request, "services/create.html", {"form": form})
-    
+
     form = ServiceForm()
     return render(request,"services/create.html", context={"form":form})
 
@@ -45,4 +40,3 @@ def list_services(request):
     """Listar todos los servicios"""
     services = ServiceService.get_all_services()
     return render(request, "services/list.html", {"servicios": services})
-    

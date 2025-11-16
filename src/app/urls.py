@@ -10,6 +10,10 @@ from app.views.admin.category.list_category_view import ListCategoryView
 from app.views.admin.category.create_category_view import CreateCategoryView
 from app.views.admin.category.delete_category_view import DeleteCategoryView
 
+from app.views.admin.product.list_product_view import ListProductView
+from app.views.admin.product.create_product_view import CreateProductView
+from app.views.admin.product.show_product_view import ShowProductView
+
 urlpatterns = [
     # Páginas HTML (Template views)
     path('', views.home, name='home'),
@@ -24,15 +28,17 @@ urlpatterns = [
     path('admin/categories/create/',CreateCategoryView.as_view(), name='admin/categories/create'),
     path('admin/categories/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/categories/delete'),
 
+    path('admin/products/', ListProductView.as_view(), name='admin/products'),
+    path('admin/products/create/', CreateProductView.as_view(), name='admin/products/create'),
+    path('admin/products/<int:product_id>/', ShowProductView.as_view(), name='admin/products/show'),
+
 
     # CRUD básico
     path('services/', views.list_services, name='list_services'),
     path('services/create/', views.create_service, name='create_service'),
     path('services/<int:service_id>/', views.get_service, name='get_service'),
 
-    path('products/', views.list_products, name='list_products'),
-    path('products/create/', views.create_product, name='create_product'),
-    path('products/<int:product_id>/', views.get_product, name='get_product'),
+
 
 
 

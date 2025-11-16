@@ -4,12 +4,11 @@ from app.models import Product
 
 class ProductService():
     def __init__(self):
-        self.repository = ProductRepository()
+        self.product_repository = ProductRepository()
 
     def create_product(self, request, product_data):
-        # 🔹 Regla de negocio: no se permiten nombres duplicados
         files = request.FILES
-
+        # TODO: añadir repositorio aqui
         product = Product(
             name=product_data['name'],
             description=product_data['description'],
@@ -24,16 +23,20 @@ class ProductService():
             product.categories.set(product_data['categories'])
 
         return product
-        # 🔹 Crear producto
 
-    def get_product_by_id(self, product_id):
-        return self.repository.get_by_id(product_id)
-    
+    def get_product_by_id(self, product_id) -> Product:
+        product =  self.product_repository.get_by_id(product_id)
+
+        if product is None:
+            raise Product.DoesNotExist(f"No product with id: {product_id}")
+
+        return product
+
     def get_all_products(self):
-        return self.repository.get_all()
+        return self.product_repository.get_all()
 
     def update_product(self, product_id, **data):
-        product = self.repository.get_by_id(product_id)
+        product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
 
@@ -42,15 +45,14 @@ class ProductService():
         if not validation:
             raise ValidationError("Los datos del producto son inválidos.")
 
-        return self.repository.update(product, **data)
+        return self.product_repository.update(product, **data)
 
     def delete_product(self, product_id):
-        product = self.repository.get_by_id(product_id)
+        product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
 
-        return self.repository.delete(product)
-    
+        return self.product_repository.delete(product)
+
     def get_products_by_category(self, category_id):
-        return self.repository.get_products_by_category(category_id)
-        
+        return self.product_repository.get_products_by_category(category_id)

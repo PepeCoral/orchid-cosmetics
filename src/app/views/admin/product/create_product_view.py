@@ -1,12 +1,11 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from app.forms.category.create_category_form import CategoryForm
-from app.services.category_service import CategoryService
-
-class CreateCategoryView(View):
+from app.forms.product.create_product_form import CreateProductForm
+from app.services.product_service import ProductService
+class CreateProductView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.category_service = CategoryService()
+        self.product_service = ProductService()
 
     def get(self, request):
         if request.user.is_anonymous:
@@ -15,8 +14,8 @@ class CreateCategoryView(View):
         if not request.user.is_superuser:
             return redirect("/")
 
-        form = CategoryForm()
-        return render(request, "admin/categories/create.html", {"form": form})
+        form = CreateProductForm()
+        return render(request, "admin/products/create.html", {"form": form})
 
     def post(self, request):
         if request.user.is_anonymous:
@@ -25,17 +24,17 @@ class CreateCategoryView(View):
         if not request.user.is_superuser:
             return redirect("/")
 
-        form = CategoryForm(request.POST)
+        form = CreateProductForm(request.POST)
 
         if not form.is_valid():
-            return render(request, "admin/categories/create.html", {"form": form})
+            return render(request, "admin/products/create.html", {"form": form})
 
         try:
-            self.category_service.create_category(form.cleaned_data)
-            return redirect("admin/categories")
+            self.product_service.create_product(request, form.cleaned_data)
+            return redirect("admin/products")
         except Exception as e:
             return render(
                 request,
-                "admin/categories/create.html",
+                "admin/products/create.html",
                 {"form": form, "error": str(e)}
             )

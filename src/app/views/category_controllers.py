@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 import json
 from app.services.category_service import CategoryService
-from app.forms.category_form import CategoryForm
+from app.forms.create_category_form import CategoryForm
 from django.shortcuts import redirect, render
 
 @csrf_exempt

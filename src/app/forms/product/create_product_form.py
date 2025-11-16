@@ -1,11 +1,9 @@
-from django.forms import ModelForm
 from django import forms
 from app.models.category import Category
-from django.core.validators import MaxLengthValidator,URLValidator, MinLengthValidator, DecimalValidator
+from django.core.validators import MaxLengthValidator
 
 
-
-class ProductForm(forms.Form):
+class CreateProductForm(forms.Form):
     name = forms.CharField(label="Nombre del producto",validators=[MaxLengthValidator(150,"Nombre del producto demasiado largo")])
     description = forms.CharField(label="Descripcion", validators=[MaxLengthValidator(300,"Description too long")])
     price = forms.DecimalField(label="Precio", decimal_places=2)
@@ -16,8 +14,3 @@ class ProductForm(forms.Form):
                                       widget=forms.SelectMultiple,
                                       required=False,
                                       label="Categorias")
-    
-    def clean(self):
-        cleaned_data = super().clean()
-        
-    

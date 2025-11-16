@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 import json
 from app.services.order_service import QuantityService
 from app.services.product_service import ProductService
-from app.forms.product_form import ProductForm
+from app.forms.product.create_product_form import CreateProductForm
 from django.shortcuts import redirect, render
 
 product_serv = ProductService()
@@ -16,14 +16,14 @@ def create_product(request):
     """Crear un nuevo producto"""
 
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
+        form = CreateProductForm(request.POST, request.FILES)
         if form.is_valid():
             product_serv.create_product(request,form.cleaned_data)
             return redirect("/products", "product/list.html")
         else:
             return render(request, "product/create.html", {"form": form})
-    
-    form = ProductForm()
+
+    form = CreateProductForm()
     return render(request,"product/create.html", context={"form":form})
 
 
@@ -37,11 +37,3 @@ def get_product(request, product_id):
         qs = QuantityService()
         qs.create_product_quantity(product)
     return render(request, "product/detail.html", {"producto":product, "categories":categories})
-
-
-
-@require_http_methods(["GET"])
-def list_products(request):
-    """Listar todos los servicios"""
-    product = product_serv.get_all_products()
-    return render(request, "product/list.html", {"productos": product})
