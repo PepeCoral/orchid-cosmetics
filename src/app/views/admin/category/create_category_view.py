@@ -22,7 +22,7 @@ class CreateCategoryView(View):
             return redirect("/")
 
         form = CategoryForm()
-        return render(request, "admin/category/create.html", {"form": form})
+        return render(request, "admin/categories/create.html", {"form": form})
 
     def post(self, request):
         if request.user.is_anonymous:
@@ -34,14 +34,14 @@ class CreateCategoryView(View):
         form = CategoryForm(request.POST)
 
         if not form.is_valid():
-            return render(request, "admin/category/create.html", {"form": form})
+            return render(request, "admin/categories/create.html", {"form": form})
 
         try:
             self.category_service.create_category(form.cleaned_data)
-            return redirect("admin/category")
+            return redirect("admin/categories")
         except Exception as e:
             return render(
                 request,
-                "admin/category/create.html",
+                "admin/categories/create.html",
                 {"form": form, "error": str(e)}
             )

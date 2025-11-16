@@ -20,9 +20,9 @@ urlpatterns = [
 
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
-    path('admin/category/',ListCategoryView.as_view(), name='admin/category'),
-    path('admin/category/create/',CreateCategoryView.as_view(), name='admin/category/create'),
-    path('admin/category/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/category/delete'),
+    path('admin/categories/',ListCategoryView.as_view(), name='admin/categories'),
+    path('admin/categories/create/',CreateCategoryView.as_view(), name='admin/categories/create'),
+    path('admin/categories/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/categories/delete'),
 
 
     # CRUD básico

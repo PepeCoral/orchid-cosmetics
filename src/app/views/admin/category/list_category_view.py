@@ -16,4 +16,4 @@ class ListCategoryView(View):
             return redirect("/")
 
         categories = self.category_service.list_categories()
-        return render(request, "admin/category/list.html", {"categories": categories})
+        return render(request, "admin/categories/list.html", {"categories": categories})

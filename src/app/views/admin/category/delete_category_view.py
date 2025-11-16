@@ -17,4 +17,4 @@ class DeleteCategoryView(View):
             return redirect("/")
 
         self.category_service.delete_category(category_id)
-        return redirect("admin/category")
+        return redirect("admin/categories")
