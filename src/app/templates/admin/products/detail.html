@@ -20,12 +20,7 @@
   <p>{{ category }}</p>
   {% endfor %}
   </p>
-
-  <form method="POST">
-    <button type="submit" class="btn btn-success btn-block mt-3">
-      Añadir al carro
-    </button>
-  </form>
+  <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-danger mt-3">Borrar Producto</a>
 </div>
 
 <a href="/admin/products" class="btn btn-secondary mt-3">Volver a la lista</a>

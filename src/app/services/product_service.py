@@ -48,11 +48,7 @@ class ProductService():
         return self.product_repository.update(product, **data)
 
     def delete_product(self, product_id):
-        product = self.product_repository.get_by_id(product_id)
-        if not product:
-            raise ValidationError("Producto no encontrado.")
-
-        return self.product_repository.delete(product)
+        return self.product_repository.delete(product_id)
 
     def get_products_by_category(self, category_id):
         return self.product_repository.get_products_by_category(category_id)

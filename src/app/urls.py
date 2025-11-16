@@ -13,6 +13,7 @@ from app.views.admin.category.delete_category_view import DeleteCategoryView
 from app.views.admin.product.list_product_view import ListProductView
 from app.views.admin.product.create_product_view import CreateProductView
 from app.views.admin.product.show_product_view import ShowProductView
+from app.views.admin.product.delete_product_view import DeleteProductView
 
 urlpatterns = [
     # Páginas HTML (Template views)
@@ -31,6 +32,7 @@ urlpatterns = [
     path('admin/products/', ListProductView.as_view(), name='admin/products'),
     path('admin/products/create/', CreateProductView.as_view(), name='admin/products/create'),
     path('admin/products/<int:product_id>/', ShowProductView.as_view(), name='admin/products/show'),
+    path('admin/products/delete/<int:product_id>/', DeleteProductView.as_view(), name='admin/products/delete'),
 
 
     # CRUD básico
