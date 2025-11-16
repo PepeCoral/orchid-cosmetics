@@ -11,6 +11,11 @@ class Order(models.Model):
         SHIPPED = 'shipped', 'Shipped'
         DELIVERED = 'delivered', 'Delivered'
         CANCELED = 'canceled', 'Canceled'
+    
+    class DeliveryMethods(models.TextChoices):
+        PUNTO_DE_RECOGIDA = 'En punto de recogida'
+        ADDRESS = 'En una dirección para la entrega'
+        SHOP = 'Recoger en la tienda más cercana'
 
         
     user = models.ForeignKey(User, on_delete=models.CASCADE, 
@@ -18,7 +23,7 @@ class Order(models.Model):
     address = models.CharField(max_length=200)
     payMethod = models.CharField(max_length=50)
     status = models.CharField(max_length=20, choices=StatusOptions.choices, default=StatusOptions.PENDING)
-    delivery_method = models.CharField(max_length=50)
+    delivery_method = models.CharField(max_length=50, choices=DeliveryMethods.choices)
     identifier = models.CharField(max_length=6, unique=True, default=generate_identifier)
     products = models.ManyToManyField("Product", through="ProductQuantity")
     services = models.ManyToManyField("Service", through="ServiceQuantity")
