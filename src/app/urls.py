@@ -6,6 +6,9 @@ from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
 
 from app.views.admin.admin_panel_view import AdminPanelView
+from app.views.admin.category.list_category_view import ListCategoryView
+from app.views.admin.category.create_category_view import CreateCategoryView
+from app.views.admin.category.delete_category_view import DeleteCategoryView
 
 urlpatterns = [
     # Páginas HTML (Template views)
@@ -17,6 +20,10 @@ urlpatterns = [
 
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
+    path('admin/category/',ListCategoryView.as_view(), name='admin/category'),
+    path('admin/category/create/',CreateCategoryView.as_view(), name='admin/category/create'),
+    path('admin/category/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/category/delete'),
+
 
     # CRUD básico
     path('services/', views.list_services, name='list_services'),
@@ -27,8 +34,7 @@ urlpatterns = [
     path('products/create/', views.create_product, name='create_product'),
     path('products/<int:product_id>/', views.get_product, name='get_product'),
 
-    path('categories/',views.list_categories, name='list_categories'),
-    path('categories/create/',views.create_category, name='create_category'),
+
 
     path('cash/', views.get_all_quantity, name="get_all_quantity"),
     path('orders/create/', views.create_order, name="create_order"),

@@ -1,4 +1,9 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Panel de administrador{% endblock %}
+
+{% block content %}
 <h1>Admin Dashboard</h1>
 <p>Total users: {{ total_users }}</p>
 <p>Superusers: {{ superusers }}</p>
-<a href="/logout/">Logout</a>
+
+{% endblock %}

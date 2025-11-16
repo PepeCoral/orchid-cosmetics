@@ -6,11 +6,11 @@
   <div class="card shadow-sm">
     <div class="card-body">
       <h3 class="text-center mb-4">Crear Categoria</h3>
-     
-      <form method="POST" action="/categories/create/">
+
+      <form method="POST" action="">
         {% csrf_token %}
         {% for field in form %}
-          {% include "components/form_field.html" with field=field %}
+        {% include "components/form_field.html" with field=field %}
         {% endfor %}
 
 
@@ -21,9 +21,9 @@
       </form>
     </div>
   </div>
-  
-        <div class="text-center mt-3">
-            <a href="/categorias">Volver al listado</a>
-        </div>
+
+  <div class="text-center mt-3">
+    <a href="/categories">Volver al listado</a>
+  </div>
 </div>
 {% endblock %}

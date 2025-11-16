@@ -20,19 +20,6 @@ def create_category(request):
             return redirect("/categories", "categories/list.html")
         else:
             return render(request, "categories/create.html", {"form": form})
-    
+
     form = CategoryForm()
     return render(request,"categories/create.html", context={"form":form})
-
-@require_http_methods(["GET"])
-def get_category(request, category_id):
-    """Obtener un servicio por ID"""
-    category = CategoryService.get_category_by_id(category_id)
-    return render(request, "categories/detail.html", {"categoria":category})
-
-@require_http_methods(["GET"])
-def list_categories(request):
-    """Listar todos los servicios"""
-    categories = CategoryService.get_all_categories()
-    return render(request, "categories/list.html", {"categorias": categories})
-    
