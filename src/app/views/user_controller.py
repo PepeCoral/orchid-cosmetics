@@ -23,19 +23,20 @@ def register(request: HttpRequest):
 
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            validate_access = UserService.get_user_by_username(username=username)
 
-            if validate_access is not None:
-                return render(request, "register.html", {'usernameAlreadyUse': True, "form":form})
+        if not form.is_valid():
+            return render(request, "register.html", context={"form":form})
 
-            user = UserService.create_user(form.cleaned_data)
-            auth_login(request=request,user=user)
+        username = form.cleaned_data["username"]
+        validate_access = UserService.get_user_by_username(username=username)
 
-            return redirect("/profile",  "register.html",)
-        else:
-            return render(request,"register.html",context={"form":form})
+        if validate_access is not None:
+            return render(request, "register.html", {'usernameAlreadyUse': True, "form":form})
+
+        user = UserService.create_user(form.cleaned_data)
+        auth_login(request=request,user=user)
+
+        return redirect("/profile",  "register.html",)
 
     form = UserRegisterForm()
     return render(request,template_name="register.html",context={"form":form})
