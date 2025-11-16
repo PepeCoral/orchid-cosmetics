@@ -1,54 +1,36 @@
-# users/services/user_service.py
-
-from users.repositories.product_repository import ProductRepository
+from app.repositories.product_repository import ProductRepository
 from django.core.exceptions import ValidationError
+from app.models import Product
 
-class ProductService:
+class ProductService():
     def __init__(self):
         self.repository = ProductRepository()
 
-    def validate_product_data(self, **data):
-        # 🔹 Validaciones básicas
-        if "name" not in data or not data["name"]:
-            raise ValidationError("El nombre del producto es obligatorio.")
-        
-        if "description" not in data or not data["description"]:
-            raise ValidationError("La descripción del producto es obligatoria.")
-        
-        if "price" not in data or data["price"] <= 0:
-            raise ValidationError("El precio debe ser mayor que 0.")
-
-        if "stock" not in data or data["stock"] < 0:
-            raise ValidationError("El stock no puede ser negativo.")
-        
-        if "fabricator" not in data or not data["fabricator"]:
-            raise ValidationError("El fabricante del producto es obligatorio.")
-        
-        if "image_url" in data and data["image_url"]:
-            # Aquí podrías agregar una validación más robusta para URLs
-            if not data["image_url"].startswith("http"):
-                raise ValidationError("La URL de la imagen no es válida.")
-        
-        if "category" in data and data["category"] is not None:
-            raise ValidationError("La categoría especificada no existe.")
-
-        return True
-
-    def create_product(self, name, description, price, stock, fabricator, image_url=None, category=None):
+    def create_product(self, request, product_data):
         # 🔹 Regla de negocio: no se permiten nombres duplicados
-        validation = self.validate_product_data(
-            name=name, description=description, price=price, 
-            stock=stock, fabricator=fabricator, image_url=image_url, 
-            category=category)
+        files = request.FILES
 
-        if not validation:
-            raise ValidationError("Los datos del producto son inválidos.")
+        product = Product(
+            name=product_data['name'],
+            description=product_data['description'],
+            price=product_data['price'],
+            stock=product_data['stock'],
+            fabricator=product_data['fabricator'],
+            image_url=files.get('image')
+        )
+        product.save()
 
+        if 'categories' in product_data:
+            product.categories.set(product_data['categories'])
+
+        return product
         # 🔹 Crear producto
-        return self.repository.create(
-            name=name, description=description, price=price, 
-            stock=stock, fabricator=fabricator, image_url=image_url, 
-            category=category)
+
+    def get_product_by_id(self, product_id):
+        return self.repository.get_by_id(product_id)
+    
+    def get_all_products(self):
+        return self.repository.get_all()
 
     def update_product(self, product_id, **data):
         product = self.repository.get_by_id(product_id)

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Productos</h2>
+
+<div class="mt-3">
+
+    <a href="/categories/create" class="btn btn-danger mt-3">Crear Categoria</a>
+
+
+    {% for categoria in categorias %}
+    <div class="card p-4 mb-3 shadow-sm" style="max-width: 500px;">
+
+        <p><strong>Nombre:</strong> {{ categoria.name }}</p>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

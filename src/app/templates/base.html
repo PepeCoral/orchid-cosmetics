@@ -8,7 +8,7 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
-    <link rel="shortcut icon" href="static/Orchid-Logo.ico" />
+    <link rel="shortcut icon" href="/static/Orchid-Logo.ico" />
     <style>
       body {
         padding-top: 56px;
@@ -46,13 +46,16 @@
           <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Categorías/Productos</a>
+            <a class="nav-link" href="{% url 'list_categories' %}">Categorías</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Catálogo de Productos</a>
+            <a class="nav-link" href="{% url 'list_products' %}">Catálogo de Productos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Carrito de Compra</a>
+            <a class="nav-link" href="{% url 'list_services' %}">Catálogo de Servicios</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'get_all_quantity' %}">Carrito de Compra</a>
           </li>
 
           {% if user.is_authenticated %}

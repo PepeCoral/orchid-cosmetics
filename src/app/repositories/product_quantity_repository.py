@@ -9,6 +9,9 @@ class ProductQuantityRepository(BaseRepository):
         self.prod_repo = ProductRepository()
         self.order_repo = OrderRepository()
 
+    def get_quantity_by_product_id(self, product_id):
+        return self.prod_repo.get_by_id(product_id)
+
     def get_total_quantity_of_a_product(self, product_id, order_id):
         prod_quantity = self.model.objects.filter(product_id=product_id, order_id=order_id).first().quantity
         return prod_quantity

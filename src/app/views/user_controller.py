@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, HttpResponse
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import login as auth_login, logout as auth_logout
@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
 import json
 from app.models import User
-from app.models.user import RoleOptions
 from app.services.user_service import UserService
+from app.forms.user_register_form import UserRegisterForm
 
 def profile(request):
     items = User.objects.all()
@@ -16,37 +16,30 @@ def profile(request):
 
 @csrf_exempt
 @require_http_methods(["POST", "GET"])
-def register(request):
-    """Registro de nuevo usuario"""
-    if( request.method == "GET"):
-        return render(request, "register.html")
+def register(request: HttpRequest):
 
-    try:
-        if request.content_type == 'application/json':
-            data = json.loads(request.body)
+    if not request.user.is_anonymous:
+        return redirect("/profile")
+
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            validate_access = UserService.get_user_by_username(username=username)
+            if validate_access is not None:
+                return render(request, "register.html", {'usernameAlreadyUse': True, "form":form})
+            user = UserService.create_user(form.cleaned_data)
+            auth_login(request=request,user=user)
+            return redirect("/profile",  "register.html",)
         else:
-            data = request.POST.dict()
+            return render(request,"register.html",context={"form":form})
 
-        user = UserService.create_user(data)
-
-        if request.user.is_authenticated:
-            auth_logout(request)
-        auth_login(request, user)
-
-        return redirect("/")
-
-    except ValidationError as e:
-        return render(request, "signup.html", {"error": str(e)})
-
-    except Exception as e:
-        return render(
-            request,
-            "signup.html",
-            {"error": f"Error inesperado: {str(e)}"}
-        )
-
+    form = UserRegisterForm()
+    print(form)
+    return render(request,template_name="register.html",context={"form":form})
 @csrf_exempt
-@require_http_methods(["POST", "GET"])
+@require_http_methods(["POST"])
 def login(request):
     # try:
         # Obtener datos del request

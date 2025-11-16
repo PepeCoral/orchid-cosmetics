@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Detalles del Servicio</h2>
+
+<div class="card p-4 mb-3 shadow-sm" style="max-width: 600px;">
+
+    {% if servicio.image_url %}
+        <img src="{{ servicio.image_url.url }}" 
+            alt="{{ servicio.name }}" 
+            style="max-width: 400px; border-radius: 8px;">
+    {% endif %}
+
+    <p><strong>Nombre:</strong> {{ servicio.name }}</p>
+    <p><strong>Descripción:</strong> {{ servicio.description }}</p>
+    <p><strong>Precio:</strong> {{ servicio.price }}</p>
+    <p><strong>Duración:</strong> {{ servicio.duration_minutes }}</p>
+    <p><strong>Departamento:</strong> {{ servicio.department }}</p>
+    <p><strong>Imagen:</strong> {{ servicio.image_url }}</p>
+    <p><strong>Categorias:</strong>
+        {% for cat in categories %}
+            <p>{{ cat }}</p>
+        {% endfor %}
+    </p>
+    <form method="POST">
+        <button type="submit" class="btn btn-success btn-block mt-3">
+            Añadir al carro
+        </button>
+    </form>
+
+</div>
+
+<a href="/services" class="btn btn-secondary mt-3">Volver a la lista</a>
+{% endblock %}

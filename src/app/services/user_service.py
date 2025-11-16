@@ -8,24 +8,9 @@ from app.models import User
 from app.models.user import RoleOptions
 from app.repositories.user_repository import UserRepository
 
-class UserService:
+class UserService():
     def __init__(self):
         self.repository = UserRepository()
-    
-    @staticmethod
-    def validate_email(email):
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(pattern, email):
-            raise ValidationError("Formato de email inválido")
-        return True
-    
-    @staticmethod
-    def validate_password(password, confirm_password):
-        if len(password) < 6:
-            raise ValidationError("La contraseña debe tener al menos 6 caracteres")
-        if password != confirm_password:
-            raise ValidationError("Las contraseñas no coinciden")
-        return True
     
     @staticmethod
     def create_user(user_data):
@@ -37,7 +22,6 @@ class UserService:
             # Verificar si el email ya existe
             if User.objects.filter(email=user_data['email']).exists():
                 raise ValidationError("El email ya está registrado")
-            print("creando usuario")
             # Crear usuario usando el método create_user de AbstractUser
             user = User.objects.create_user(
                 username=user_data['username'],  
@@ -56,11 +40,10 @@ class UserService:
             raise ValidationError(f"Error al crear usuario: {str(e)}")
     
     @staticmethod
-    def authenticate_user(request, username, password):
+    def authenticate_user(username, password):
         try:
             # Usar el sistema de autenticación de Django
-            user = authenticate(request=request, username=username, password=password)
-            print("autenticando usuario", user)
+            user = authenticate(username=username, password=password)
             if user is None:
                 raise ValidationError("Credenciales inválidas")
             
@@ -157,9 +140,9 @@ class UserService:
     def search_users(search_term):
         """Busca usuarios por first_name, last_name o email"""
         return User.objects.filter(
-            Q(first_name__icontains=search_term) |
-            Q(last_name__icontains=search_term) |
-            Q(email__icontains=search_term)
+            Q(first_name=search_term) |
+            Q(last_name=search_term) |
+            Q(email=search_term)
         )
     
     @staticmethod

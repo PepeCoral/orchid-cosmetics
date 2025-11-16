@@ -1,27 +1,28 @@
 from django.db import models 
-from .category import Category
+from app.models.category import Category
 from .order import Order
+from django.core.validators import MinValueValidator
 
 class Service(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    duration_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.0)])
+    duration_minutes = models.IntegerField(validators=[MinValueValidator(0)])
     department = models.CharField(max_length=100)
-    image_url = models.URLField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, 
-                                 related_name="category_services", null=True)
+    image_url = models.ImageField(upload_to='services/', null=True)
+    categories = models.ManyToManyField(Category)
+
 
     def __str__(self):
         return self.name
     
+    def set_category(self, category):
+        self.categories.add(category)
 
 class ServiceQuantity(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, 
-                                related_name="service_id")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, 
-                              related_name="service_order_id")
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
 
     def __str__(self):
-        return f"{self.quantity} of {self.service.name} in order {self.order.identifier}"
+        return f"{self.quantity} of {self.service.name} in order {self.order}"

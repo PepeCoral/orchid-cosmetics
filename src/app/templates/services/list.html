@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Servicios</h2>
+
+<div class="mt-3">
+
+    <a href="/services/create" class="btn btn-danger mt-3">Crear Servicio</a>
+
+
+    {% for servicio in servicios %}
+    <div class="card p-4 mb-3 shadow-sm" style="max-width: 500px;">
+
+        {% if servicio.image_url %}
+            <img src="{{ servicio.image_url.url }}" 
+            alt="{{ servicio.name }}" 
+            style="max-width: 200px; border-radius: 8px;">
+        {% endif %}
+
+        <p><strong>Nombre:</strong> {{ servicio.name }}</p>
+        <p><strong>Descripción:</strong> {{ servicio.description }}</p>
+        <p><strong>Precio:</strong> {{ servicio.price }}</p>
+        <p><strong>Duración:</strong> {{ servicio.duration_minutes }}</p>
+        <p><strong>Departamento:</strong> {{ servicio.department }}</p>
+
+        <a href="/services/{{ servicio.id }}" class="btn btn-primary mt-3">
+            Ver detalles
+        </a>
+
+    </div>
+    {% endfor %}
+
+    
+
+</div>
+
+{% endblock %}
