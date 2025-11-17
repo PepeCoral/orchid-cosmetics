@@ -2,8 +2,10 @@ from django.urls import path
 import app.views as views
 from django.contrib.auth import views as auth_views
 
+from app.views.admin.category.update_category_view import UpdateCategoryView
 from app.views.home_view import HomeView
 from app.views.user.user_delete_view import DeleteUserView
+from app.views.static_pages import ContactView
 from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
@@ -32,6 +34,10 @@ urlpatterns = [
     path("logout/", UserLogoutView.as_view(), name='logout'),
     path("register/", UserRegisterView.as_view(), name="register"),
     
+    path('contacto/', ContactView.as_view(), name='contact'),
+
+
+    path("catalog/", CatalogView.as_view(), name="catalog" ),
 
     path('user/update/<int:user_id>/', UpdateUserView.as_view(), name='update_user'),
     path('user/delete/<int:user_id>/', DeleteUserView.as_view(), name='delete_user'),
@@ -43,6 +49,7 @@ urlpatterns = [
     path('admin/categories/',ListCategoryView.as_view(), name='admin/categories'),
     path('admin/categories/create/',CreateCategoryView.as_view(), name='admin/categories/create'),
     path('admin/categories/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/categories/delete'),
+    path('admin/categories/update/<int:category_id>', UpdateCategoryView.as_view(), name='admin/categories/update'),
 
 
     path('admin/products/', ListProductView.as_view(), name='admin/products'),
