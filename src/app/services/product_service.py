@@ -7,6 +7,12 @@ class ProductService():
         self.product_repository = ProductRepository()
 
     def create_product(self, request, product_data):
+
+        if(product_data["price"] < 0):
+            raise ValidationError("Price cannot be negative")
+        if(product_data["stock"] < 0):
+            raise ValidationError("Stock cannot be negative")
+
         files = request.FILES
         # TODO: añadir repositorio aqui
         product = Product(
