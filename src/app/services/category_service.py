@@ -24,3 +24,15 @@ class CategoryService():
 
         updated_category = self.category_repository.update(category_id, **category_data)
         return updated_category
+
+    
+    def get_category_by_id(self, category_id):
+        """Obtiene una categoría por su ID"""
+        category = self.category_repository.get_by_id(category_id)
+        if not category:
+            raise ValidationError(f"Categoría con ID {category_id} no encontrada.")
+        return category
+    
+    def get_all_categories(self):
+        """Obtiene todas las categorías"""
+        return self.category_repository.get_all()
