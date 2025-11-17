@@ -14,21 +14,12 @@ class ProductService():
             raise ValidationError("Stock cannot be negative")
 
         files = request.FILES
-        # TODO: añadir repositorio aqui
-        product = Product(
-            name=product_data['name'],
-            description=product_data['description'],
-            price=product_data['price'],
-            stock=product_data['stock'],
-            fabricator=product_data['fabricator'],
-            image_url=files.get('image')
-        )
-        product.save()
-
-        if 'categories' in product_data:
-            product.categories.set(product_data['categories'])
-
+        product_data["image_url"] = files.get("image_url")
+        categories = product_data.pop("categories")
+        product = self.product_repository.create(**product_data)
+        product.categories.set(categories)
         return product
+
 
     def get_product_by_id(self, product_id) -> Product:
         product =  self.product_repository.get_by_id(product_id)
@@ -41,13 +32,15 @@ class ProductService():
     def get_all_products(self):
         return self.product_repository.get_all()
 
-    def update_product(self, product_id, data):
+    def update_product(self, product_id, product_data, request):
         product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
 
-        categories = data.pop("categories")
-        updated_product =  self.product_repository.update(product_id, **data)
+        categories = product_data.pop("categories")
+        files = request.FILES
+        product_data["image_url"] = files.get("image_url")
+        updated_product =  self.product_repository.update(product_id, **product_data)
 
         updated_product.categories.set(categories)
         return updated_product

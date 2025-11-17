@@ -32,7 +32,7 @@ class UpdateProductView(View):
             return render(request, "admin/products/update.html", {"form": form})
 
         try:
-            self.product_service.update_product(product_id, form.cleaned_data)
+            self.product_service.update_product(product_id, form.cleaned_data, request)
             return redirect(f"/admin/products/{product_id}")
         except Exception as e:
             return render(

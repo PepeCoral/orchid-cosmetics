@@ -14,7 +14,7 @@ from app.views.admin.product.list_product_view import ListProductView
 from app.views.admin.product.create_product_view import CreateProductView
 from app.views.admin.product.show_product_view import ShowProductView
 from app.views.admin.product.delete_product_view import DeleteProductView
-from app.views.admin.product.edit_product_view import UpdateProductView
+from app.views.admin.product.update_product_view import UpdateProductView
 
 urlpatterns = [
     # Páginas HTML (Template views)

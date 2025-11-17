@@ -28,7 +28,7 @@ class CreateProductForm(forms.Form):
         validators=[MaxLengthValidator(200,"Fabricator too long")],
         required=False)
 
-    image = forms.ImageField(
+    image_url = forms.ImageField(
         label="Imagen del producto",
         required=False)
 
