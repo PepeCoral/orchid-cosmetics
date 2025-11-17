@@ -34,6 +34,9 @@ urlpatterns = [
 
     path("catalog/", CatalogView.as_view(), name="catalog" ),
 
+
+    path("catalog/", CatalogView.as_view(), name="catalog" ),
+
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
     path('admin/categories/',ListCategoryView.as_view(), name='admin/categories'),

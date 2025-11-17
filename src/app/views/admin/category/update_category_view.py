@@ -35,7 +35,7 @@ class UpdateCategoryView(View):
 
         try:
             self.category_service.update_category(category_id, form.cleaned_data)
-            return redirect(f"/admin/categories/{category_id}")
+            return redirect("admin/categories")
         except Exception as e:
             return render(
                 request,
