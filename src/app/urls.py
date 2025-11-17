@@ -7,6 +7,8 @@ from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
 
+from app.views.catalog.catalog_view import CatalogView
+
 from app.views.admin.admin_panel_view import AdminPanelView
 from app.views.admin.category.list_category_view import ListCategoryView
 from app.views.admin.category.create_category_view import CreateCategoryView
@@ -25,6 +27,9 @@ urlpatterns = [
     path("login/", auth_views.LoginView.as_view(template_name="user/login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
     path("logout/", UserLogoutView.as_view(), name='logout'),
     path("register/", UserRegisterView.as_view(), name="register"),
+
+
+    path("catalog/", CatalogView.as_view(), name="catalog" ),
 
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
