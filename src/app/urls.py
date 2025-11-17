@@ -1,6 +1,8 @@
 from django.urls import path
 import app.views as views
 from django.contrib.auth import views as auth_views
+
+from app.views.home_view import HomeView
 from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
@@ -18,7 +20,7 @@ from app.views.admin.product.update_product_view import UpdateProductView
 
 urlpatterns = [
     # Páginas HTML (Template views)
-    path('', views.home, name='home'),
+    path('', HomeView.as_view(), name='home'),
     path('profile/', UserProfileView.as_view(), name='profile'),
     path("login/", auth_views.LoginView.as_view(template_name="user/login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
     path("logout/", UserLogoutView.as_view(), name='logout'),
@@ -41,10 +43,6 @@ urlpatterns = [
     path('services/', views.list_services, name='list_services'),
     path('services/create/', views.create_service, name='create_service'),
     path('services/<int:service_id>/', views.get_service, name='get_service'),
-
-
-
-
 
     path('cash/', views.get_all_quantity, name="get_all_quantity"),
     path('orders/create/', views.create_order, name="create_order"),
