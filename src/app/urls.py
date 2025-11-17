@@ -18,6 +18,9 @@ from app.views.admin.product.show_product_view import ShowProductView
 from app.views.admin.product.delete_product_view import DeleteProductView
 from app.views.admin.product.update_product_view import UpdateProductView
 
+from app.views.admin.service.list_service_view import ListServiceView
+from app.views.admin.service.create_service_view import CreateServiceView
+
 urlpatterns = [
     # Páginas HTML (Template views)
     path('', HomeView.as_view(), name='home'),
@@ -38,6 +41,8 @@ urlpatterns = [
     path('admin/products/delete/<int:product_id>/', DeleteProductView.as_view(), name='admin/products/delete'),
     path('admin/products/update/<int:product_id>/', UpdateProductView.as_view(), name='admin/products/update'),
 
+    path('admin/cosmeticservices/', ListServiceView.as_view(), name='admin/cosmeticservices'),
+    path('admin/cosmeticservices/create/', CreateServiceView.as_view(), name='admin/cosmeticservices/create'),
 
     # CRUD básico
     path('services/', views.list_services, name='list_services'),
