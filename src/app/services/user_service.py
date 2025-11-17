@@ -21,6 +21,12 @@ class UserService():
         data.pop("confirm_password", None)
 
         return self.user_repository.create(**data)
+    
+    def get_user_by_id(self, user_id):
+      user = self.user_repository.get_by_id(user_id)
+      if not user:
+          raise ValidationError("Usuario no encontrado.")
+      return user
 
     def update_user(self, user_id, user_data, request_user):
         user_to_update = self.user_repository.get_by_id(user_id)
