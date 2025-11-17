@@ -25,7 +25,7 @@ class UserRegisterView(View):
         form = UserRegisterForm(request.POST)
 
         if not form.is_valid():
-            return render(request, "user/register.html", {"form": form, "error": form.errors.items()})
+            return render(request, "user/register.html", {"form": form})
 
         try:
             user = self.user_service.create_user(form.cleaned_data)

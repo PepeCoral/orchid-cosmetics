@@ -14,8 +14,13 @@
 
         <div class="card-body p-4">
 
-          {% if error %}
-          <div class="alert alert-danger">{{ error }}</div>
+          <!-- Show non-field errors -->
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+          </div>
           {% endif %}
 
           <form method="POST" action="{% url 'register' %}">
@@ -27,12 +32,18 @@
                 <div class="form-group compact">
                   {{ form.first_name.label_tag }}
                   {{ form.first_name }}
+                  {% for error in form.first_name.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group compact">
                   {{ form.last_name.label_tag }}
                   {{ form.last_name }}
+                  {% for error in form.last_name.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
                 </div>
               </div>
             </div>
@@ -41,24 +52,36 @@
             <div class="form-group compact">
               {{ form.username.label_tag }}
               {{ form.username }}
+              {% for error in form.username.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
             </div>
 
             <!-- EMAIL -->
             <div class="form-group compact">
               {{ form.email.label_tag }}
               {{ form.email }}
+              {% for error in form.email.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
             </div>
 
             <!-- DIRECCIÓN -->
             <div class="form-group compact">
               {{ form.address.label_tag }}
               {{ form.address }}
+              {% for error in form.address.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
             </div>
 
             <!-- MÉTODO DE PAGO -->
             <div class="form-group compact">
               {{ form.pay_method.label_tag }}
               {{ form.pay_method }}
+              {% for error in form.pay_method.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
             </div>
 
             <!-- CONTRASEÑA / CONFIRMAR -->
@@ -67,12 +90,18 @@
                 <div class="form-group compact">
                   {{ form.password.label_tag }}
                   {{ form.password }}
+                  {% for error in form.password.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group compact">
                   {{ form.confirm_password.label_tag }}
                   {{ form.confirm_password }}
+                  {% for error in form.confirm_password.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
                 </div>
               </div>
             </div>
@@ -109,7 +138,8 @@
 
   input[type="text"],
   input[type="email"],
-  input[type="password"] {
+  input[type="password"],
+  select {
     width: 100%;
     padding: 0.55rem 0.75rem;
     border: 1px solid #ddd;
@@ -118,7 +148,8 @@
     transition: 0.2s;
   }
 
-  input:focus {
+  input:focus,
+  select:focus {
     border-color: #a97acf !important;
     box-shadow: 0 0 0 0.12rem rgba(169, 122, 207, 0.25) !important;
   }
