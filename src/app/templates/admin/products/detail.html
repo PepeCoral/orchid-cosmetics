@@ -1,0 +1,28 @@
+{% extends 'admin/base_admin.html' %}
+
+
+{% block content %}
+<h2>Detalles del productoo</h2>
+
+<div class="card p-4 mb-3 shadow-sm" style="max-width: 600px;">
+
+  {% if product.image_url %}
+  <img src="{{ product.image_url.url }}" alt="{{ product.name }}" style="max-width: 400px; border-radius: 8px;">
+  {% endif %}
+
+  <p><strong>Nombre:</strong> {{ product.name }}</p>
+  <p><strong>Descripción:</strong> {{ product.description }}</p>
+  <p><strong>Precio:</strong> {{ product.price }}</p>
+  <p><strong>Stock:</strong> {{ product.stock }}</p>
+  <p><strong>Fabricante:</strong> {{ product.fabricator }}</p>
+  <p><strong>Categorias:</strong>
+    {% for category in categories %}
+  <p>{{ category }}</p>
+  {% endfor %}
+  </p>
+  <a href="{% url 'admin/products/update' product.id %}" class="btn btn-success mt-3">Editar Producto</a>
+  <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-danger mt-3">Borrar Producto</a>
+</div>
+
+<a href="/admin/products" class="btn btn-secondary mt-3">Volver a la lista</a>
+{% endblock %}

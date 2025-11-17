@@ -4,53 +4,50 @@ from app.models import Product
 
 class ProductService():
     def __init__(self):
-        self.repository = ProductRepository()
+        self.product_repository = ProductRepository()
 
     def create_product(self, request, product_data):
-        # 🔹 Regla de negocio: no se permiten nombres duplicados
+
+        if(product_data["price"] < 0):
+            raise ValidationError("Price cannot be negative")
+        if(product_data["stock"] < 0):
+            raise ValidationError("Stock cannot be negative")
+
         files = request.FILES
+        product_data["image_url"] = files.get("image_url")
+        categories = product_data.pop("categories")
+        product = self.product_repository.create(**product_data)
+        product.categories.set(categories)
+        return product
 
-        product = Product(
-            name=product_data['name'],
-            description=product_data['description'],
-            price=product_data['price'],
-            stock=product_data['stock'],
-            fabricator=product_data['fabricator'],
-            image_url=files.get('image')
-        )
-        product.save()
 
-        if 'categories' in product_data:
-            product.categories.set(product_data['categories'])
+    def get_product_by_id(self, product_id) -> Product:
+        product =  self.product_repository.get_by_id(product_id)
+
+        if product is None:
+            raise Product.DoesNotExist(f"No product with id: {product_id}")
 
         return product
-        # 🔹 Crear producto
 
-    def get_product_by_id(self, product_id):
-        return self.repository.get_by_id(product_id)
-    
     def get_all_products(self):
-        return self.repository.get_all()
+        return self.product_repository.get_all()
 
-    def update_product(self, product_id, **data):
-        product = self.repository.get_by_id(product_id)
+    def update_product(self, product_id, product_data, request):
+        product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
 
-        # 🔹 Lógica adicional
-        validation = self.validate_product_data(**data)
-        if not validation:
-            raise ValidationError("Los datos del producto son inválidos.")
+        categories = product_data.pop("categories")
+        files = request.FILES
+        product_data["image_url"] = files.get("image_url")
+        updated_product =  self.product_repository.update(product_id, **product_data)
 
-        return self.repository.update(product, **data)
+        updated_product.categories.set(categories)
+        return updated_product
+
 
     def delete_product(self, product_id):
-        product = self.repository.get_by_id(product_id)
-        if not product:
-            raise ValidationError("Producto no encontrado.")
+        return self.product_repository.delete(product_id)
 
-        return self.repository.delete(product)
-    
     def get_products_by_category(self, category_id):
-        return self.repository.get_products_by_category(category_id)
-        
+        return self.product_repository.get_products_by_category(category_id)

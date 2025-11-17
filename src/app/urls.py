@@ -5,13 +5,36 @@ from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
 
+from app.views.admin.admin_panel_view import AdminPanelView
+from app.views.admin.category.list_category_view import ListCategoryView
+from app.views.admin.category.create_category_view import CreateCategoryView
+from app.views.admin.category.delete_category_view import DeleteCategoryView
+
+from app.views.admin.product.list_product_view import ListProductView
+from app.views.admin.product.create_product_view import CreateProductView
+from app.views.admin.product.show_product_view import ShowProductView
+from app.views.admin.product.delete_product_view import DeleteProductView
+from app.views.admin.product.update_product_view import UpdateProductView
+
 urlpatterns = [
     # Páginas HTML (Template views)
     path('', views.home, name='home'),
     path('profile/', UserProfileView.as_view(), name='profile'),
-    path("login/", auth_views.LoginView.as_view(template_name="login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
+    path("login/", auth_views.LoginView.as_view(template_name="user/login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
     path("logout/", UserLogoutView.as_view(), name='logout'),
     path("register/", UserRegisterView.as_view(), name="register"),
+
+    path("admin/", AdminPanelView.as_view(), name="admin"),
+
+    path('admin/categories/',ListCategoryView.as_view(), name='admin/categories'),
+    path('admin/categories/create/',CreateCategoryView.as_view(), name='admin/categories/create'),
+    path('admin/categories/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/categories/delete'),
+
+    path('admin/products/', ListProductView.as_view(), name='admin/products'),
+    path('admin/products/create/', CreateProductView.as_view(), name='admin/products/create'),
+    path('admin/products/<int:product_id>/', ShowProductView.as_view(), name='admin/products/show'),
+    path('admin/products/delete/<int:product_id>/', DeleteProductView.as_view(), name='admin/products/delete'),
+    path('admin/products/update/<int:product_id>/', UpdateProductView.as_view(), name='admin/products/update'),
 
 
     # CRUD básico
@@ -19,12 +42,9 @@ urlpatterns = [
     path('services/create/', views.create_service, name='create_service'),
     path('services/<int:service_id>/', views.get_service, name='get_service'),
 
-    path('products/', views.list_products, name='list_products'),
-    path('products/create/', views.create_product, name='create_product'),
-    path('products/<int:product_id>/', views.get_product, name='get_product'),
 
-    path('categories/',views.list_categories, name='list_categories'),
-    path('categories/create/',views.create_category, name='create_category'),
+
+
 
     path('cash/', views.get_all_quantity, name="get_all_quantity"),
     path('orders/create/', views.create_order, name="create_order"),
