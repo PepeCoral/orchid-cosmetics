@@ -20,8 +20,15 @@ class UserService():
         data = user_data.copy()
         data.pop("confirm_password", None)
 
-        return self.user_repository.create(**data)
-    
+        superuser=False
+        if len(self.user_repository.get_all()) == 0:
+            superuser=True
+
+        user =  self.user_repository.create(**data)
+        user.is_superuser = superuser
+        user.save()
+        return user
+
     def get_user_by_id(self, user_id):
       user = self.user_repository.get_by_id(user_id)
       if not user:
@@ -50,20 +57,20 @@ class UserService():
                 raise ValidationError("Email already in use")
 
         password_changed = False
-        
-        
+
+
         if 'password' in update_data and update_data['password']:
             # Verificar que no sea string vacío o solo espacios
             if update_data['password'].strip():
                 user_to_update.set_password(update_data['password'])
                 user_to_update.save()
                 password_changed = True
-        
+
         update_data.pop('password', None)
 
         # Actualizar otros campos
         updated_user = self.user_repository.update(user_id, **update_data)
-        
+
         return updated_user, password_changed
 
     def delete_user(self, user_id, request_user):

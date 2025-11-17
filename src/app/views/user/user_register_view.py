@@ -18,13 +18,14 @@ class UserRegisterView(View):
         return render(request, "user/register.html", {"form": form})
 
     def post(self, request):
+
         if not request.user.is_anonymous:
             return redirect("/profile")
 
         form = UserRegisterForm(request.POST)
 
         if not form.is_valid():
-            return render(request, "user/register.html", {"form": form})
+            return render(request, "user/register.html", {"form": form, "error": form.errors.items()})
 
         try:
             user = self.user_service.create_user(form.cleaned_data)

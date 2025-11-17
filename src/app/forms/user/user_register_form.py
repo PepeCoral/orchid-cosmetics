@@ -12,10 +12,10 @@ class UserRegisterForm(forms.Form):
     address = forms.CharField(label="Dirección",validators=[MaxLengthValidator(200,"Address too long")],required=False)
     pay_method = forms.CharField(label="Método de pago", required=False)
     password = forms.CharField(label="Introduzca una contraseña",
-                               validators=[MinLengthValidator(6,"Contraseña demasiado corta")],
+                               validators=[MinLengthValidator(5,"Contraseña demasiado corta")],
                                widget=forms.PasswordInput())
     confirm_password = forms.CharField(label="Confirma la contraseña",
-                                       validators=[MinLengthValidator(6,"Contraseña demasiado corta")],
+                                       validators=[MinLengthValidator(5,"Contraseña demasiado corta")],
                                        widget=forms.PasswordInput())
 
 
