@@ -2,6 +2,7 @@ from django.urls import path
 import app.views as views
 from django.contrib.auth import views as auth_views
 
+from app.views.admin.category.update_category_view import UpdateCategoryView
 from app.views.home_view import HomeView
 from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
@@ -36,6 +37,7 @@ urlpatterns = [
     path('admin/categories/',ListCategoryView.as_view(), name='admin/categories'),
     path('admin/categories/create/',CreateCategoryView.as_view(), name='admin/categories/create'),
     path('admin/categories/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/categories/delete'),
+    path('admin/categories/update/<int:category_id>', UpdateCategoryView.as_view(), name='admin/categories/update'),
 
     path('admin/products/', ListProductView.as_view(), name='admin/products'),
     path('admin/products/create/', CreateProductView.as_view(), name='admin/products/create'),
