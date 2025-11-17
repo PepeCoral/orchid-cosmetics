@@ -11,7 +11,16 @@
   <p><strong>Método de Pago:</strong> {{ user.pay_method }}</p>
   <p><strong>Rol:</strong> {{ user.role }}</p>
 
-
-  <a href="{% url 'logout' %}" class="btn btn-danger mt-3">Cerrar Sesión</a>
+  <div class="d-flex gap-2 mt-3">
+    <a href="{% url 'update_user' user.id %}" class="btn text-white" style="background-color: #a97acf;">
+      Editar Perfil
+    </a>
+    <a href="{% url 'delete_user' user.id %}" class="btn btn-danger">
+      Eliminar Cuenta
+    </a>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">
+      Cerrar Sesión
+    </a>
+  </div>
 </div>
 {% endblock %}
