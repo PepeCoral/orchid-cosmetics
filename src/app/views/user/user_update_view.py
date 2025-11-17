@@ -35,7 +35,7 @@ class UpdateUserView(View):
 
         try:
             self.user_service.update_user(user_id, form.cleaned_data, request.user)
-            return redirect(f"/profile/{user_id}")
+            return redirect("profile")
         except Exception as e:
             return render(
                 request,
