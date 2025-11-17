@@ -14,7 +14,7 @@ class UserRegisterForm(forms.Form):
     password = forms.CharField(label="Introduzca una contraseña",
                                validators=[MinLengthValidator(6,"Contraseña demasiado corta")],
                                widget=forms.PasswordInput())
-    confirm_password = forms.CharField(label="Escriba de nuevo la contraseña",
+    confirm_password = forms.CharField(label="Confirma la contraseña",
                                        validators=[MinLengthValidator(6,"Contraseña demasiado corta")],
                                        widget=forms.PasswordInput())
 
