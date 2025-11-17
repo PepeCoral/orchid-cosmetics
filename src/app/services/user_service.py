@@ -1,5 +1,6 @@
-from django.core.exceptions import ValidationError
+from app.models.user import RoleOptions, User
 from app.repositories.user_repository import UserRepository
+from django.core.exceptions import ValidationError, PermissionDenied
 
 class UserService():
     def __init__(self):
@@ -20,3 +21,57 @@ class UserService():
         data.pop("confirm_password", None)
 
         return self.user_repository.create(**data)
+    
+    def get_user_by_id(self, user_id):
+      user = self.user_repository.get_by_id(user_id)
+      if not user:
+          raise ValidationError("Usuario no encontrado.")
+      return user
+
+    def update_user(self, user_id, user_data, request_user):
+        user_to_update = self.user_repository.get_by_id(user_id)
+        if not user_to_update:
+            raise ValidationError("Usuario no encontrado.")
+
+        if request_user.id != user_to_update.id:
+            raise PermissionDenied("Solo puedes modificar tu propio perfil.")
+
+        # Hacer copia para no modificar el original
+        update_data = user_data.copy()
+
+        if 'username' in update_data:
+            existing_user = self.user_repository.get_by_username(update_data["username"])
+            if existing_user and existing_user.id != user_id:
+                raise ValidationError("Username already in use")
+
+        if 'email' in update_data:
+            existing_user = self.user_repository.get_by_email(update_data["email"])
+            if existing_user and existing_user.id != user_id:
+                raise ValidationError("Email already in use")
+
+        password_changed = False
+        
+        
+        if 'password' in update_data and update_data['password']:
+            # Verificar que no sea string vacío o solo espacios
+            if update_data['password'].strip():
+                user_to_update.set_password(update_data['password'])
+                user_to_update.save()
+                password_changed = True
+        
+        update_data.pop('password', None)
+
+        # Actualizar otros campos
+        updated_user = self.user_repository.update(user_id, **update_data)
+        
+        return updated_user, password_changed
+
+    def delete_user(self, user_id, request_user):
+        user_to_delete = self.user_repository.get_by_id(user_id)
+        if not user_to_delete:
+            raise ValidationError("Usuario no encontrado.")
+
+        if request_user.id != user_to_delete.id:
+            raise PermissionDenied("Solo puedes eliminar tu propio perfil.")
+
+        return self.user_repository.delete(user_id)
