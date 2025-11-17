@@ -1,26 +1,188 @@
 {% extends 'base.html' %}
 
+{% block title %}Mi Perfil - Orchid Cosmetics{% endblock %}
+
 {% block content %}
-<h2>Perfil del Usuario</h2>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <!-- Header con el color de la marca -->
+      <div class="text-center mb-4">
+        <h1 class="display-5" style="color: #a97acf;">Mi Perfil</h1>
+        <p class="lead text-muted">Gestiona tu información personal</p>
+      </div>
 
-<div class="card p-4 mt-3 shadow-sm" style="max-width: 500px;">
-  <p><strong>Nombre:</strong> {{ user.first_name }}</p>
-  <p><strong>Apellido:</strong> {{ user.last_name }}</p>
-  <p><strong>Email:</strong> {{ user.email }}</p>
-  <p><strong>Dirección:</strong> {{ user.address }}</p>
-  <p><strong>Método de Pago:</strong> {{ user.pay_method }}</p>
-  <p><strong>Rol:</strong> {{ user.role }}</p>
+      <!-- Tarjeta de perfil -->
+      <div class="card shadow-lg border-0">
+        <div class="card-header text-white text-center py-4" style="background-color: #a97acf;">
+          <h3 class="mb-0">Información Personal</h3>
+        </div>
+        <div class="card-body p-5">
+          <div class="row">
+            <!-- Columna izquierda -->
+            <div class="col-md-6">
+              <div class="info-item mb-4">
+                <div class="d-flex align-items-center">
+                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">👤</span>
+                  <div>
+                    <strong class="d-block" style="color: #a97acf;">Nombre</strong>
+                    <span class="text-dark">{{ user.first_name }}</span>
+                  </div>
+                </div>
+              </div>
 
-  <div class="d-flex gap-2 mt-3">
-    <a href="{% url 'update_user' user.id %}" class="btn text-white" style="background-color: #a97acf;">
-      Editar Perfil
-    </a>
-    <a href="{% url 'delete_user' user.id %}" class="btn btn-danger">
-      Eliminar Cuenta
-    </a>
-    <a href="{% url 'logout' %}" class="btn btn-secondary">
-      Cerrar Sesión
-    </a>
+              <div class="info-item mb-4">
+                <div class="d-flex align-items-center">
+                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">📧</span>
+                  <div>
+                    <strong class="d-block" style="color: #a97acf;">Email</strong>
+                    <span class="text-dark">{{ user.email }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-item mb-4">
+                <div class="d-flex align-items-center">
+                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">📍</span>
+                  <div>
+                    <strong class="d-block" style="color: #a97acf;">Dirección</strong>
+                    <span class="text-dark">
+                      {% if user.address %}
+                      {{ user.address }}
+                      {% else %}
+                      <span class="text-muted">No especificada</span>
+                      {% endif %}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="col-md-6">
+              <div class="info-item mb-4">
+                <div class="d-flex align-items-center">
+                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">👥</span>
+                  <div>
+                    <strong class="d-block" style="color: #a97acf;">Apellidos</strong>
+                    <span class="text-dark">{{ user.last_name }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-item mb-4">
+                <div class="d-flex align-items-center">
+                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">💳</span>
+                  <div>
+                    <strong class="d-block" style="color: #a97acf;">Método de Pago</strong>
+                    <span class="text-dark">
+                      {% if user.pay_method %}
+                      {{ user.pay_method }}
+                      {% else %}
+                      <span class="text-muted">No especificado</span>
+                      {% endif %}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-item mb-4">
+                <div class="d-flex align-items-center">
+                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">🎯</span>
+                  <div>
+                    <strong class="d-block" style="color: #a97acf;">Rol</strong>
+                    <span class="badge text-white" style="background-color: #a97acf;">{{ user.role }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de acción con más separación -->
+          <div class="row mt-5">
+            <div class="col-12">
+              <div class="d-flex justify-content-center gap-4 flex-wrap">
+                <!-- Botón Editar -->
+                <div class="text-center mb-3">
+                  <a href="{% url 'update_user' user.id %}" class="btn text-white px-4 py-2 d-block"
+                    style="background-color: #a97acf; border-radius: 25px; min-width: 160px;">
+                    <span class="me-2">✏️</span>Editar Perfil
+                  </a>
+                </div>
+
+                <!-- Botón Eliminar -->
+                <div class="text-center mb-3">
+                  <a href="{% url 'delete_user' user.id %}" class="btn btn-outline-danger px-4 py-2 d-block"
+                    style="border-radius: 25px; min-width: 160px;">
+                    <span class="me-2">🗑️</span>Eliminar Cuenta
+                  </a>
+                </div>
+
+                <!-- Botón Cerrar Sesión -->
+                <div class="text-center mb-3">
+                  <a href="{% url 'logout' %}" class="btn btn-outline-secondary px-4 py-2 d-block"
+                    style="border-radius: 25px; min-width: 160px;">
+                    <span class="me-2">🚪</span>Cerrar Sesión
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información adicional -->
+      <div class="text-center mt-4">
+        <p class="text-muted">
+          <small>Miembro desde: {{ user.date_joined|date:"d M Y" }}</small>
+        </p>
+      </div>
+    </div>
   </div>
 </div>
+
+<style>
+  .card {
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .info-item {
+    padding: 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+  }
+
+  .info-item:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(169, 122, 207, 0.1);
+  }
+
+  .btn {
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+  }
+
+  /* Separación adicional entre botones */
+  .gap-4 {
+    gap: 1.5rem !important;
+  }
+
+  .mb-3 {
+    margin-bottom: 1rem !important;
+  }
+</style>
 {% endblock %}
