@@ -1,0 +1,35 @@
+{% extends 'admin/base_admin.html' %}
+
+
+{% block content %}
+<h2>Lista de Productos</h2>
+
+<div class="mt-3">
+
+  <a href="create" class="btn btn-success mt-3">Crear Producto</a>
+
+
+  {% for service in services %}
+  <div class="card p-4 mb-3 shadow-sm" style="max-width: 500px;">
+
+    {% if service.image_url %}
+    <img src="{{ service.image_url.url }}" alt="{{ service.name }}" style="max-width: 200px; border-radius: 8px;">
+    {% endif %}
+
+    <p><strong>Nombre:</strong> {{ service.name }}</p>
+    <p><strong>Descripción:</strong> {{ service.description }}</p>
+    <p><strong>Precio:</strong> {{ service.price }}</p>
+    <p><strong>Duración:</strong> {{ service.duration_minutes}}</p>
+
+    <a href="{{ service.id }}" class="btn btn-primary mt-3">
+      Ver detalles
+    </a>
+
+  </div>
+  {% endfor %}
+
+
+
+</div>
+
+{% endblock %}
