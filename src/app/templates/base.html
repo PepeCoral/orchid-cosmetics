@@ -38,12 +38,14 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}">Acerca de</a>
+        </li>
 
         <li class="nav-item">
           <a class="nav-link" href="{% url 'catalog' %}"">Catálogo</a>
         </li>
-
+                                                         
         <li class=" nav-item">
             <a class="nav-link" href="{% url 'get_all_quantity' %}">Carrito de Compra</a>
         </li>
