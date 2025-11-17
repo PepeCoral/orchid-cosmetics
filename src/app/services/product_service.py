@@ -41,17 +41,17 @@ class ProductService():
     def get_all_products(self):
         return self.product_repository.get_all()
 
-    def update_product(self, product_id, **data):
+    def update_product(self, product_id, data):
         product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
 
-        # 🔹 Lógica adicional
-        validation = self.validate_product_data(**data)
-        if not validation:
-            raise ValidationError("Los datos del producto son inválidos.")
+        categories = data.pop("categories")
+        updated_product =  self.product_repository.update(product_id, **data)
 
-        return self.product_repository.update(product, **data)
+        updated_product.categories.set(categories)
+        return updated_product
+
 
     def delete_product(self, product_id):
         return self.product_repository.delete(product_id)

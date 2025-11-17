@@ -20,6 +20,7 @@
   <p>{{ category }}</p>
   {% endfor %}
   </p>
+  <a href="{% url 'admin/products/update' product.id %}" class="btn btn-success mt-3">Editar Producto</a>
   <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-danger mt-3">Borrar Producto</a>
 </div>
 
