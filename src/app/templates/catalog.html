@@ -5,37 +5,69 @@
 {% block content %}
 <div class="container mt-3">
 
-  <h1>Catálogo de productos</h1>
+  <h1>Catálogo</h1>
 
   <!-- Toggle Button -->
   <button class="btn btn-secondary mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
     aria-expanded="false" aria-controls="searchForm">
-    Buscar productos
+    Buscar
   </button>
 
   <!-- Collapsible Search Form -->
   <div class="collapse" id="searchForm">
-    <div class="card card-body">
-      <form method="POST">
+    <div class="card card-body shadow-sm">
+      <form method="POST" class="form-inline flex-wrap">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Buscar</button>
+
+        <!-- Nombre -->
+        <div class="form-group mb-2 mr-2 flex-fill" style="min-width: 180px;">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+        </div>
+
+        <!-- Fabricante -->
+        <div class="form-group mb-2 mr-2 flex-fill" style="min-width: 180px;">
+          {{ form.fabricator.label_tag }}
+          {{ form.fabricator }}
+        </div>
+
+        <!-- Precio Mínimo -->
+        <div class="form-group mb-2 mr-2" style="width: 120px;">
+          {{ form.min_price.label_tag }}
+          {{ form.min_price }}
+        </div>
+
+        <!-- Precio Máximo -->
+        <div class="form-group mb-2 mr-2" style="width: 120px;">
+          {{ form.max_price.label_tag }}
+          {{ form.max_price }}
+        </div>
+
+        <!-- Categorías -->
+        <div class="form-group mb-2 mr-2 flex-fill" style="min-width: 180px;">
+          {{ form.categories.label_tag }}
+          {{ form.categories }}
+        </div>
+
+        <!-- Botón -->
+        <div class="form-group mb-2">
+          <label>&nbsp;</label>
+          <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+        </div>
+
       </form>
     </div>
   </div>
 
   <hr>
 
-  <h2 class="mb-4">Resultados</h2>
 
   {% if products %}
   <div class="row">
 
     {% for p in products %}
     <div class="col-md-4 mb-4">
-
       <a href="/product/{{ p.id }}" class="text-decoration-none" style="color: inherit;">
-
         <div class="card h-100 shadow-sm">
 
           {% if p.image_url %}
@@ -51,13 +83,10 @@
             <h5 class="card-title">{{ p.name }}</h5>
             <p class="card-text mb-1"><strong>Fabricante:</strong> {{ p.fabricator }}</p>
             <span class="badge badge-success">€{{ p.price }}</span>
-
           </div>
 
         </div>
-
       </a>
-
     </div>
     {% endfor %}
 
@@ -74,4 +103,48 @@
   {% endif %}
 
 </div>
+
+<style>
+  /* Inputs más elegantes */
+  .form-inline .form-group input,
+  .form-inline .form-group select {
+    display: block;
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+    transition: 0.2s;
+  }
+
+  .form-inline .form-group input:focus,
+  .form-inline .form-group select:focus {
+    border-color: #a97acf;
+    box-shadow: 0 0 0 0.2rem rgba(169, 122, 207, 0.25);
+  }
+
+  .form-inline label {
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+    display: block;
+  }
+
+  .btn-block {
+    min-width: 100px;
+  }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('.select2').select2({
+      placeholder: "Seleccione categorías",
+      allowClear: true
+    });
+  });
+</script>
+
 {% endblock %}
