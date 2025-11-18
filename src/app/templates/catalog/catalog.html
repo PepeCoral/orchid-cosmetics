@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo - Orchid Cosmetics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <h1 class="mb-4">Catálogo</h1>
+
+  <!-- Toggle Button -->
+  <button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
+    aria-expanded="false" aria-controls="searchForm" style="background-color: #a97acf;">
+    🔍 Buscar
+  </button>
+
+  <!-- Collapsible Search Form -->
+  <div class="collapse" id="searchForm">
+    <div class="card card-body shadow-sm">
+      <form method="POST" class="form-inline flex-wrap">
+        {% csrf_token %}
+        <!-- ... tu formulario existente ... -->
+      </form>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- PRODUCTOS -->
+  {% if products %}
+  <div class="mb-5">
+    <h3 class="mb-4" style="color: #a97acf;">📦 Productos</h3>
+    <div class="row">
+      {% for p in products %}
+      <div class="col-md-4 col-lg-3 mb-4">
+        <a href="/products/{{ p.id }}" class="text-decoration-none" style="color: inherit;">
+          <div class="card h-100 shadow-sm product-card">
+            {% if p.image_url %}
+            <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
+              style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
+              <span class="text-muted">Sin imagen</span>
+            </div>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+              <h6 class="card-title">{{ p.name }}</h6>
+              <p class="card-text text-muted small mb-2">{{ p.fabricator }}</p>
+              
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge text-white" style="background-color: #a97acf;">€{{ p.price }}</span>
+                  <small class="text-muted">{{ p.stock }} en stock</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- SERVICIOS -->
+  {% if services %}
+  <div class="mb-5">
+    <h3 class="mb-4" style="color: #a97acf;">💅 Servicios</h3>
+    <div class="row">
+      {% for s in services %}
+      <div class="col-md-4 col-lg-3 mb-4">
+        <a href="/services/{{ s.id }}" class="text-decoration-none" style="color: inherit;">
+          <div class="card h-100 shadow-sm service-card">
+            {% if s.image_url %}
+            <img src="{{ s.image_url.url }}" class="card-img-top" alt="{{ s.name }}"
+              style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
+              <span class="text-muted">Sin imagen</span>
+            </div>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+              <h6 class="card-title">{{ s.name }}</h6>
+              <p class="card-text text-muted small mb-2">{{ s.department }}</p>
+              
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge text-white" style="background-color: #a97acf;">€{{ s.price }}</span>
+                  <small class="text-muted">{{ s.duration_minutes }} min</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Mensaje si no hay nada -->
+  {% if not products and not services %}
+  <div class="text-center py-5">
+    <div class="alert alert-info">
+      <h5>El catálogo está vacío</h5>
+      <p class="mb-0">Pronto tendremos productos y servicios disponibles.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if error %}
+  <div class="alert alert-danger mt-3">
+    {{ error }}
+  </div>
+  {% endif %}
+
+</div>
+
+<style>
+  .product-card, .service-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    border-radius: 10px;
+  }
+
+  .product-card:hover, .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .card-title {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .badge {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+  }
+</style>
+{% endblock %}
