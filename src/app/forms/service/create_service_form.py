@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from app.models import Category
-from django.core.validators import MaxLengthValidator,MinValueValidator
+from django.core.validators import MaxLengthValidator,MinValueValidator,MaxValueValidator
 
 
 
@@ -13,7 +13,8 @@ class ServiceForm(forms.Form):
                                   validators=[MaxLengthValidator(300,"Description too long")])
     
     price = forms.DecimalField(label="Precio", decimal_places=2, min_value=0.0,
-                               validators=[MinValueValidator(0.0,"El precio debe ser mayor o igual que 0.0")])
+                               validators=[MinValueValidator(0.0,"El precio debe ser mayor o igual que 0.0"),
+                                           MaxValueValidator(99999999.99, "Precio demasiado elevado")])
     
     duration_minutes = forms.IntegerField(label="Duracion", min_value=0)
     
