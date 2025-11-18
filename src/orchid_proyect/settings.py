@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
 from dotenv import load_dotenv
+from urllib.parse import urlparse, parse_qsl
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,16 +82,18 @@ WSGI_APPLICATION = 'orchid_proyect.wsgi.application'
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 if ENVIRONMENT == "production":
+    tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
+
     DATABASES = {
-        "default": dj_database_url.parse(
-            os.getenv("DB_URL"),
-            conn_max_age=600,
-            ssl_require=False
-        )
-    }
-    # Force Postgres to use the 'public' schema
-    DATABASES['default']['OPTIONS'] = {
-        'options': '-c search_path=public'
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': tmpPostgres.path.replace('/', ''),
+            'USER': tmpPostgres.username,
+            'PASSWORD': tmpPostgres.password,
+            'HOST': tmpPostgres.hostname,
+            'PORT': 5432,
+            'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
+        }
     }
 
 else:
