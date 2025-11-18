@@ -1,34 +1,60 @@
+# app/forms/catalog_search_form.py
 from django import forms
 from app.models.category import Category
-from django.core.validators import MaxLengthValidator
-
 
 class SearchCatalogForm(forms.Form):
-
     name = forms.CharField(
-        label="Nombre del producto",
-        validators=[MaxLengthValidator(150,"Nombre del producto demasiado largo")],
-        required=False)
-
-    min_price = forms.DecimalField(
-        label="Precio Mínimo",
-        decimal_places=2,
+        label="Nombre",
         required=False,
-        min_value=0)
-
-    max_price = forms.DecimalField(
-        label="Precio Máximo",
-        decimal_places=2,
-        required=False,
-        min_value=0)
-
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Buscar por nombre...'
+        })
+    )
+    
     fabricator = forms.CharField(
         label="Fabricante",
-        validators=[MaxLengthValidator(200,"Fabricator too long")],
-        required=False)
-
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Fabricante...'
+        })
+    )
+    
+    department = forms.CharField(
+        label="Departamento",
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Departamento...'
+        })
+    )
+    
+    min_price = forms.DecimalField(
+        label="Precio mínimo",
+        required=False,
+        min_value=0,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Mínimo €'
+        })
+    )
+    
+    max_price = forms.DecimalField(
+        label="Precio máximo", 
+        required=False,
+        min_value=0,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Máximo €'
+        })
+    )
+    
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        label="Categorías",
         required=False,
-        label="Categorias")
+        widget=forms.SelectMultiple(attrs={
+            'class': 'form-control select2'
+        })
+    )

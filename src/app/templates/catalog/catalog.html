@@ -10,18 +10,80 @@
   <!-- Toggle Button -->
   <button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
     aria-expanded="false" aria-controls="searchForm" style="background-color: #a97acf;">
-    🔍 Buscar
+    🔍 Buscar y Filtrar
   </button>
 
   <!-- Collapsible Search Form -->
   <div class="collapse" id="searchForm">
     <div class="card card-body shadow-sm">
-      <form method="POST" class="form-inline flex-wrap">
+      <form method="POST" class="row g-3">
         {% csrf_token %}
-        <!-- ... tu formulario existente ... -->
+
+        <!-- Nombre -->
+        <div class="col-md-6">
+          <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+          {{ form.name }}
+        </div>
+
+        <!-- Fabricante (para productos) -->
+        <div class="col-md-6">
+          <label for="{{ form.fabricator.id_for_label }}" class="form-label">{{ form.fabricator.label }}</label>
+          {{ form.fabricator }}
+        </div>
+
+        <!-- Departamento (para servicios) -->
+        <div class="col-md-6">
+          <label for="{{ form.department.id_for_label }}" class="form-label">{{ form.department.label }}</label>
+          {{ form.department }}
+        </div>
+
+        <!-- Rango de Precio -->
+        <div class="col-md-3">
+          <label for="{{ form.min_price.id_for_label }}" class="form-label">{{ form.min_price.label }}</label>
+          {{ form.min_price }}
+        </div>
+
+        <div class="col-md-3">
+          <label for="{{ form.max_price.id_for_label }}" class="form-label">{{ form.max_price.label }}</label>
+          {{ form.max_price }}
+        </div>
+
+        <!-- Categorías -->
+        <div class="col-12">
+          <label for="{{ form.categories.id_for_label }}" class="form-label">{{ form.categories.label }}</label>
+          {{ form.categories }}
+        </div>
+
+        <!-- Botones -->
+        <div class="col-12">
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn text-white" style="background-color: #a97acf;">
+              🔍 Aplicar Filtros
+            </button>
+            <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
+              🗑️ Limpiar Filtros
+            </a>
+          </div>
+        </div>
+
       </form>
     </div>
   </div>
+
+  <!-- Mostrar filtros activos -->
+  {% if form.is_bound %}
+  <div class="mb-3">
+    <small class="text-muted">
+      Filtros activos: 
+      {% if form.name.value %}<span class="badge bg-primary">Nombre: "{{ form.name.value }}"</span>{% endif %}
+      {% if form.fabricator.value %}<span class="badge bg-primary">Fabricante: "{{ form.fabricator.value }}"</span>{% endif %}
+      {% if form.department.value %}<span class="badge bg-primary">Departamento: "{{ form.department.value }}"</span>{% endif %}
+      {% if form.min_price.value %}<span class="badge bg-primary">Precio mínimo: {{ form.min_price.value }}€</span>{% endif %}
+      {% if form.max_price.value %}<span class="badge bg-primary">Precio máximo: {{ form.max_price.value }}€</span>{% endif %}
+      {% if form.categories.value %}<span class="badge bg-primary">{{ form.categories.value|length }} categoría(s)</span>{% endif %}
+    </small>
+  </div>
+  {% endif %}
 
   <hr>
 
@@ -31,14 +93,14 @@
       <button class="nav-link active" id="products-tab" data-toggle="tab" data-target="#products" type="button"
         role="tab" aria-controls="products" aria-selected="true"
         style="background-color: #a97acf; color: white; border-color: #a97acf;">
-        📦 Productos
+        📦 Productos ({{ products|length }})
       </button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="services-tab" data-toggle="tab" data-target="#services" type="button" role="tab"
         aria-controls="services" aria-selected="false"
         style="background-color: #e9d4f7; color: #a97acf; border-color: #a97acf;">
-        💅 Servicios
+        💅 Servicios ({{ services|length }})
       </button>
     </li>
   </ul>
@@ -83,7 +145,13 @@
       <div class="text-center py-5">
         <div class="alert alert-info">
           <h5>No hay productos disponibles</h5>
-          <p class="mb-0">Pronto tendremos nuevos productos en stock.</p>
+          <p class="mb-0">
+            {% if form.is_bound %}
+              No se encontraron productos con los filtros aplicados.
+            {% else %}
+              Pronto tendremos nuevos productos en stock.
+            {% endif %}
+          </p>
         </div>
       </div>
       {% endif %}
@@ -126,7 +194,13 @@
       <div class="text-center py-5">
         <div class="alert alert-info">
           <h5>No hay servicios disponibles</h5>
-          <p class="mb-0">Pronto tendremos nuevos servicios disponibles.</p>
+          <p class="mb-0">
+            {% if form.is_bound %}
+              No se encontraron servicios con los filtros aplicados.
+            {% else %}
+              Pronto tendremos nuevos servicios disponibles.
+            {% endif %}
+          </p>
         </div>
       </div>
       {% endif %}
@@ -139,7 +213,13 @@
   <div class="text-center py-5">
     <div class="alert alert-info">
       <h5>El catálogo está vacío</h5>
-      <p class="mb-0">Pronto tendremos productos y servicios disponibles.</p>
+      <p class="mb-0">
+        {% if form.is_bound %}
+          No se encontraron resultados con los filtros aplicados.
+        {% else %}
+          Pronto tendremos productos y servicios disponibles.
+        {% endif %}
+      </p>
     </div>
   </div>
   {% endif %}
@@ -213,11 +293,36 @@
     border-top: none;
     border-radius: 0 0 8px 8px;
   }
+
+  /* Estilos para el formulario de búsqueda */
+  .form-control, .select2 {
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+  }
+
+  .form-control:focus, .select2:focus {
+    border-color: #a97acf;
+    box-shadow: 0 0 0 0.2rem rgba(169, 122, 207, 0.25);
+  }
+
+  .badge.bg-primary {
+    background-color: #a97acf !important;
+  }
 </style>
 
-<!-- Script para mantener la pestaña activa al recargar -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    // Select2 para categorías
+    $('.select2').select2({
+      placeholder: "Seleccione categorías",
+      allowClear: true,
+      width: '100%'
+    });
+
     // Recuperar pestaña activa del localStorage
     const activeTab = localStorage.getItem('activeCatalogTab');
     if (activeTab) {

@@ -87,3 +87,24 @@ class ServiceService():
         
         return self.service_repository.delete(service_id)
     
+    # En tu ServiceService, agrega:
+    def search_services(self, filters):
+        """Buscar servicios con filtros"""
+        queryset = Service.objects.all()
+        
+        if filters.get('name'):
+            queryset = queryset.filter(name__icontains=filters['name'])
+        
+        if filters.get('department'):
+            queryset = queryset.filter(department__icontains=filters['department'])
+        
+        if filters.get('min_price'):
+            queryset = queryset.filter(price__gte=filters['min_price'])
+        
+        if filters.get('max_price'):
+            queryset = queryset.filter(price__lte=filters['max_price'])
+        
+        if filters.get('categories'):
+            queryset = queryset.filter(categories__in=filters['categories']).distinct()
+        
+        return queryset
