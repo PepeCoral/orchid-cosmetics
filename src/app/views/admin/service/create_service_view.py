@@ -1,6 +1,6 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from app.forms.service_form import ServiceForm
+from app.forms.service.create_service_form import ServiceForm
 from django.http import HttpRequest
 from app.services.service_service import ServiceService
 
