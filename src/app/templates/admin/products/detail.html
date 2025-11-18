@@ -1,28 +1,146 @@
 {% extends 'admin/base_admin.html' %}
 
+{% block title %}{{ product.name }} - Orchid Cosmetics{% endblock %}
 
 {% block content %}
-<h2>Detalles del producto</h2>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-lg">
+        <div class="card-header text-white text-center py-4" style="background-color: #a97acf;">
+          <h2 class="mb-0">Detalles del Producto</h2>
+        </div>
+        <div class="card-body p-5">
+          <div class="row">
+            <!-- Columna izquierda - Imagen -->
+            <div class="col-md-6">
+              <div class="text-center">
+                {% if product.image_url %}
+                <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm"
+                  style="max-height: 400px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                  <span class="text-muted h5">Sin imagen</span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
 
-<div class="card p-4 mb-3 shadow-sm" style="max-width: 600px;">
+            <!-- Columna derecha - Información -->
+            <div class="col-md-6">
+              <div class="product-details">
+                <h3 class="mb-4" style="color: #a97acf;">{{ product.name }}</h3>
 
-  {% if product.image_url %}
-  <img src="{{ product.image_url.url }}" alt="{{ product.name }}" style="max-width: 400px; border-radius: 8px;">
-  {% endif %}
+                <div class="detail-item mb-3">
+                  <strong class="detail-label">Descripción:</strong>
+                  <p class="detail-value">{{ product.description }}</p>
+                </div>
 
-  <p><strong>Nombre:</strong> {{ product.name }}</p>
-  <p><strong>Descripción:</strong> {{ product.description }}</p>
-  <p><strong>Precio:</strong> {{ product.price }}</p>
-  <p><strong>Stock:</strong> {{ product.stock }}</p>
-  <p><strong>Fabricante:</strong> {{ product.fabricator }}</p>
-  <p><strong>Categorias:</strong>
-    {% for category in categories %}
-  <p>{{ category }}</p>
-  {% endfor %}
-  </p>
-  <a href="{% url 'admin/products/update' product.id %}" class="btn btn-success mt-3">Editar Producto</a>
-  <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-danger mt-3">Borrar Producto</a>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="detail-item mb-3">
+                      <strong class="detail-label">Precio:</strong>
+                      <span class="detail-value h5 text-primary">{{ product.price }}€</span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="detail-item mb-3">
+                      <strong class="detail-label">Stock:</strong>
+                      <span
+                        class="detail-value badge bg-{% if product.stock > 0 %}success{% else %}danger{% endif %} fs-6">
+                        {{ product.stock }} unidades
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <strong class="detail-label">Fabricante:</strong>
+                  <span class="detail-value">{{ product.fabricator }}</span>
+                </div>
+
+                <div class="detail-item mb-4">
+                  <strong class="detail-label">Categorías:</strong>
+                  <div class="categories-list mt-2">
+                    {% for category in categories %}
+                    <span class="category-badge">{{ category.name }}</span>
+                    {% empty %}
+                    <span class="text-muted">Sin categorías</span>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-flex gap-3 mt-4">
+                  <a href="{% url 'admin/products/update' product.id %}" class="btn text-white flex-fill"
+                    style="background-color: #a97acf;">
+                    ✏️ Editar Producto
+                  </a>
+                  <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-outline-danger flex-fill">
+                    🗑️ Eliminar Producto
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón volver -->
+      <div class="text-center mt-4">
+        <a href="/admin/products" class="btn btn-outline-secondary">
+          ← Volver a la lista de productos
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 
-<a href="/admin/products" class="btn btn-secondary mt-3">Volver a la lista</a>
+<style>
+  .card {
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .detail-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .detail-label {
+    color: #a97acf;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .detail-value {
+    color: #555;
+  }
+
+  .categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .category-badge {
+    background-color: #a97acf;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+</style>
 {% endblock %}
