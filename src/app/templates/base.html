@@ -7,43 +7,81 @@
   <title>{% block title %} Orchid Cosmetics {% endblock %}</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   <link rel="shortcut icon" href="/static/Orchid-Logo.ico" />
+
   <style>
     body {
-      padding-top: 56px;
+      padding-top: 70px;
+      background: #faf7fc;
     }
 
+    /* 🔮 Navbar moderna */
     .navbar {
-      background-color: #a97acf !important;
+      background: linear-gradient(135deg, #b98de0, #a06acb);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      padding: 0.6rem 1rem;
     }
 
-    .navbar-brand,
+    /* 🌸 Brand más moderno */
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-size: 1.3rem;
+    }
+
+    /* 🎨 Links modernos */
     .nav-link {
-      color: white !important;
+      color: #f7ecff !important;
       font-weight: 500;
+      transition: 0.2s ease-in-out;
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+      border-radius: 6px;
     }
 
+    /* ✨ Hover más suave */
     .nav-link:hover {
-      color: #ffe4f0 !important;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+
+    /* 📱 Botón toggler más moderno */
+    .navbar-toggler {
+      border: none;
+      outline: none !important;
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
     }
   </style>
 </head>
 
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <a class="navbar-brand" href="/">Orchid Cosmetics</a>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
+
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
+
         <li class="nav-item">
-          <a class="nav-link" href="/">Catálogo</a>
+          <a class="nav-link" href="{% url 'contact' %}">Acerca de</a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'get_all_quantity' %}">Carrito de Compra</a>
+          <a class="nav-link" href="{% url 'catalog' %}">Catálogo</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'get_all_quantity' %}">Carrito</a>
         </li>
 
         {% if user.is_authenticated %}
@@ -59,19 +97,21 @@
         </li>
         {% endif %}
 
-        {% if user.is_superuser%}
+        {% if user.is_superuser %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'admin' %}">Admin Panel</a>
+          <a class="nav-link" href="{% url 'admin' %}">Admin</a>
         </li>
-        {% endif%}
+        {% endif %}
+
       </ul>
     </div>
   </nav>
 
-  <div class="container mt-4">{% block content %} {% endblock %}</div>
+  <div class="container mt-4">{% block content %}{% endblock %}</div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

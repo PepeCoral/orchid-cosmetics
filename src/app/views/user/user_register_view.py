@@ -18,6 +18,7 @@ class UserRegisterView(View):
         return render(request, "user/register.html", {"form": form})
 
     def post(self, request):
+
         if not request.user.is_anonymous:
             return redirect("/profile")
 

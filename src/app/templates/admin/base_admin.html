@@ -7,30 +7,60 @@
   <title>{% block title %} Orchid Cosmetics Admin {% endblock %}</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   <link rel="shortcut icon" href="/static/Orchid-Logo.ico" />
+
   <style>
     body {
-      padding-top: 56px;
+      padding-top: 70px;
+      background: #f5f2fa;
+      /* Fondo ligeramente distinto */
     }
 
+    /* Navbar Admin moderna */
     .navbar {
-      background-color: #a97acf !important;
+      background: linear-gradient(135deg, #6c5dd3, #4a3fa1);
+      /* Color distinto del site principal */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      padding: 0.6rem 1rem;
     }
 
-    .navbar-brand,
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-size: 1.3rem;
+    }
+
     .nav-link {
-      color: white !important;
+      color: #f7ecff !important;
       font-weight: 500;
+      transition: 0.2s ease-in-out;
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+      border-radius: 6px;
     }
 
     .nav-link:hover {
-      color: #ffe4f0 !important;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+
+    .navbar-toggler {
+      border: none;
+      outline: none !important;
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
     }
   </style>
 </head>
 
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <a class="navbar-brand" href="/admin">Admin Panel</a>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -38,8 +68,9 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
+
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'admin/categories' %}">Categorias</a>
+          <a class="nav-link" href="{% url 'admin/categories' %}">Categorías</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'admin/products' %}">Productos</a>
@@ -50,6 +81,14 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'get_all_quantity' %}">Pedidos</a>
         </li>
+
+        <!-- Botón volver al sitio principal -->
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-light ml-2" href="/" style="border-radius: 6px;">
+            Volver al sitio
+          </a>
+        </li>
+
       </ul>
     </div>
   </nav>
@@ -58,6 +97,7 @@
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

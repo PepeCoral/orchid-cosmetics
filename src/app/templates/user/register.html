@@ -2,34 +2,156 @@
 {% block title %}Crear Cuenta - Orchid Cosmetics{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h3 class="text-center mb-4">Crear Cuenta</h3>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
 
-      <form method="POST" action="{% url 'register' %}">
-        {% csrf_token %}
+      <div class="card shadow-sm">
 
-        {% for field in form %}
-        {% include "components/form_field.html" with field=field %}
-        {% endfor %}
-
-        {% if error %}
-        <div class="alert alert-danger">
-          {{ error }}
+        <div class="card-header text-white text-center" style="background-color: #a97acf;">
+          <h3 class="mb-0">Crear Cuenta</h3>
         </div>
-        {% endif %}
 
-        <button type="submit" class="btn btn-success btn-block mt-3">
-          Registrarse
-        </button>
+        <div class="card-body p-4">
+          {% if error %}
+          <div class="alert alert-danger">
+            <div>{{ error }}</div>
+          </div>
+          {% endif %}
 
-        <div class="text-center mt-3">
-          <small>¿Ya tienes una cuenta?
-            <a href="/login">Inicia sesión</a></small>
+          <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <!-- NOMBRE / APELLIDOS -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group compact">
+                  {{ form.first_name.label_tag }}
+                  {{ form.first_name }}
+                  {% for error in form.first_name.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group compact">
+                  {{ form.last_name.label_tag }}
+                  {{ form.last_name }}
+                  {% for error in form.last_name.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- USERNAME -->
+            <div class="form-group compact">
+              {{ form.username.label_tag }}
+              {{ form.username }}
+              {% for error in form.username.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- EMAIL -->
+            <div class="form-group compact">
+              {{ form.email.label_tag }}
+              {{ form.email }}
+              {% for error in form.email.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- DIRECCIÓN -->
+            <div class="form-group compact">
+              {{ form.address.label_tag }}
+              {{ form.address }}
+              {% for error in form.address.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- MÉTODO DE PAGO -->
+            <div class="form-group compact">
+              {{ form.pay_method.label_tag }}
+              {{ form.pay_method }}
+              {% for error in form.pay_method.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- CONTRASEÑA / CONFIRMAR -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group compact">
+                  {{ form.password.label_tag }}
+                  {{ form.password }}
+                  {% for error in form.password.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group compact">
+                  {{ form.confirm_password.label_tag }}
+                  {{ form.confirm_password }}
+                  {% for error in form.confirm_password.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn text-white btn-block mt-3" style="background-color: #a97acf;">
+              Registrarse
+            </button>
+
+            <div class="text-center mt-3">
+              <small>
+                ¿Ya tienes una cuenta?
+                <a href="{% url 'login' %}">Inicia sesión</a>
+              </small>
+            </div>
+          </form>
+
         </div>
-      </form>
+      </div>
+
     </div>
   </div>
 </div>
+
+<style>
+  .form-group.compact {
+    margin-bottom: 0.8rem;
+  }
+
+  label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #333;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+    transition: 0.2s;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #a97acf !important;
+    box-shadow: 0 0 0 0.12rem rgba(169, 122, 207, 0.25) !important;
+  }
+
+  .btn:hover {
+    background-color: #8e5db5 !important;
+  }
+</style>
 {% endblock %}

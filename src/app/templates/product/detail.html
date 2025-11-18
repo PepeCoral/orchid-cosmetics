@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %} {{ product.name }} {% endblock %}
+
+{% block content %}
+<style>
+  .product-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem 0;
+    align-items: stretch;
+    /* Equal height */
+  }
+
+  .product-image {
+    flex: 0 0 350px;
+    display: flex;
+  }
+
+  /* REAL IMAGE */
+  .product-image img {
+    height: 100%;
+    width: 100%;
+    max-height: 600px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    object-fit: cover;
+  }
+
+  /* PLACEHOLDER (same style as catalog) */
+  .no-image {
+    width: 100%;
+    height: 100%;
+    max-height: 600px;
+    background: #eee;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .no-image span {
+    color: #6c757d;
+    /* Bootstrap text-muted */
+    font-size: 1.1rem;
+  }
+
+  .product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-info h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .product-meta {
+    color: #555;
+    margin-bottom: 1rem;
+  }
+
+  .product-price {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #009578;
+    margin-bottom: 1.5rem;
+  }
+
+  .buy-form {
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 280px;
+    background: #fafafa;
+    margin-top: auto;
+    /* pushes form to bottom */
+  }
+
+  .buy-form button {
+    width: 100%;
+    background: #009578;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+
+  .buy-form button:hover {
+    background: #007e62;
+  }
+</style>
+
+<div class="product-container">
+
+  <!-- LEFT SIDE IMAGE -->
+  <div class="product-image">
+
+    {% if product.image_url %}
+    <img src="{{ product.image_url.url }}" alt="{{ product.name }}">
+    {% else %}
+    <!-- Matching style from catalog -->
+    <div class="no-image">
+      <span>Sin imagen</span>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <!-- RIGHT SIDE INFO -->
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+
+    <div class="product-meta">
+      <p>{{ product.fabricator }}</p>
+    </div>
+
+    <p>{{ product.description }}</p>
+
+    <p class="product-price">{{ product.price }}€</p>
+
+    <!-- BUY FORM -->
+    <form method="post" class="buy-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Añadir al carrito</button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}
