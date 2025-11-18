@@ -8,7 +8,7 @@
     gap: 2rem;
     padding: 2rem 0;
     align-items: stretch;
-    /* Equal height for both sides */
+    /* Equal height */
   }
 
   .product-image {
@@ -16,6 +16,7 @@
     display: flex;
   }
 
+  /* REAL IMAGE */
   .product-image img {
     height: 100%;
     width: 100%;
@@ -23,7 +24,26 @@
     border-radius: 12px;
     border: 1px solid #ddd;
     object-fit: cover;
-    /* Crops to keep ratio clean */
+  }
+
+  /* PLACEHOLDER (same style as catalog) */
+  .no-image {
+    width: 100%;
+    height: 100%;
+    max-height: 600px;
+    background: #eee;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .no-image span {
+    color: #6c757d;
+    /* Bootstrap text-muted */
+    font-size: 1.1rem;
   }
 
   .product-info {
@@ -56,7 +76,7 @@
     width: 280px;
     background: #fafafa;
     margin-top: auto;
-    /* pushes form to bottom for clean alignment */
+    /* pushes form to bottom */
   }
 
   .buy-form button {
@@ -80,11 +100,16 @@
 
   <!-- LEFT SIDE IMAGE -->
   <div class="product-image">
+
     {% if product.image_url %}
     <img src="{{ product.image_url.url }}" alt="{{ product.name }}">
     {% else %}
-    <img src="/static/default_product.jpg" alt="No image available">
+    <!-- Matching style from catalog -->
+    <div class="no-image">
+      <span>Sin imagen</span>
+    </div>
     {% endif %}
+
   </div>
 
   <!-- RIGHT SIDE INFO -->
