@@ -3,11 +3,13 @@ from django.shortcuts import render, redirect
 
 from app.services.product_service import ProductService
 from app.forms.product.buy_product_form import BuyProductForm
+from app.services.cart_item_service import CartService
 
 class ProductDetailView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.product_service = ProductService()
+        self.cart_service = CartService()
 
     def get(self, request, product_id):
         form = BuyProductForm()
@@ -26,8 +28,8 @@ class ProductDetailView(View):
             return render(request, "product/detail.html", {"form": form, "product": product})
 
         try:
-            pass
-            return redirect("/cash")
+            self.cart_service.add_item(request.user, product, form.cleaned_data["quantity"])
+            return redirect("/cart")
         except Exception as e:
             return render(
                 request,

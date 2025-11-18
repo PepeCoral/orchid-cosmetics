@@ -28,6 +28,11 @@ from app.views.user.user_update_view import UpdateUserView
 
 from app.views.product.product_detail_view import ProductDetailView
 
+from app.views.cart.cart_view import CartView
+from app.views.cart.add_cart_view import AddCartView
+from app.views.cart.remove_cart_view import RemoveCartView
+from app.views.cart.delete_cart_view import DeleteCartView
+
 urlpatterns = [
     # Páginas HTML (Template views)
     path('', HomeView.as_view(), name='home'),
@@ -66,9 +71,13 @@ urlpatterns = [
     path('services/create/', views.create_service, name='create_service'),
     path('services/<int:service_id>/', views.get_service, name='get_service'),
 
-    path('cash/', views.get_all_quantity, name="get_all_quantity"),
     path('orders/create/', views.create_order, name="create_order"),
     path('orders/', views.get_all_orders, name="get_all_orders"),
+
+    path("cart", CartView.as_view(), name="cart"),
+    path("cart/add/<int:cart_id>", AddCartView.as_view(), name="cart/add"),
+    path("cart/remove/<int:cart_id>", RemoveCartView.as_view(), name="cart/remove"),
+    path("cart/delete/<int:cart_id>", DeleteCartView.as_view(), name="cart/delete"),
 
     # path('services/<int:service_id>/update/', views.update_service, name='update_service'),
     # path('services/<int:service_id>/delete/', views.delete_service, name='delete_service'),

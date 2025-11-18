@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <h2 class="mb-3">Mi Carrito</h2>
+
+  {% if products or services %}
+  <ul class="list-group">
+
+    {% for item in products %}
+    <li class="list-group-item mb-2 d-flex align-items-center" style="border-radius: 8px;">
+
+      <!-- Image -->
+      <div style="width:100px; height:100px; flex-shrink:0;">
+        {% if item.item.image_url %}
+        <img src="{{ item.item.image_url.url }}" alt="{{ item.item.name }}" class="img-fluid rounded"
+          style="height:100px; width:100px; object-fit:cover;">
+        {% else %}
+        <div style="height:100px; width:100px; background:#eee;"
+          class="d-flex align-items-center justify-content-center rounded">
+          <span class="text-muted">Sin imagen</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Details -->
+      <div class="ml-3 flex-grow-1">
+        <strong>{{ item.item.name }}</strong><br>
+        Fabricante: {{ item.item.fabricator }}<br>
+        Cantidad: {{ item.quantity }}
+      </div>
+
+      <!-- Controls -->
+      <div class="d-flex flex-column align-items-end">
+        <div class="mb-1">
+          <a href="/cart/remove/{{ item.id }}" class="btn btn-sm btn-secondary mr-1">-</a>
+          <span class="mx-2">{{ item.quantity }}</span>
+          <a href="/cart/add/{{ item.id }}" class="btn btn-sm btn-secondary ml-1">+</a>
+        </div>
+        <a href="/cart/delete/{{ item.id }}" class="btn btn-sm btn-danger mb-1">🗑️</a>
+        <strong>Subtotal: €{{ item.subtotal }}</strong>
+      </div>
+
+    </li>
+    {% endfor %}
+
+    {% for item in services %}
+    <li class="list-group-item mb-2 d-flex align-items-center" style="border-radius: 8px;">
+
+      <!-- Image -->
+      <div style="width:100px; height:100px; flex-shrink:0;">
+        {% if item.item.image_url %}
+        <img src="{{ item.item.image_url.url }}" alt="{{ item.item.name }}" class="img-fluid rounded"
+          style="height:100px; width:100px; object-fit:cover;">
+        {% else %}
+        <div style="height:100px; width:100px; background:#eee;"
+          class="d-flex align-items-center justify-content-center rounded">
+          <span class="text-muted">Sin imagen</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Details -->
+      <div class="ml-3 flex-grow-1">
+        <strong>{{ item.item.name }}</strong><br>
+        Departamento: {{ item.item.department }}<br>
+        Cantidad: {{ item.quantity }}
+      </div>
+
+      <!-- Controls -->
+      <div class="d-flex flex-column align-items-end">
+        <div class="mb-1">
+          <a href="/cart/remove/{{ item.id }}" class="btn btn-sm btn-secondary mr-1">-</a>
+          <span class="mx-2">{{ item.quantity }}</span>
+          <a href="/cart/add/{{ item.id }}" class="btn btn-sm btn-secondary ml-1">+</a>
+        </div>
+        <a href="/cart/delete/{{ item.id }}" class="btn btn-sm btn-danger mb-1">🗑️</a>
+        <strong>Subtotal: €{{ item.subtotal }}</strong>
+      </div>
+
+    </li>
+    {% endfor %}
+
+  </ul>
+
+  <!-- Total & Checkout -->
+  <div class="mt-4 text-right">
+    <h4>Total: €{{ total }}</h4>
+    <a href="/checkout" class="btn btn-success btn-lg mt-2">Proceder al pago</a>
+  </div>
+
+  {% else %}
+  <p>Tu carrito está vacío.</p>
+  {% endif %}
+
+</div>
+
+<style>
+  .list-group-item img {
+    border-radius: 8px;
+  }
+
+  .list-group-item .btn-sm {
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+</style>
+
+{% endblock %}
