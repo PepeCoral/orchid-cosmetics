@@ -131,7 +131,11 @@
       <button type="submit">Añadir al carrito</button>
     </form>
   </div>
-
+  {% if error %}
+  <div class="alert alert-danger">
+    <div>{{ error }}</div>
+  </div>
+  {% endif %}
 </div>
 
 {% endblock %}
