@@ -67,7 +67,7 @@
 
     {% for p in products %}
     <div class="col-md-4 mb-4">
-      <a href="/product/{{ p.id }}" class="text-decoration-none" style="color: inherit;">
+      <a href="/products/{{ p.id }}" class="text-decoration-none" style="color: inherit;">
         <div class="card h-100 shadow-sm">
 
           {% if p.image_url %}
@@ -81,7 +81,7 @@
 
           <div class="card-body">
             <h5 class="card-title">{{ p.name }}</h5>
-            <p class="card-text mb-1"><strong>Fabricante:</strong> {{ p.fabricator }}</p>
+            <p class="card-text mb-1">{{ p.fabricator }}</p>
             <span class="badge badge-success">€{{ p.price }}</span>
           </div>
 
