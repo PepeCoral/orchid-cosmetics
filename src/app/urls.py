@@ -26,6 +26,8 @@ from app.views.admin.product.delete_product_view import DeleteProductView
 from app.views.admin.product.update_product_view import UpdateProductView
 from app.views.user.user_update_view import UpdateUserView
 
+from app.views.product.product_detail_view import ProductDetailView
+
 urlpatterns = [
     # Páginas HTML (Template views)
     path('', HomeView.as_view(), name='home'),
@@ -33,7 +35,7 @@ urlpatterns = [
     path("login/", auth_views.LoginView.as_view(template_name="user/login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
     path("logout/", UserLogoutView.as_view(), name='logout'),
     path("register/", UserRegisterView.as_view(), name="register"),
-    
+
     path('contacto/', ContactView.as_view(), name='contact'),
 
 
@@ -43,6 +45,7 @@ urlpatterns = [
     path('user/delete/<int:user_id>/', DeleteUserView.as_view(), name='delete_user'),
 
     path("catalog/", CatalogView.as_view(), name="catalog" ),
+    path('products/<int:product_id>/', ProductDetailView.as_view(), name='products/detail'),
 
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
