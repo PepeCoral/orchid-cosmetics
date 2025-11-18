@@ -86,7 +86,7 @@ if ENVIRONMENT == "production":
         "default": dj_database_url.parse(
             os.getenv("DB_URL"),
             conn_max_age=600,
-            ssl_require=True
+            ssl_require=False
         )
     }
 else:
