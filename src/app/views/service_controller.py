@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from app.services.order_service import QuantityService
 from app.services.service_service import ServiceService
-from app.forms.service_form import ServiceForm
+from app.forms.service.create_service_form import ServiceForm
 from django.shortcuts import redirect, render
 
 

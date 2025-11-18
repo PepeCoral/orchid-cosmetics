@@ -3,37 +3,29 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from app import models
 from app.models import Service, Category
+from app.repositories.service_repository import ServiceRepository
 
 
 class ServiceService():
     
-    
-    @staticmethod
-    def create_service(request,service_data):
-        """
-        Crea un nuevo servicio
-        """
-        try:
+    def __init__(self):
+        self.service_repository = ServiceRepository()
 
-            files = request.FILES
-            service = Service(
-                name=service_data['name'],
-                description=service_data['description'],
-                price=service_data['price'],
-                duration_minutes=service_data['duration_minutes'],
-                department=service_data['department'],
-                image_url=files.get('image')
-            )
-            service.save()
-            if 'categories' in service_data:
-                service.categories.set(service_data['categories'])
+    def create_service(self,request,service_data):
+       
+        if(service_data["price"] < 0):
+            raise ValidationError("Price cannot be negative")
+        if(service_data["duration_minutes"] < 0):
+            raise ValidationError("Duration cannot be negative")
 
-            return service
-            
-        except ValidationError:
-            raise
-        except Exception as e:
-            raise ValidationError(f"Error al crear el servicio: {str(e)}")
+
+        files = request.FILES
+        service_data["image_url"] = files.get("image_url")
+        categories = service_data.pop("categories")
+        service = self.service_repository.create(**service_data)
+        service.categories.set(categories)
+
+        return service
     
     @staticmethod
     def get_service_by_id(service_id):
@@ -51,4 +43,47 @@ class ServiceService():
         Obtiene todos los servicios con sus categorías
         """
         return Service.objects.all().prefetch_related('categories')
+
+    def update_service(self, service_id, service_data, request):
+        """
+        Actualiza un servicio existente
+        """
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+
+        # Validaciones
+        if "price" in service_data and service_data["price"] < 0:
+            raise ValidationError("El precio no puede ser negativo")
+        if "duration_minutes" in service_data and service_data["duration_minutes"] < 0:
+            raise ValidationError("La duración no puede ser negativa")
+
+        # Manejar imagen si se envió
+        files = request.FILES
+        if 'image_url' in files:
+            service_data["image_url"] = files.get("image_url")
+
+        # Manejar categorías si se enviaron
+        categories = None
+        if "categories" in service_data:
+            categories = service_data.pop("categories")
+
+        # Actualizar servicio
+        updated_service = self.service_repository.update(service_id, **service_data)
+
+        # Actualizar categorías si se proporcionaron
+        if categories is not None:
+            updated_service.categories.set(categories)
+
+        return updated_service
+
+    def delete_service(self, service_id):
+        """
+        Elimina un servicio
+        """
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+        
+        return self.service_repository.delete(service_id)
     
