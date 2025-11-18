@@ -43,4 +43,47 @@ class ServiceService():
         Obtiene todos los servicios con sus categorías
         """
         return Service.objects.all().prefetch_related('categories')
+
+    def update_service(self, service_id, service_data, request):
+        """
+        Actualiza un servicio existente
+        """
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+
+        # Validaciones
+        if "price" in service_data and service_data["price"] < 0:
+            raise ValidationError("El precio no puede ser negativo")
+        if "duration_minutes" in service_data and service_data["duration_minutes"] < 0:
+            raise ValidationError("La duración no puede ser negativa")
+
+        # Manejar imagen si se envió
+        files = request.FILES
+        if 'image_url' in files:
+            service_data["image_url"] = files.get("image_url")
+
+        # Manejar categorías si se enviaron
+        categories = None
+        if "categories" in service_data:
+            categories = service_data.pop("categories")
+
+        # Actualizar servicio
+        updated_service = self.service_repository.update(service_id, **service_data)
+
+        # Actualizar categorías si se proporcionaron
+        if categories is not None:
+            updated_service.categories.set(categories)
+
+        return updated_service
+
+    def delete_service(self, service_id):
+        """
+        Elimina un servicio
+        """
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+        
+        return self.service_repository.delete(service_id)
     
