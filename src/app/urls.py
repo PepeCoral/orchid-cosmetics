@@ -2,7 +2,11 @@ from django.urls import path
 import app.views as views
 from django.contrib.auth import views as auth_views
 
+
 from app.views.admin.category.update_category_view import UpdateCategoryView
+from app.views.admin.service.delete_service_view import DeleteServiceView
+from app.views.admin.service.show_service_view import ShowServiceView
+from app.views.admin.service.update_service_view import UpdateServiceView
 from app.views.home_view import HomeView
 from app.views.user.user_delete_view import DeleteUserView
 from app.views.static_pages import ContactView
@@ -10,14 +14,12 @@ from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
 
-
 from app.views.catalog.catalog_view import CatalogView
 
 from app.views.admin.admin_panel_view import AdminPanelView
 from app.views.admin.category.list_category_view import ListCategoryView
 from app.views.admin.category.create_category_view import CreateCategoryView
 from app.views.admin.category.delete_category_view import DeleteCategoryView
-
 
 from app.views.admin.product.list_product_view import ListProductView
 from app.views.admin.product.create_product_view import CreateProductView
@@ -30,7 +32,6 @@ from app.views.product.product_detail_view import ProductDetailView
 
 from app.views.admin.service.list_service_view import ListServiceView
 from app.views.admin.service.create_service_view import CreateServiceView
-from app.views.admin.service.show_service_view import ShowServiceView
 
 urlpatterns = [
     # Páginas HTML (Template views)
@@ -42,13 +43,11 @@ urlpatterns = [
 
     path('contacto/', ContactView.as_view(), name='contact'),
 
-
     path("catalog/", CatalogView.as_view(), name="catalog" ),
 
     path('user/update/<int:user_id>/', UpdateUserView.as_view(), name='update_user'),
     path('user/delete/<int:user_id>/', DeleteUserView.as_view(), name='delete_user'),
 
-    path("catalog/", CatalogView.as_view(), name="catalog" ),
     path('products/<int:product_id>/', ProductDetailView.as_view(), name='products/detail'),
 
     path("admin/", AdminPanelView.as_view(), name="admin"),
@@ -58,19 +57,18 @@ urlpatterns = [
     path('admin/categories/delete/<int:category_id>',DeleteCategoryView.as_view(), name='admin/categories/delete'),
     path('admin/categories/update/<int:category_id>', UpdateCategoryView.as_view(), name='admin/categories/update'),
 
-
     path('admin/products/', ListProductView.as_view(), name='admin/products'),
     path('admin/products/create/', CreateProductView.as_view(), name='admin/products/create'),
     path('admin/products/<int:product_id>/', ShowProductView.as_view(), name='admin/products/show'),
     path('admin/products/delete/<int:product_id>/', DeleteProductView.as_view(), name='admin/products/delete'),
     path('admin/products/update/<int:product_id>/', UpdateProductView.as_view(), name='admin/products/update'),
-    
-    
+
+
     path('admin/cosmeticservices/', ListServiceView.as_view(), name='admin/cosmeticservices'),
     path('admin/cosmeticservices/create/', CreateServiceView.as_view(), name='admin/cosmeticservices/create'),
-    path('admin/cosmeticservices/<int:service_id>/', ShowServiceView.as_view(), name='admin/cosmeticservices/show'),
-
-
+    path('admin/cosmeticservices/<int:service_id>/', ShowServiceView.as_view(), name='admin/cosmeticservices/show'),  
+    path('admin/cosmeticservices/delete/<int:service_id>/', DeleteServiceView.as_view(), name='admin/cosmeticservices/delete'),  
+    path('admin/cosmeticservices/update/<int:service_id>/', UpdateServiceView.as_view(), name='admin/cosmeticservices/update'),  
     # CRUD básico
     path('services/', views.list_services, name='list_services'),
     path('services/create/', views.create_service, name='create_service'),
@@ -79,6 +77,7 @@ urlpatterns = [
     path('cash/', views.get_all_quantity, name="get_all_quantity"),
     path('orders/create/', views.create_order, name="create_order"),
     path('orders/', views.get_all_orders, name="get_all_orders"),
+
 
     # path('services/<int:service_id>/update/', views.update_service, name='update_service'),
     # path('services/<int:service_id>/delete/', views.delete_service, name='delete_service'),
