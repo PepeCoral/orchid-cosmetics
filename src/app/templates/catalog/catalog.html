@@ -25,81 +25,116 @@
 
   <hr>
 
-  <!-- PRODUCTOS -->
-  {% if products %}
-  <div class="mb-5">
-    <h3 class="mb-4" style="color: #a97acf;">📦 Productos</h3>
-    <div class="row">
-      {% for p in products %}
-      <div class="col-md-4 col-lg-3 mb-4">
-        <a href="/products/{{ p.id }}" class="text-decoration-none" style="color: inherit;">
-          <div class="card h-100 shadow-sm product-card">
-            {% if p.image_url %}
-            <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
-              style="height: 200px; object-fit: cover;">
-            {% else %}
-            <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
-              <span class="text-muted">Sin imagen</span>
-            </div>
-            {% endif %}
+  <!-- PESTAÑAS -->
+  <ul class="nav nav-tabs mb-4" id="catalogTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="products-tab" data-toggle="tab" data-target="#products" type="button"
+        role="tab" aria-controls="products" aria-selected="true"
+        style="background-color: #a97acf; color: white; border-color: #a97acf;">
+        📦 Productos
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="services-tab" data-toggle="tab" data-target="#services" type="button" role="tab"
+        aria-controls="services" aria-selected="false"
+        style="background-color: #e9d4f7; color: #a97acf; border-color: #a97acf;">
+        💅 Servicios
+      </button>
+    </li>
+  </ul>
 
-            <div class="card-body d-flex flex-column">
-              <h6 class="card-title">{{ p.name }}</h6>
-              <p class="card-text text-muted small mb-2">{{ p.fabricator }}</p>
-              
-              <div class="mt-auto">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="badge text-white" style="background-color: #a97acf;">€{{ p.price }}</span>
-                  <small class="text-muted">{{ p.stock }} en stock</small>
+  <!-- CONTENIDO DE PESTAÑAS -->
+  <div class="tab-content" id="catalogTabsContent">
+
+    <!-- PESTAÑA PRODUCTOS -->
+    <div class="tab-pane fade show active" id="products" role="tabpanel" aria-labelledby="products-tab">
+      {% if products %}
+      <div class="row">
+        {% for p in products %}
+        <div class="col-md-4 col-lg-3 mb-4">
+          <a href="{% url 'products/detail' p.id %}" class="text-decoration-none" style="color: inherit;">
+            <div class="card h-100 shadow-sm product-card">
+              {% if p.image_url %}
+              <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
+                style="height: 200px; object-fit: cover;">
+              {% else %}
+              <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
+                <span class="text-muted">Sin imagen</span>
+              </div>
+              {% endif %}
+
+              <div class="card-body d-flex flex-column">
+                <h6 class="card-title">{{ p.name }}</h6>
+                <p class="card-text text-muted small mb-2">{{ p.fabricator }}</p>
+
+                <div class="mt-auto">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge text-white" style="background-color: #a97acf;">€{{ p.price }}</span>
+                    <small class="text-muted">{{ p.stock }} en stock</small>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </a>
+          </a>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+      {% else %}
+      <div class="text-center py-5">
+        <div class="alert alert-info">
+          <h5>No hay productos disponibles</h5>
+          <p class="mb-0">Pronto tendremos nuevos productos en stock.</p>
+        </div>
+      </div>
+      {% endif %}
     </div>
-  </div>
-  {% endif %}
 
-  <!-- SERVICIOS -->
-  {% if services %}
-  <div class="mb-5">
-    <h3 class="mb-4" style="color: #a97acf;">💅 Servicios</h3>
-    <div class="row">
-      {% for s in services %}
-      <div class="col-md-4 col-lg-3 mb-4">
-        <a href="/services/{{ s.id }}" class="text-decoration-none" style="color: inherit;">
-          <div class="card h-100 shadow-sm service-card">
-            {% if s.image_url %}
-            <img src="{{ s.image_url.url }}" class="card-img-top" alt="{{ s.name }}"
-              style="height: 200px; object-fit: cover;">
-            {% else %}
-            <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
-              <span class="text-muted">Sin imagen</span>
-            </div>
-            {% endif %}
+    <!-- PESTAÑA SERVICIOS -->
+    <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
+      {% if services %}
+      <div class="row">
+        {% for s in services %}
+        <div class="col-md-4 col-lg-3 mb-4">
+          <a href="/services/{{ s.id }}/" class="text-decoration-none" style="color: inherit;">
+            <div class="card h-100 shadow-sm service-card">
+              {% if s.image_url %}
+              <img src="{{ s.image_url.url }}" class="card-img-top" alt="{{ s.name }}"
+                style="height: 200px; object-fit: cover;">
+              {% else %}
+              <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
+                <span class="text-muted">Sin imagen</span>
+              </div>
+              {% endif %}
 
-            <div class="card-body d-flex flex-column">
-              <h6 class="card-title">{{ s.name }}</h6>
-              <p class="card-text text-muted small mb-2">{{ s.department }}</p>
-              
-              <div class="mt-auto">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="badge text-white" style="background-color: #a97acf;">€{{ s.price }}</span>
-                  <small class="text-muted">{{ s.duration_minutes }} min</small>
+              <div class="card-body d-flex flex-column">
+                <h6 class="card-title">{{ s.name }}</h6>
+                <p class="card-text text-muted small mb-2">{{ s.department }}</p>
+
+                <div class="mt-auto">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge text-white" style="background-color: #a97acf;">€{{ s.price }}</span>
+                    <small class="text-muted">{{ s.duration_minutes }} min</small>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </a>
+          </a>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+      {% else %}
+      <div class="text-center py-5">
+        <div class="alert alert-info">
+          <h5>No hay servicios disponibles</h5>
+          <p class="mb-0">Pronto tendremos nuevos servicios disponibles.</p>
+        </div>
+      </div>
+      {% endif %}
     </div>
-  </div>
-  {% endif %}
 
-  <!-- Mensaje si no hay nada -->
+  </div>
+
+  <!-- Mensaje si no hay nada en absoluto -->
   {% if not products and not services %}
   <div class="text-center py-5">
     <div class="alert alert-info">
@@ -118,13 +153,15 @@
 </div>
 
 <style>
-  .product-card, .service-card {
+  .product-card,
+  .service-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border: none;
     border-radius: 10px;
   }
 
-  .product-card:hover, .service-card:hover {
+  .product-card:hover,
+  .service-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
   }
@@ -139,5 +176,75 @@
     padding: 0.4rem 0.8rem;
     border-radius: 15px;
   }
+
+  /* Estilos para las pestañas */
+  .nav-tabs {
+    border-bottom: 2px solid #a97acf;
+  }
+
+  .nav-tabs .nav-link {
+    border: 2px solid #a97acf;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    margin-right: 0.5rem;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: #a97acf;
+    color: white !important;
+    border-bottom: 2px solid white;
+  }
+
+  .nav-tabs .nav-link:not(.active) {
+    background-color: #e9d4f7;
+    color: #a97acf !important;
+  }
+
+  .nav-tabs .nav-link:not(.active):hover {
+    background-color: #d8bdee;
+    color: #8e5db5 !important;
+  }
+
+  .tab-content {
+    padding: 1rem 0;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
 </style>
+
+<!-- Script para mantener la pestaña activa al recargar -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Recuperar pestaña activa del localStorage
+    const activeTab = localStorage.getItem('activeCatalogTab');
+    if (activeTab) {
+      const tab = document.querySelector(activeTab);
+      if (tab) {
+        new bootstrap.Tab(tab).show();
+      }
+    }
+
+    // Guardar pestaña activa en localStorage
+    document.querySelectorAll('#catalogTabs button').forEach(tab => {
+      tab.addEventListener('click', function () {
+        localStorage.setItem('activeCatalogTab', '#' + this.id);
+
+        // Actualizar colores de las pestañas
+        document.querySelectorAll('#catalogTabs .nav-link').forEach(link => {
+          if (link === this) {
+            link.style.backgroundColor = '#a97acf';
+            link.style.color = 'white';
+          } else {
+            link.style.backgroundColor = '#e9d4f7';
+            link.style.color = '#a97acf';
+          }
+        });
+      });
+    });
+  });
+</script>
+
 {% endblock %}
