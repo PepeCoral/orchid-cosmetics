@@ -89,6 +89,11 @@ if ENVIRONMENT == "production":
             ssl_require=False
         )
     }
+    # Force Postgres to use the 'public' schema
+    DATABASES['default']['OPTIONS'] = {
+        'options': '-c search_path=public'
+    }
+
 else:
     DATABASES = {
         "default": {
