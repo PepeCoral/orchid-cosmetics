@@ -3,7 +3,7 @@ import app.views as views
 from django.contrib.auth import views as auth_views
 
 
-from app.views.service.service_detail_view import ServiceDetailViewUser
+from app.views.service.service_detail_view import ServiceDetailView
 
 from app.views.admin.service.show_service_view import ShowServiceView
 
@@ -72,12 +72,12 @@ urlpatterns = [
     # URLs ADMIN para servicios
     path('admin/cosmeticservices/', ListServiceView.as_view(), name='admin/cosmeticservices'),
     path('admin/cosmeticservices/create/', CreateServiceView.as_view(), name='admin/cosmeticservices/create'),
-    path('admin/cosmeticservices/<int:service_id>/', ShowServiceView.as_view(), name='admin/cosmeticservices/show'),  
-    path('admin/cosmeticservices/delete/<int:service_id>/', DeleteServiceView.as_view(), name='admin/cosmeticservices/delete'),  
-    path('admin/cosmeticservices/update/<int:service_id>/', UpdateServiceView.as_view(), name='admin/cosmeticservices/update'),  
-    
+    path('admin/cosmeticservices/<int:service_id>/', ShowServiceView.as_view(), name='admin/cosmeticservices/show'),
+    path('admin/cosmeticservices/delete/<int:service_id>/', DeleteServiceView.as_view(), name='admin/cosmeticservices/delete'),
+    path('admin/cosmeticservices/update/<int:service_id>/', UpdateServiceView.as_view(), name='admin/cosmeticservices/update'),
+
     # URLs USUARIOS para servicios
-    path('services/<int:service_id>/', ServiceDetailViewUser.as_view(), name='service_detail'),
+    path('services/<int:service_id>/', ServiceDetailView.as_view(), name='service_detail'),
 
     # Otras URLs
     path('orders/create/', views.create_order, name="create_order"),
