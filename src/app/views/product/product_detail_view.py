@@ -1,9 +1,8 @@
 from django.views import View
 from django.shortcuts import render, redirect
-
 from app.services.product_service import ProductService
-from app.forms.product.buy_product_form import BuyProductForm
 from app.services.cart_item_service import CartService
+from app.forms.product.buy_product_form import BuyProductForm
 
 class ProductDetailView(View):
     def __init__(self, **kwargs):
@@ -12,27 +11,47 @@ class ProductDetailView(View):
         self.cart_service = CartService()
 
     def get(self, request, product_id):
-        form = BuyProductForm()
         product = self.product_service.get_product_by_id(product_id)
-        return render(request, "product/detail.html", {"form": form, "product":product})
+        categories = product.categories.all()
 
-    def post(self, request,product_id):
+        form = BuyProductForm(max_stock=product.stock)
 
+        return render(request, "product/detail.html", {
+            "form": form,
+            "product": product,
+            "categories": categories
+        })
+
+    def post(self, request, product_id):
         if request.user.is_anonymous:
             return redirect("/login")
 
         product = self.product_service.get_product_by_id(product_id)
-        form = BuyProductForm(request.POST)
+        categories = product.categories.all()
+
+        form = BuyProductForm(request.POST, max_stock=product.stock)
 
         if not form.is_valid():
-            return render(request, "product/detail.html", {"form": form, "product": product})
+            return render(request, "product/detail.html", {
+                "form": form,
+                "product": product,
+                "categories": categories
+            })
 
         try:
-            self.cart_service.add_item(request.user, product, form.cleaned_data["quantity"])
+
+            quantity = form.cleaned_data['quantity']
+            self.cart_service.add_item(request.user, product, quantity)
+
             return redirect("/cart")
         except Exception as e:
             return render(
                 request,
                 "product/detail.html",
-                {"form": form, "error": str(e), "product": product}
+                {
+                    "form": form,
+                    "error": str(e),
+                    "product": product,
+                    "categories": categories
+                }
             )

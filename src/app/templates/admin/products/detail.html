@@ -1,28 +1,207 @@
 {% extends 'admin/base_admin.html' %}
 
+{% block title %}{{ product.name }} - Orchid Cosmetics{% endblock %}
 
 {% block content %}
-<h2>Detalles del producto</h2>
+<div class="container mt-4">
 
-<div class="card p-4 mb-3 shadow-sm" style="max-width: 600px;">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
 
-  {% if product.image_url %}
-  <img src="{{ product.image_url.url }}" alt="{{ product.name }}" style="max-width: 400px; border-radius: 8px;">
-  {% endif %}
+      <div class="card product-card shadow-sm">
+        <!-- Card header -->
+        <div class="card-header text-white text-center py-3" style="background-color: #a97acf;">
+          <h2 class="mb-0" style="font-size: 1.5rem;">Detalles del Producto</h2>
+        </div>
 
-  <p><strong>Nombre:</strong> {{ product.name }}</p>
-  <p><strong>Descripción:</strong> {{ product.description }}</p>
-  <p><strong>Precio:</strong> {{ product.price }}</p>
-  <p><strong>Stock:</strong> {{ product.stock }}</p>
-  <p><strong>Fabricante:</strong> {{ product.fabricator }}</p>
-  <p><strong>Categorias:</strong>
-    {% for category in categories %}
-  <p>{{ category }}</p>
-  {% endfor %}
-  </p>
-  <a href="{% url 'admin/products/update' product.id %}" class="btn btn-success mt-3">Editar Producto</a>
-  <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-danger mt-3">Borrar Producto</a>
+        <div class="card-body p-4">
+
+          <div class="row g-4">
+
+            <!-- Left column: Image -->
+            <div class="col-md-6 text-center">
+              {% if product.image_url %}
+              <img src="{{ product.image_url.url }}" alt="{{ product.name }}"
+                class="img-fluid rounded border product-image">
+              {% else %}
+              <div class="no-image-box rounded">
+                <span class="text-muted">Sin imagen</span>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Right column: Details -->
+            <div class="col-md-6">
+
+              <h3 class="mb-3 text-brand fw-bold">{{ product.name }}</h3>
+
+              <div class="info-block">
+                <strong class="info-label">Descripción</strong>
+                <p class="info-text">{{ product.description }}</p>
+              </div>
+
+              <div class="row">
+                <div class="col-6">
+                  <div class="info-block">
+                    <strong class="info-label">Precio</strong>
+                    <span class="h5 text-primary">{{ product.price }}€</span>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="info-block">
+                    <strong class="info-label">Stock</strong>
+                    <span class="badge fs-6 bg-{% if product.stock > 0 %}success{% else %}danger{% endif %}">
+                      {{ product.stock }} unidades
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-block">
+                <strong class="info-label">Fabricante</strong>
+                <span class="info-text">{{ product.fabricator }}</span>
+              </div>
+
+              <div class="info-block">
+                <strong class="info-label">Categorías</strong>
+                <div class="categories-list mt-2">
+                  {% for category in categories %}
+                  <span class="category-badge">{{ category.name }}</span>
+                  {% empty %}
+                  <span class="text-muted">Sin categorías</span>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="d-flex mt-3 action-buttons">
+                <a href="{% url 'admin/products/update' product.id %}" class="btn btn-brand flex-fill">
+                  Editar Producto
+                </a>
+                <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-danger-soft flex-fill">
+                  Eliminar Producto
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Back button -->
+      <div class="text-center mt-4">
+        <a href="/admin/products" class="btn btn-outline-secondary px-4">
+          Volver a la lista de productos
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
-<a href="/admin/products" class="btn btn-secondary mt-3">Volver a la lista</a>
+<style>
+  /* Card */
+  .product-card {
+    border-radius: 10px;
+    /* less round */
+    overflow: hidden;
+    border: none;
+  }
+
+  /* Branding */
+  .text-brand {
+    color: #9c6dd1;
+  }
+
+  /* Image */
+  .product-image {
+    max-height: 380px;
+    object-fit: cover;
+  }
+
+  .no-image-box {
+    height: 380px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+  }
+
+  /* Info sections */
+  .info-block {
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #a97acf;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .info-text {
+    color: #555;
+    margin: 0;
+  }
+
+  /* Categories */
+  .categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .category-badge {
+    background-color: #a97acf;
+    color: white;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+
+  /* Buttons */
+  .btn-brand {
+    background-color: #a97acf;
+    color: white;
+    border-radius: 8px;
+    transition: 0.2s;
+    margin-right: 8px;
+    /* small gap between buttons */
+  }
+
+  .btn-brand:hover {
+    background-color: #9460c1;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .btn-danger-soft {
+    background-color: #f4d8d8;
+    color: #7b2f2f;
+    border: 1px solid #e6bcbc;
+    border-radius: 8px;
+    transition: 0.2s;
+  }
+
+  .btn-danger-soft:hover {
+    background-color: #eac3c3;
+    color: #552020;
+    transform: translateY(-1px);
+  }
+
+  /* Last button no margin */
+  .action-buttons>a:last-child {
+    margin-right: 0;
+  }
+
+  /* Back button */
+  .btn-outline-secondary:hover {
+    background-color: #e9e9e9;
+  }
+</style>
 {% endblock %}

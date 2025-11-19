@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 from app.models import Service, Category
 from app.views import *
 from app.services import user_service, service_service
-from app.views.service_controller import create_service, delete_service, get_popular_services, get_service, get_services_by_category, get_services_by_department, get_services_by_duration, get_services_by_price_range, get_services_sorted_by_duration, get_services_sorted_by_price, list_services, search_services, service_categories_overview, update_service
+from app.views.service.service_detail_view import create_service, delete_service, get_popular_services, get_service, get_services_by_category, get_services_by_department, get_services_by_duration, get_services_by_price_range, get_services_sorted_by_duration, get_services_sorted_by_price, list_services, search_services, service_categories_overview, update_service
 
 
 class TestServiceController(TestCase):

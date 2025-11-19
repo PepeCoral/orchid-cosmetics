@@ -1,40 +1,51 @@
 {% extends 'admin/base_admin.html' %}
+{% block title %}Lista de Productos - Orchid Cosmetics{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
+  <h2 class="mb-4">Lista de Productos</h2>
 
-  <h2 class="mb-3">Lista de Productos</h2>
-
-  <a href="create" class="btn btn-success mb-4">Crear Producto</a>
+  <div class="mb-3">
+    <a href="/admin/products/create" class="btn text-white" style="background-color: #a97acf;">
+      + Crear Producto
+    </a>
+  </div>
 
   {% if productos %}
   <ul class="list-group">
 
     {% for product in productos %}
-    <li class="list-group-item mb-3" style="border-radius: 8px;">
+    <li class="list-group-item d-flex align-items-center p-2 mb-2" style="border-radius: 8px;">
 
-      <div class="d-flex justify-content-between align-items-center">
-
-        <!-- Left block: info -->
-        <div>
-          <strong>{{ product.name }}</strong><br>
-          Fabricante: {{ product.fabricator }}<br>
-          Stock: {{ product.stock }}
+      <!-- Image -->
+      <div style="width:80px; height:80px; flex-shrink:0;">
+        {% if product.image_url %}
+        <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded"
+          style="height:80px; width:80px; object-fit:cover;">
+        {% else %}
+        <div style="height:80px; width:80px; background:#eee;"
+          class="d-flex align-items-center justify-content-center rounded">
+          <span class="text-muted" style="font-size: 0.75rem;">Sin imagen</span>
         </div>
+        {% endif %}
+      </div>
 
-        <!-- Right block: button + price -->
-        <div class="d-flex align-items-center">
-          <span class="badge badge-primary mr-3">
-            {{ product.price }}€
-          </span>
+      <!-- Details -->
+      <div class="ml-3 flex-grow-1" style="line-height: 1.2;">
+        <strong style="font-size: 1rem;">{{ product.name }}</strong><br>
+        <small class="text-muted">{{ product.description|truncatewords:10 }}</small><br>
+        <strong class="text-primary" style="font-size: 0.9rem;">{{ product.price }}€</strong><br>
+        <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+        <small class="text-muted" style="font-size: 0.75rem;">Fabricante: {{ product.fabricator }}</small>
+      </div>
 
-          <a href="{{ product.id }}" class="btn btn-primary btn-sm ">
-            Ver detalles
-          </a>
-
-
+      <!-- Actions (horizontal buttons) -->
+      <div class="d-flex align-items-center">
+        <div class="button-row">
+          <a href="{% url 'admin/products/show' product.id %}" class="btn btn-sm action-btn">Ver</a>
+          <a href="{% url 'admin/products/update' product.id %}" class="btn btn-sm action-btn">Editar</a>
+          <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-sm action-btn-danger">Eliminar</a>
         </div>
-
       </div>
 
     </li>
@@ -43,8 +54,60 @@
   </ul>
 
   {% else %}
-  <p>No hay productos disponibles.</p>
+  <div class="alert alert-info text-center">
+    No hay productos creados.
+    <a href="/admin/products/create" class="alert-link">Crear el primer producto</a>.
+  </div>
   {% endif %}
-
 </div>
+
+<style>
+  .list-group-item img {
+    border-radius: 6px;
+  }
+
+  /* Smaller buttons + added spacing */
+  .button-row {
+    display: flex;
+    gap: 6px;
+    /* <-- small gap between buttons */
+  }
+
+  .button-row .btn {
+    min-width: 65px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+    border-radius: 6px !important;
+  }
+
+  /* Softer brand color theme */
+  .action-btn {
+    background-color: #e8e0f6;
+    border: 1px solid #d4c5ee;
+    color: #44365d;
+  }
+
+  .action-btn:hover {
+    background-color: #dcd0f2;
+    border-color: #c9b8e8;
+    color: #2a2140;
+  }
+
+  .action-btn-danger {
+    background-color: #f4d8d8;
+    border: 1px solid #e8bcbc;
+    color: #6b2828;
+  }
+
+  .action-btn-danger:hover {
+    background-color: #ecc2c2;
+    border-color: #d9a5a5;
+    color: #4a1b1b;
+  }
+
+  /* Purple brand badge */
+  .badge.bg-secondary {
+    background-color: #a97acf !important;
+  }
+</style>
 {% endblock %}
