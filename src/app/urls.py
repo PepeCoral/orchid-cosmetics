@@ -3,9 +3,12 @@ import app.views as views
 from django.contrib.auth import views as auth_views
 
 
+from app.views.service.service_detail_view import ServiceDetailViewUser
+
+from app.views.admin.service.show_service_view import ShowServiceView
+
 from app.views.admin.category.update_category_view import UpdateCategoryView
 from app.views.admin.service.delete_service_view import DeleteServiceView
-from app.views.admin.service.show_service_view import ShowServiceView
 from app.views.admin.service.update_service_view import UpdateServiceView
 from app.views.home_view import HomeView
 from app.views.user.user_delete_view import DeleteUserView
@@ -46,7 +49,6 @@ urlpatterns = [
     path("register/", UserRegisterView.as_view(), name="register"),
 
     path('contacto/', ContactView.as_view(), name='contact'),
-
     path("catalog/", CatalogView.as_view(), name="catalog" ),
 
     path('user/update/<int:user_id>/', UpdateUserView.as_view(), name='update_user'),
@@ -67,20 +69,19 @@ urlpatterns = [
     path('admin/products/delete/<int:product_id>/', DeleteProductView.as_view(), name='admin/products/delete'),
     path('admin/products/update/<int:product_id>/', UpdateProductView.as_view(), name='admin/products/update'),
 
-
+    # URLs ADMIN para servicios
     path('admin/cosmeticservices/', ListServiceView.as_view(), name='admin/cosmeticservices'),
     path('admin/cosmeticservices/create/', CreateServiceView.as_view(), name='admin/cosmeticservices/create'),
     path('admin/cosmeticservices/<int:service_id>/', ShowServiceView.as_view(), name='admin/cosmeticservices/show'),  
     path('admin/cosmeticservices/delete/<int:service_id>/', DeleteServiceView.as_view(), name='admin/cosmeticservices/delete'),  
     path('admin/cosmeticservices/update/<int:service_id>/', UpdateServiceView.as_view(), name='admin/cosmeticservices/update'),  
-    # CRUD básico
-    path('services/', views.list_services, name='list_services'),
-    path('services/create/', views.create_service, name='create_service'),
-    path('services/<int:service_id>/', views.get_service, name='get_service'),
+    
+    # URLs USUARIOS para servicios
+    path('services/<int:service_id>/', ServiceDetailViewUser.as_view(), name='service_detail'),
 
+    # Otras URLs
     path('orders/create/', views.create_order, name="create_order"),
     path('orders/', views.get_all_orders, name="get_all_orders"),
-
     path("cart", CartView.as_view(), name="cart"),
     path("cart/add/<int:cart_id>", AddCartView.as_view(), name="cart/add"),
     path("cart/remove/<int:cart_id>", RemoveCartView.as_view(), name="cart/remove"),

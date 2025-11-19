@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.core.exceptions import ValidationError
+from django.http import Http404
 from app.models import Service, Category
 from app.repositories.service_repository import ServiceRepository
 
