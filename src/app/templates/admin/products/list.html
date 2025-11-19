@@ -5,119 +5,107 @@
 <div class="container mt-4">
   <h2 class="mb-4">Lista de Productos</h2>
 
-  <div class="mb-4">
+  <div class="mb-3">
     <a href="/admin/products/create" class="btn text-white" style="background-color: #a97acf;">
       + Crear Producto
     </a>
   </div>
 
-  <div class="row">
+  {% if productos %}
+  <ul class="list-group">
+
     {% for product in productos %}
-    <div class="col-md-6 col-lg-4 mb-4">
-      <div class="card h-100 shadow-sm">
+    <li class="list-group-item d-flex align-items-center p-2 mb-2" style="border-radius: 8px;">
+
+      <!-- Image -->
+      <div style="width:80px; height:80px; flex-shrink:0;">
         {% if product.image_url %}
-        <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="card-img-top"
-          style="height: 200px; object-fit: cover;">
+        <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded"
+          style="height:80px; width:80px; object-fit:cover;">
         {% else %}
-        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
-          <span class="text-muted">Sin imagen</span>
+        <div style="height:80px; width:80px; background:#eee;"
+          class="d-flex align-items-center justify-content-center rounded">
+          <span class="text-muted" style="font-size: 0.75rem;">Sin imagen</span>
         </div>
         {% endif %}
+      </div>
 
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ product.name }}</h5>
-          <p class="card-text text-muted">
-            {{ product.description|truncatewords:15 }}
-          </p>
+      <!-- Details -->
+      <div class="ml-3 flex-grow-1" style="line-height: 1.2;">
+        <strong style="font-size: 1rem;">{{ product.name }}</strong><br>
+        <small class="text-muted">{{ product.description|truncatewords:10 }}</small><br>
+        <strong class="text-primary" style="font-size: 0.9rem;">{{ product.price }}€</strong><br>
+        <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+        <small class="text-muted" style="font-size: 0.75rem;">Fabricante: {{ product.fabricator }}</small>
+      </div>
 
-          <div class="mt-auto">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <strong class="text-primary">{{ product.price }}€</strong>
-              <span class="badge bg-secondary">{{ product.stock }} en stock</span>
-            </div>
-
-            <p class="card-text">
-              <small class="text-muted">
-                <strong>Fabricante:</strong> {{ product.fabricator }}
-              </small>
-            </p>
-
-            <!-- BOTONES DE ACCIÓN -->
-            <div class="btn-group w-100" role="group">
-              <a href="{% url 'admin/products/show' product.id %}" class="btn btn-outline-primary btn-sm"
-                title="Ver detalles">
-                👁️ Ver
-              </a>
-              <a href="{% url 'admin/products/update' product.id %}" class="btn btn-outline-warning btn-sm"
-                title="Editar producto">
-                ✏️ Editar
-              </a>
-              <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-outline-danger btn-sm"
-                title="Eliminar producto">
-                🗑️ Eliminar
-              </a>
-            </div>
-          </div>
+      <!-- Actions (horizontal buttons) -->
+      <div class="d-flex align-items-center">
+        <div class="button-row">
+          <a href="{% url 'admin/products/show' product.id %}" class="btn btn-sm action-btn">Ver</a>
+          <a href="{% url 'admin/products/update' product.id %}" class="btn btn-sm action-btn">Editar</a>
+          <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-sm action-btn-danger">Eliminar</a>
         </div>
       </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-      <div class="alert alert-info text-center">
-        No hay productos creados.
-        <a href="/admin/products/create" class="alert-link">Crear el primer producto</a>.
-      </div>
-    </div>
+
+    </li>
     {% endfor %}
+
+  </ul>
+
+  {% else %}
+  <div class="alert alert-info text-center">
+    No hay productos creados.
+    <a href="/admin/products/create" class="alert-link">Crear el primer producto</a>.
   </div>
+  {% endif %}
 </div>
 
 <style>
-  .card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: none;
-    border-radius: 10px;
+  .list-group-item img {
+    border-radius: 6px;
   }
 
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+  /* Smaller buttons + added spacing */
+  .button-row {
+    display: flex;
+    gap: 6px;
+    /* <-- small gap between buttons */
   }
 
-  .btn-group .btn {
-    border-radius: 0;
-    font-size: 0.85rem;
-    padding: 0.4rem 0.5rem;
+  .button-row .btn {
+    min-width: 65px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+    border-radius: 6px !important;
   }
 
-  .btn-group .btn:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+  /* Softer brand color theme */
+  .action-btn {
+    background-color: #e8e0f6;
+    border: 1px solid #d4c5ee;
+    color: #44365d;
   }
 
-  .btn-group .btn:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+  .action-btn:hover {
+    background-color: #dcd0f2;
+    border-color: #c9b8e8;
+    color: #2a2140;
   }
 
-  .btn-outline-warning:hover {
-    background-color: #ffc107;
-    border-color: #ffc107;
-    color: #000;
+  .action-btn-danger {
+    background-color: #f4d8d8;
+    border: 1px solid #e8bcbc;
+    color: #6b2828;
   }
 
-  .btn-outline-danger:hover {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    color: #fff;
+  .action-btn-danger:hover {
+    background-color: #ecc2c2;
+    border-color: #d9a5a5;
+    color: #4a1b1b;
   }
 
-  .btn-outline-primary:hover {
-    background-color: #a97acf;
-    border-color: #a97acf;
-    color: #fff;
-  }
-
+  /* Purple brand badge */
   .badge.bg-secondary {
     background-color: #a97acf !important;
   }
