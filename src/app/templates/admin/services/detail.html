@@ -1,194 +1,196 @@
 {% extends 'admin/base_admin.html' %}
-{% block title %} {{ service.name }} {% endblock %}
+{% block title %}{{ service.name }} - Orchid Cosmetics{% endblock %}
 
 {% block content %}
-<style>
-    .service-container {
-        display: flex;
-        gap: 2rem;
-        padding: 2rem 0;
-        align-items: stretch;
-    }
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
 
-    .service-image {
-        flex: 0 0 350px;
-        display: flex;
-    }
-
-    .service-image img {
-        height: 100%;
-        width: 100%;
-        max-height: 600px;
-        border-radius: 12px;
-        border: 1px solid #ddd;
-        object-fit: cover;
-    }
-
-    .no-image {
-        width: 100%;
-        height: 100%;
-        max-height: 600px;
-        background: #eee;
-        border-radius: 12px;
-        border: 1px solid #ddd;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .no-image span {
-        color: #6c757d;
-        font-size: 1.1rem;
-    }
-
-    .service-info {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .service-info h1 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        color: #333;
-    }
-
-    .service-meta {
-        color: #555;
-        margin-bottom: 1.5rem;
-    }
-
-    .service-price {
-        font-size: 1.6rem;
-        font-weight: bold;
-        color: #a97acf;
-        margin-bottom: 1rem;
-    }
-
-    .service-details {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 1.5rem;
-    }
-
-    .detail-item {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.5rem;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .detail-label {
-        font-weight: 600;
-        color: #a97acf;
-    }
-
-    .detail-value {
-        color: #555;
-    }
-
-    .categories-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
-
-    .category-badge {
-        background-color: #a97acf;
-        color: white;
-        padding: 0.3rem 0.8rem;
-        border-radius: 15px;
-        font-size: 0.85rem;
-    }
-
-    .booking-form {
-        padding: 1.5rem;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        width: 280px;
-        background: #fafafa;
-        margin-top: auto;
-    }
-
-    .booking-form button {
-        width: 100%;
-        background: #a97acf;
-        color: white;
-        padding: 12px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-size: 1rem;
-        margin-top: 10px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .booking-form button:hover {
-        background: #8e5db5;
-        transform: translateY(-2px);
-    }
-</style>
-
-<div class="service-container">
-
-    <!-- LEFT SIDE IMAGE -->
-    <div class="service-image">
-        {% if service.image_url %}
-        <img src="{{ service.image_url.url }}" alt="{{ service.name }}">
-        {% else %}
-        <div class="no-image">
-            <span>Sin imagen</span>
+      <div class="card service-card shadow-sm">
+        <!-- Card header -->
+        <div class="card-header text-white text-center py-3" style="background-color: #a97acf;">
+          <h2 class="mb-0" style="font-size: 1.5rem;">Detalles del Servicio</h2>
         </div>
-        {% endif %}
-    </div>
 
-    <!-- RIGHT SIDE INFO -->
-    <div class="service-info">
-        <h1>{{ service.name }}</h1>
+        <div class="card-body p-4">
+          <div class="row g-4">
 
-
-        <p>{{ service.description }}</p>
-
-        <p class="service-price">{{ service.price }}€</p>
-
-        <!-- SERVICE DETAILS -->
-        <div class="service-details">
-            <div class="detail-item">
-                <span class="detail-label">Duración:</span>
-                <span class="detail-value">{{ service.duration_minutes }} minutos</span>
+            <!-- Left column: Image -->
+            <div class="col-md-6 text-center">
+              {% if service.image_url %}
+              <img src="{{ service.image_url.url }}" alt="{{ service.name }}"
+                class="img-fluid rounded border service-image">
+              {% else %}
+              <div class="no-image-box rounded">
+                <span class="text-muted">Sin imagen</span>
+              </div>
+              {% endif %}
             </div>
 
-            <div class="detail-item">
-                <span class="detail-label">Departamento:</span>
-                <span class="detail-value">{{ service.department }}</span>
-            </div>
+            <!-- Right column: Details -->
+            <div class="col-md-6">
+              <h3 class="mb-3 text-brand fw-bold">{{ service.name }}</h3>
 
-            <div class="detail-item">
-                <span class="detail-label">Categorías:</span>
-                <div class="detail-value">
-                    <div class="categories-list">
-                        {% for category in service.categories.all %}
-                        <span class="category-badge">{{ category.name }}</span>
-                        {% empty %}
-                        <span class="text-muted">Sin categorías</span>
-                        {% endfor %}
-                    </div>
+              <div class="info-block">
+                <strong class="info-label">Descripción</strong>
+                <p class="info-text">{{ service.description }}</p>
+              </div>
+
+              <div class="row">
+                <div class="col-6">
+                  <div class="info-block">
+                    <strong class="info-label">Precio</strong>
+                    <span class="h5 text-primary">{{ service.price }}€</span>
+                  </div>
                 </div>
+                <div class="col-6">
+                  <div class="info-block">
+                    <strong class="info-label">Duración</strong>
+                    <span class="info-text">{{ service.duration_minutes }} minutos</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-block">
+                <strong class="info-label">Departamento</strong>
+                <span class="info-text">{{ service.department }}</span>
+              </div>
+
+              <div class="info-block">
+                <strong class="info-label">Categorías</strong>
+                <div class="categories-list mt-2">
+                  {% for category in service.categories.all %}
+                  <span class="category-badge">{{ category.name }}</span>
+                  {% empty %}
+                  <span class="text-muted">Sin categorías</span>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="d-flex mt-3 action-buttons">
+                <a href="{% url 'admin/cosmeticservices/update' service.id %}" class="btn btn-brand flex-fill">
+                  Editar Servicio
+                </a>
+                <a href="{% url 'admin/cosmeticservices/delete' service.id %}" class="btn btn-danger-soft flex-fill">
+                  Eliminar Servicio
+                </a>
+              </div>
+
             </div>
+          </div>
         </div>
+      </div>
 
-        <!-- BOOKING FORM -->
-        <form method="post" class="booking-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Reservar Servicio</button>
-        </form>
+      <!-- Back button -->
+      <div class="text-center mt-4">
+        <a href="/admin/cosmeticservices" class="btn btn-outline-secondary px-4">
+          Volver a la lista de servicios
+        </a>
+      </div>
+
     </div>
-
+  </div>
 </div>
 
+<style>
+  /* Card */
+  .service-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+  }
+
+  /* Branding */
+  .text-brand {
+    color: #9c6dd1;
+  }
+
+  /* Image */
+  .service-image {
+    max-height: 380px;
+    object-fit: cover;
+  }
+
+  .no-image-box {
+    height: 380px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+  }
+
+  /* Info blocks */
+  .info-block {
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #a97acf;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .info-text {
+    color: #555;
+    margin: 0;
+  }
+
+  /* Categories */
+  .categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .category-badge {
+    background-color: #a97acf;
+    color: white;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+
+  /* Buttons */
+  .btn-brand {
+    background-color: #a97acf;
+    color: white;
+    border-radius: 8px;
+    transition: 0.2s;
+    margin-right: 8px;
+  }
+
+  .btn-brand:hover {
+    background-color: #9460c1;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .btn-danger-soft {
+    background-color: #f4d8d8;
+    color: #7b2f2f;
+    border: 1px solid #e6bcbc;
+    border-radius: 8px;
+    transition: 0.2s;
+  }
+
+  .btn-danger-soft:hover {
+    background-color: #eac3c3;
+    color: #552020;
+    transform: translateY(-1px);
+  }
+
+  .action-buttons>a:last-child {
+    margin-right: 0;
+  }
+
+  /* Back button */
+  .btn-outline-secondary:hover {
+    background-color: #e9e9e9;
+  }
+</style>
 {% endblock %}
