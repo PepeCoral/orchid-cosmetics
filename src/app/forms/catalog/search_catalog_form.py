@@ -11,7 +11,7 @@ class SearchCatalogForm(forms.Form):
             'placeholder': 'Buscar por nombre...'
         })
     )
-    
+
     fabricator = forms.CharField(
         label="Fabricante",
         required=False,
@@ -20,7 +20,7 @@ class SearchCatalogForm(forms.Form):
             'placeholder': 'Fabricante...'
         })
     )
-    
+
     department = forms.CharField(
         label="Departamento",
         required=False,
@@ -29,7 +29,7 @@ class SearchCatalogForm(forms.Form):
             'placeholder': 'Departamento...'
         })
     )
-    
+
     min_price = forms.DecimalField(
         label="Precio mínimo",
         required=False,
@@ -39,9 +39,9 @@ class SearchCatalogForm(forms.Form):
             'placeholder': 'Mínimo €'
         })
     )
-    
+
     max_price = forms.DecimalField(
-        label="Precio máximo", 
+        label="Precio máximo",
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={
@@ -49,12 +49,10 @@ class SearchCatalogForm(forms.Form):
             'placeholder': 'Máximo €'
         })
     )
-    
+
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         label="Categorías",
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'form-control select2'
-        })
+        widget=forms.CheckboxSelectMultiple()
     )
