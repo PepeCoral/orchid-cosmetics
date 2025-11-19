@@ -1,23 +1,18 @@
 from decimal import Decimal
 from django.core.exceptions import ValidationError
-from django.db.models import Q
-from app import models
 from app.models import Service, Category
 from app.repositories.service_repository import ServiceRepository
-
 
 class ServiceService():
     
     def __init__(self):
         self.service_repository = ServiceRepository()
 
-    def create_service(self,request,service_data):
-       
+    def create_service(self, request, service_data):
         if(service_data["price"] < 0):
             raise ValidationError("Price cannot be negative")
         if(service_data["duration_minutes"] < 0):
             raise ValidationError("Duration cannot be negative")
-
 
         files = request.FILES
         service_data["image_url"] = files.get("image_url")
@@ -27,8 +22,7 @@ class ServiceService():
 
         return service
     
-    @staticmethod
-    def get_service_by_id(service_id):
+    def get_service_by_id(self, service_id):
         """
         Obtiene un servicio por su ID
         """
@@ -37,8 +31,7 @@ class ServiceService():
         except Service.DoesNotExist:
             raise ValidationError("Servicio no encontrado")
     
-    @staticmethod
-    def get_all_services():
+    def get_all_services(self):
         """
         Obtiene todos los servicios con sus categorías
         """
@@ -78,33 +71,11 @@ class ServiceService():
         return updated_service
 
     def delete_service(self, service_id):
-        """
-        Elimina un servicio
-        """
         service = self.service_repository.get_by_id(service_id)
         if not service:
             raise ValidationError("Servicio no encontrado.")
         
         return self.service_repository.delete(service_id)
-    
-    # En tu ServiceService, agrega:
+
     def search_services(self, filters):
-        """Buscar servicios con filtros"""
-        queryset = Service.objects.all()
-        
-        if filters.get('name'):
-            queryset = queryset.filter(name__icontains=filters['name'])
-        
-        if filters.get('department'):
-            queryset = queryset.filter(department__icontains=filters['department'])
-        
-        if filters.get('min_price'):
-            queryset = queryset.filter(price__gte=filters['min_price'])
-        
-        if filters.get('max_price'):
-            queryset = queryset.filter(price__lte=filters['max_price'])
-        
-        if filters.get('categories'):
-            queryset = queryset.filter(categories__in=filters['categories']).distinct()
-        
-        return queryset
+        return self.service_repository.search(filters)
