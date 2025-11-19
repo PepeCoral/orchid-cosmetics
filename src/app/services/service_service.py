@@ -5,7 +5,7 @@ from app.models import Service, Category
 from app.repositories.service_repository import ServiceRepository
 
 class ServiceService():
-    
+
     def __init__(self):
         self.service_repository = ServiceRepository()
 
@@ -22,7 +22,7 @@ class ServiceService():
         service.categories.set(categories)
 
         return service
-    
+
     def get_service_by_id(self, service_id):
         """
         Obtiene un servicio por su ID
@@ -31,7 +31,7 @@ class ServiceService():
             return Service.objects.get(id=service_id)
         except Service.DoesNotExist:
             raise ValidationError("Servicio no encontrado")
-    
+
     def get_all_services(self):
         """
         Obtiene todos los servicios con sus categorías
@@ -75,7 +75,7 @@ class ServiceService():
         service = self.service_repository.get_by_id(service_id)
         if not service:
             raise ValidationError("Servicio no encontrado.")
-        
+
         return self.service_repository.delete(service_id)
 
     def search_services(self, filters):

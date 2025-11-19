@@ -16,7 +16,7 @@ class CatalogView(View):
         form = SearchCatalogForm()
         products = self.product_service.get_all_products()
         services = self.service_service.get_all_services()
-        
+
         return render(request, "catalog/catalog.html", {
             "products": products,
             "services": services,
@@ -25,26 +25,14 @@ class CatalogView(View):
 
     def post(self, request):
         form = SearchCatalogForm(request.POST)
-        
- 
-        products = self.product_service.get_all_products()
-        services = self.service_service.get_all_services()
-        
+
         if form.is_valid():
 
-            products = self._filter_products(form.cleaned_data)
-            services = self._filter_services(form.cleaned_data)
-        
+            products = self.product_service.search_products(form.cleaned_data)
+            services = self.service_service.search_services(form.cleaned_data)
+
         return render(request, "catalog/catalog.html", {
             "products": products,
             "services": services,
             "form": form
         })
-    
-    def _filter_products(self, filters):
-
-        return self.product_service.search(filters)
-    
-    def _filter_services(self, filters):
-
-        return self.service_service.search_services(filters)
