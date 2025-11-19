@@ -10,7 +10,7 @@ class Product(models.Model):
                                 validators=[MinValueValidator(0.0),MaxValueValidator(99999999.99)])
     stock = models.IntegerField(validators=[MinValueValidator(0, "No puede haber stock negativo")])
     fabricator = models.CharField(max_length=100)
-    image_url = models.ImageField(upload_to='products/',null=True)
+    image_url = models.ImageField(null=True)
     categories = models.ManyToManyField(Category)
 
 
@@ -25,9 +25,9 @@ class ProductQuantity(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.product.name} in order {self.order}"
-    
+
     def set_product(self, product):
         self.product_id.set(product.id)
-    
+
     def set_order(self, order):
         self.order.set(order)

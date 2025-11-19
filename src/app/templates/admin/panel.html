@@ -1,9 +1,120 @@
 {% extends 'admin/base_admin.html' %}
-{% block title %}Panel de administrador{% endblock %}
+{% load static %}
+
+{% block title %}Panel de Administrador | Dashboard{% endblock %}
 
 {% block content %}
-<h1>Admin Dashboard</h1>
-<p>Total users: {{ total_users }}</p>
-<p>Superusers: {{ superusers }}</p>
+<div class="row mb-4">
+  <div class="col-12">
+    <h1 class="text-primary font-weight-bold">
+      <i class="fas fa-tachometer-alt"></i> Panel de Administrador
+    </h1>
+    <p class="lead text-muted">Bienvenido de nuevo al panel de control de Orchid Cosmetics.</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card shadow-sm border-left-primary h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+              Administrar
+            </div>
+            <a href="{% url 'admin/categories' %}" class="h5 mb-0 font-weight-bold text-gray-800">
+              Categorías
+            </a>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-folder fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card shadow-sm border-left-success h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+              Administrar
+            </div>
+            <a href="{% url 'admin/products' %}" class="h5 mb-0 font-weight-bold text-gray-800">
+              Productos
+            </a>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card shadow-sm border-left-info h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+              Administrar
+            </div>
+            <a href="{% url 'admin/cosmeticservices' %}" class="h5 mb-0 font-weight-bold text-gray-800">
+              Servicios
+            </a>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-cut fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card shadow-sm border-left-warning h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+              Ver
+            </div>
+            <a href="/" class="h5 mb-0 font-weight-bold text-gray-800">
+              Pedidos
+            </a>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Información General</h6>
+      </div>
+      <div class="card-body">
+        <p>Utiliza los enlaces en la barra de navegación o las tarjetas de arriba para gestionar los diferentes módulos
+          de tu sitio web.</p>
+        <ul>
+          <li>**Categorías:** Gestiona las agrupaciones de productos.</li>
+          <li>**Productos:** Crea, edita y elimina productos.</li>
+          <li>**Servicios:** Administra los servicios cosméticos ofrecidos.</li>
+          <li>**Pedidos:** Revisa el estado de las compras realizadas por los clientes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
 {% endblock %}
