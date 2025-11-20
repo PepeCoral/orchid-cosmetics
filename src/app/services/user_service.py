@@ -1,7 +1,7 @@
 from app.models.user import RoleOptions, User
 from app.repositories.user_repository import UserRepository
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 
 
 class UserService():
@@ -44,11 +44,18 @@ class UserService():
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        if not self.user_repository.get_by_email(email):
-            raise ValidationError("No hay ningun usuario con ese email")
+        user = self.user_repository.get_by_email(email)
 
-        user_log = self.user_repository.authenticate_user(email,password)
-        login(request, user_log)
+        if user is None:
+            raise ValidationError("No hay ningun usuario con ese email")
+        
+        try:
+            
+            user_log = authenticate(username=user.username,password=password)
+            login(request, user_log)
+
+        except Exception as a:
+            raise ValidationError("Ha habido un error: ", str(a))
         return user_log
 
         

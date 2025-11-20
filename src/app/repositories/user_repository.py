@@ -15,10 +15,3 @@ class UserRepository(BaseRepository):
 
     def create(self, **kwargs) -> User:
         return self.model.objects.create_user(**kwargs)
-
-    def authenticate_user(self, email, password):
-        user = User.objects.get(email=email)
-
-        user_log = authenticate(username=user.username,password=password)
-
-        return user_log
