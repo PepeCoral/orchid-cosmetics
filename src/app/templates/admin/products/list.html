@@ -16,7 +16,7 @@
 
     {% for product in productos %}
     <li class="list-group-item d-flex align-items-center p-2 mb-2" style="border-radius: 8px;">
-
+      
       <!-- Image -->
       <div style="width:80px; height:80px; flex-shrink:0;">
         {% if product.image_url %}
@@ -42,6 +42,17 @@
       <!-- Actions (horizontal buttons) -->
       <div class="d-flex align-items-center">
         <div class="button-row">
+          {% if product.isPromoted %}
+            <form method="post" action="{% url 'admin/products/demote' product.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-primary">Quitar Destacar</button>
+            </form>
+          {% else %}
+            <form method="post" action="{% url 'admin/products/promote' product.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-primary">Destacar</button>
+            </form>
+          {% endif %}
           <a href="{% url 'admin/products/show' product.id %}" class="btn btn-sm action-btn">Ver</a>
           <a href="{% url 'admin/products/update' product.id %}" class="btn btn-sm action-btn">Editar</a>
           <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-sm action-btn-danger">Eliminar</a>
@@ -110,4 +121,5 @@
     background-color: #a97acf !important;
   }
 </style>
+
 {% endblock %}

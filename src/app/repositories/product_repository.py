@@ -30,3 +30,9 @@ class ProductRepository(BaseRepository):
             qs = qs.filter(categories__in=categories).distinct()
 
         return qs
+
+    def get_all_promoted_products(self):
+        qs = Product.objects.filter(isPromoted=True)
+        return qs
+
+

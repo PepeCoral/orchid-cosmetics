@@ -16,4 +16,5 @@ class ListProductView(View):
             return redirect("/")
 
         product = self.product_service.get_all_products()
+        
         return render(request, "admin/products/list.html", {"productos": product})

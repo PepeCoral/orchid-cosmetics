@@ -23,6 +23,24 @@ class ServiceService():
 
         return service
 
+    def get_promoted_services(self):
+        return self.service_repository.get_all_promoted_services()
+
+    def promote_service(self,service_id):
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+        print("hola")
+        updated_service = self.service_repository.update(id=service_id,isPromoted=True)
+        return updated_service
+
+    def demote_service(self,service_id):
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+        updated_service = self.service_repository.update(id=service_id,isPromoted=False)
+        return updated_service
+    
     def get_service_by_id(self, service_id):
         """
         Obtiene un servicio por su ID
