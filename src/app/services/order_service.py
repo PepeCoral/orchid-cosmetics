@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from app import models
 from app.models import Service, Category
+from app.repositories.order_repository import OrderRepository
 from app.repositories import product_repository as ProductRepository
 from app.repositories.product_quantity_repository import ProductQuantityRepository
 from app.repositories.service_quantity_repository import ServiceQuantityRepository
@@ -11,6 +12,11 @@ from app.models import ServiceQuantity, ProductQuantity, Order, Product, Service
 
 class OrderService():
     
+    def __init__(self):
+        self.order_repository = OrderRepository()
+
+    def create_current_order(self,user) -> Order:
+        pass
     
     @staticmethod
     def create_order(order_data):
