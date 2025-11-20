@@ -19,8 +19,12 @@ print("ENVIRONMENT from os.getenv:", os.getenv("ENVIRONMENT"))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-&s=deg$8(kewlz=u8d=))3k34^xwyo%p&od*kxk^jc1#w_2$7f'
 
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if ENVIRONMENT != "production" else False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -65,7 +69,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'orchid_proyect.wsgi.application'
 
 # Database
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 if ENVIRONMENT == "production":
     tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
