@@ -7,260 +7,450 @@
 
   <h1 class="mb-4">Catálogo</h1>
 
-  <!-- Toggle Button -->
-  <button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
-    aria-expanded="false" aria-controls="searchForm" style="background-color: #6f42c1;">
-    Buscar y Filtrar
-  </button>
+  <!-- PESTAÑAS PARA PRODUCTOS Y SERVICIOS -->
+  <ul class="nav nav-tabs mb-4" id="catalogTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if active_tab == 'products' %}active{% endif %} text-white products-tab-btn" id="products-tab"
+        data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab" aria-controls="products"
+        aria-selected="{% if active_tab == 'products' %}true{% else %}false{% endif %}">
+        📦 Productos ({{ products|length }})
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if active_tab == 'services' %}active{% endif %} text-white services-tab-btn" id="services-tab"
+        data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services"
+        aria-selected="{% if active_tab == 'services' %}true{% else %}false{% endif %}">
+        💅 Servicios ({{ services|length }})
+      </button>
+    </li>
+  </ul>
 
-  <!-- Collapsible Search Form -->
-  <div class="collapse" id="searchForm">
-    <div class="card card-body shadow-sm">
-      <form method="POST" class="row g-3">
-        {% csrf_token %}
+  <!-- CONTENIDO DE PESTAÑAS -->
+  <div class="tab-content" id="catalogTabsContent">
 
-        <div class="col-md-6">
-          <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
-          {{ form.name }}
+    <!-- PESTAÑA PRODUCTOS -->
+    <div class="tab-pane fade {% if active_tab == 'products' %}show active{% endif %}" id="products" role="tabpanel"
+      aria-labelledby="products-tab">
+
+      <!-- Buscador para Productos -->
+      <button class="btn text-white mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#productSearchForm"
+        aria-expanded="false" aria-controls="productSearchForm" style="background-color: #8e5db5;">
+        🔍 Buscar Productos
+      </button>
+
+      <div class="collapse" id="productSearchForm">
+        <div class="card card-body shadow-sm mb-4">
+          <form method="POST" class="row g-3">
+            {% csrf_token %}
+            <input type="hidden" name="search_type" value="products">
+
+            <div class="col-md-6">
+              <label for="product_name" class="form-label">Nombre del Producto</label>
+              <input type="text" class="form-control" id="product_name" name="product_name"
+                value="{{ product_name|default:'' }}" placeholder="Buscar por nombre...">
+            </div>
+
+            <div class="col-md-6">
+              <label for="product_fabricator" class="form-label">Fabricante</label>
+              <input type="text" class="form-control" id="product_fabricator" name="product_fabricator"
+                value="{{ product_fabricator|default:'' }}" placeholder="Buscar por fabricante...">
+            </div>
+
+            <div class="col-md-3">
+              <label for="product_min_price" class="form-label">Precio Mínimo (€)</label>
+              <input type="number" class="form-control" id="product_min_price" name="product_min_price"
+                value="{{ product_min_price|default:'' }}" placeholder="0" min="0" step="0.01">
+            </div>
+
+            <div class="col-md-3">
+              <label for="product_max_price" class="form-label">Precio Máximo (€)</label>
+              <input type="number" class="form-control" id="product_max_price" name="product_max_price"
+                value="{{ product_max_price|default:'' }}" placeholder="1000" min="0" step="0.01">
+            </div>
+
+            <div class="col-12">
+              <label for="product_categories" class="form-label">Categorías</label>
+              <select class="form-control select2" id="product_categories" name="product_categories" multiple>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id in selected_product_categories %}selected{% endif %}>
+                  {{ category.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-12">
+              <div class="d-flex">
+                <button type="submit" class="btn text-white mr-2" style="background-color: #8e5db5;">
+                  🔍 Aplicar Filtros
+                </button>
+                <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
+                  🗑️ Limpiar Filtros
+                </a>
+              </div>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <div class="col-md-6">
-          <label for="{{ form.fabricator.id_for_label }}" class="form-label">{{ form.fabricator.label }}</label>
-          {{ form.fabricator }}
-        </div>
-
-        <div class="col-md-6">
-          <label for="{{ form.department.id_for_label }}" class="form-label">{{ form.department.label }}</label>
-          {{ form.department }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ form.min_price.id_for_label }}" class="form-label">{{ form.min_price.label }}</label>
-          {{ form.min_price }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ form.max_price.id_for_label }}" class="form-label">{{ form.max_price.label }}</label>
-          {{ form.max_price }}
-        </div>
-
-        <div class="col-12">
-          <label for="{{ form.categories.id_for_label }}" class="form-label">{{ form.categories.label }}</label>
-          {{ form.categories }}
-        </div>
-
-        <div class="col-12">
-          <div class="d-flex">
-            <button type="submit" class="btn text-white mr-2" style="background-color: #6f42c1;">
-              Aplicar Filtros
-            </button>
-            <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
-              Limpiar Filtros
-            </a>
-          </div>
-        </div>
-
-
-      </form>
-    </div>
-  </div>
-
-  <!-- Mostrar filtros activos -->
-  {% if form.is_bound %}
-  <div class="mb-3">
-    <small class="text-muted">
-      Filtros activos:
-      {% if form.name.value %}
-      <span class="badge bg-filter">Nombre: "{{ form.name.value }}"</span>
+      <!-- Mostrar filtros activos para productos -->
+      {% if product_filters_active %}
+      <div class="mb-3">
+        <small class="text-muted">
+          Filtros activos:
+          {% if product_name %}<span class="badge bg-product-filter">Nombre: "{{ product_name }}"</span>{% endif %}
+          {% if product_fabricator %}<span class="badge bg-product-filter">Fabricante: "{{ product_fabricator }}"</span>{% endif %}
+          {% if product_min_price %}<span class="badge bg-product-filter">Precio mínimo: {{ product_min_price }}€</span>{% endif %}
+          {% if product_max_price %}<span class="badge bg-product-filter">Precio máximo: {{ product_max_price }}€</span>{% endif %}
+          {% if selected_product_categories %}<span class="badge bg-product-filter">{{ selected_product_categories|length }} categoría(s)</span>{% endif %}
+        </small>
+      </div>
       {% endif %}
-      {% if form.fabricator.value %}
-      <span class="badge bg-filter">Fabricante: "{{ form.fabricator.value }}"</span>
-      {% endif %}
-      {% if form.department.value %}
-      <span class="badge bg-filter">Departamento: "{{ form.department.value }}"</span>
-      {% endif %}
-      {% if form.min_price.value %}
-      <span class="badge bg-filter">Precio mínimo: {{ form.min_price.value }}€</span>
-      {% endif %}
-      {% if form.max_price.value %}
-      <span class="badge bg-filter">Precio máximo: {{ form.max_price.value }}€</span>
-      {% endif %}
-      {% if form.categories.value %}
-      <span class="badge bg-filter">{{ form.categories.value|length }} categoría(s)</span>
-      {% endif %}
-    </small>
-  </div>
-  {% endif %}
 
-  <hr>
-
-  <!-- PRODUCTOS -->
-  {% if products %}
-  <h2 class="mb-3">Productos</h2>
-  <div class="row">
-    {% for p in products %}
-    <div class="col-md-4 col-lg-3 mb-4">
-      <a href="{% url 'products/detail' p.id %}" class="text-decoration-none" style="color: inherit;">
-        <div class="card h-100 shadow-sm product-card">
-          {% if p.image_url %}
-            <!-- IMAGEN EN BLANCO Y NEGRO SI NO HAY STOCK -->
-            {% if p.stock == 0 %}
-            <img src="{{ p.image_url.url }}" class="card-img-top grayscale" alt="{{ p.name }}"
-              style="height: 200px; object-fit: cover;">
-            {% else %}
-            <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
-              style="height: 200px; object-fit: cover;">
-            {% endif %}
-          {% else %}
-          <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
-            <span class="text-muted">Sin imagen</span>
-          </div>
-          {% endif %}
-          <div class="card-body d-flex flex-column">
-            <h6 class="card-title">{{ p.name }}</h6>
-            <p class="card-text text-muted small mb-2">{{ p.fabricator }}</p>
-            <div class="mt-auto d-flex justify-content-between align-items-center">
-              <span class="badge text-white" style="background-color: #6f42c1;">€{{ p.price }}</span>
-              <!-- TEXTO DE STOCK -->
-              {% if p.stock == 0 %}
-                <small class="text-danger fw-bold">Fuera de stock</small>
+      <!-- Lista de Productos -->
+      {% if products %}
+      <div class="row">
+        {% for p in products %}
+        <div class="col-md-4 col-lg-3 mb-4">
+          <a href="{% url 'products/detail' p.id %}" class="text-decoration-none" style="color: inherit;">
+            <div class="card h-100 shadow-sm product-card">
+              {% if p.image_url %}
+                {% if p.stock == 0 %}
+                <img src="{{ p.image_url.url }}" class="card-img-top grayscale" alt="{{ p.name }}"
+                  style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
+                  style="height: 200px; object-fit: cover;">
+                {% endif %}
               {% else %}
-                <small class="text-muted">{{ p.stock }} en stock</small>
+              <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
+                <span class="text-muted">Sin imagen</span>
+              </div>
               {% endif %}
+              <div class="card-body d-flex flex-column">
+                <h6 class="card-title">{{ p.name }}</h6>
+                <p class="card-text text-muted small mb-2">{{ p.fabricator }}</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                  <span class="badge text-white" style="background-color: #8e5db5;">€{{ p.price }}</span>
+                  {% if p.stock == 0 %}
+                  <small class="text-danger fw-bold">Fuera de stock</small>
+                  {% else %}
+                  <small class="text-muted">{{ p.stock }} en stock</small>
+                  {% endif %}
+                </div>
+              </div>
             </div>
-          </div>
+          </a>
         </div>
-      </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <div class="alert alert-info">
+          <h5>No hay productos disponibles</h5>
+          <p class="mb-0">
+            {% if product_filters_active %}
+            No se encontraron productos con los filtros aplicados.
+            {% else %}
+            Pronto tendremos nuevos productos en stock.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      {% endif %}
     </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 
-  <!-- SERVICIOS -->
-  {% if services %}
-  <h2 class="mb-3">Servicios</h2>
-  <div class="row">
-    {% for s in services %}
-    <div class="col-md-4 col-lg-3 mb-4">
-      <a href="/services/{{ s.id }}/" class="text-decoration-none" style="color: inherit;">
-        <div class="card h-100 shadow-sm service-card">
-          {% if s.image_url %}
-          <img src="{{ s.image_url.url }}" class="card-img-top" alt="{{ s.name }}"
-            style="height: 200px; object-fit: cover;">
-          {% else %}
-          <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
-            <span class="text-muted">Sin imagen</span>
-          </div>
-          {% endif %}
-          <div class="card-body d-flex flex-column">
-            <h6 class="card-title">{{ s.name }}</h6>
-            <span class="badge bg-service mb-2">Servicio</span>
-            <p class="card-text text-muted small mb-2">{{ s.department }}</p>
-            <div class="mt-auto d-flex justify-content-between align-items-center">
-              <span class="badge text-white" style="background-color: #6f42c1;">€{{ s.price }}</span>
-              <small class="text-muted">{{ s.duration_minutes }} min</small>
+    <!-- PESTAÑA SERVICIOS -->
+    <div class="tab-pane fade {% if active_tab == 'services' %}show active{% endif %}" id="services" role="tabpanel"
+      aria-labelledby="services-tab">
+
+      <!-- Buscador para Servicios -->
+      <button class="btn text-white mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#serviceSearchForm"
+        aria-expanded="false" aria-controls="serviceSearchForm" style="background-color: #a97acf;">
+        🔍 Buscar Servicios
+      </button>
+
+      <div class="collapse" id="serviceSearchForm">
+        <div class="card card-body shadow-sm mb-4">
+          <form method="POST" class="row g-3">
+            {% csrf_token %}
+            <input type="hidden" name="search_type" value="services">
+
+            <div class="col-md-6">
+              <label for="service_name" class="form-label">Nombre del Servicio</label>
+              <input type="text" class="form-control" id="service_name" name="service_name"
+                value="{{ service_name|default:'' }}" placeholder="Buscar por nombre...">
             </div>
-          </div>
+
+            <div class="col-md-6">
+              <label for="service_department" class="form-label">Departamento</label>
+              <input type="text" class="form-control" id="service_department" name="service_department"
+                value="{{ service_department|default:'' }}" placeholder="Buscar por departamento...">
+            </div>
+
+            <div class="col-md-3">
+              <label for="service_min_price" class="form-label">Precio Mínimo (€)</label>
+              <input type="number" class="form-control" id="service_min_price" name="service_min_price"
+                value="{{ service_min_price|default:'' }}" placeholder="0" min="0" step="0.01">
+            </div>
+
+            <div class="col-md-3">
+              <label for="service_max_price" class="form-label">Precio Máximo (€)</label>
+              <input type="number" class="form-control" id="service_max_price" name="service_max_price"
+                value="{{ service_max_price|default:'' }}" placeholder="1000" min="0" step="0.01">
+            </div>
+
+            <div class="col-12">
+              <label for="service_categories" class="form-label">Categorías</label>
+              <select class="form-control select2" id="service_categories" name="service_categories" multiple>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id in selected_service_categories %}selected{% endif %}>
+                  {{ category.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-12">
+              <div class="d-flex">
+                <button type="submit" class="btn text-white mr-2" style="background-color: #a97acf;">
+                  🔍 Aplicar Filtros
+                </button>
+                <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
+                  🗑️ Limpiar Filtros
+                </a>
+              </div>
+            </div>
+          </form>
         </div>
-      </a>
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
+      </div>
 
-  {% if not products and not services %}
-  <div class="text-center py-5">
-    <div class="alert alert-info">
-      <h5>El catálogo está vacío</h5>
-      <p class="mb-0">
-        {% if form.is_bound %}
-        No se encontraron resultados con los filtros aplicados.
-        {% else %}
-        Pronto tendremos productos y servicios disponibles.
-        {% endif %}
-      </p>
+      <!-- Mostrar filtros activos para servicios -->
+      {% if service_filters_active %}
+      <div class="mb-3">
+        <small class="text-muted">
+          Filtros activos:
+          {% if service_name %}<span class="badge bg-service-filter">Nombre: "{{ service_name }}"</span>{% endif %}
+          {% if service_department %}<span class="badge bg-service-filter">Departamento: "{{ service_department }}"</span>{% endif %}
+          {% if service_min_price %}<span class="badge bg-service-filter">Precio mínimo: {{ service_min_price }}€</span>{% endif %}
+          {% if service_max_price %}<span class="badge bg-service-filter">Precio máximo: {{ service_max_price }}€</span>{% endif %}
+          {% if selected_service_categories %}<span class="badge bg-service-filter">{{ selected_service_categories|length }} categoría(s)</span>{% endif %}
+        </small>
+      </div>
+      {% endif %}
+
+      <!-- Lista de Servicios -->
+      {% if services %}
+      <div class="row">
+        {% for s in services %}
+        <div class="col-md-4 col-lg-3 mb-4">
+          <a href="/services/{{ s.id }}/" class="text-decoration-none" style="color: inherit;">
+            <div class="card h-100 shadow-sm service-card">
+              {% if s.image_url %}
+              <img src="{{ s.image_url.url }}" class="card-img-top" alt="{{ s.name }}"
+                style="height: 200px; object-fit: cover;">
+              {% else %}
+              <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
+                <span class="text-muted">Sin imagen</span>
+              </div>
+              {% endif %}
+              <div class="card-body d-flex flex-column">
+                <h6 class="card-title">{{ s.name }}</h6>
+                <span class="badge bg-service mb-2">Servicio</span>
+                <p class="card-text text-muted small mb-2">{{ s.department }}</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                  <span class="badge text-white" style="background-color: #a97acf;">€{{ s.price }}</span>
+                  <small class="text-muted">{{ s.duration_minutes }} min</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <div class="alert alert-info">
+          <h5>No hay servicios disponibles</h5>
+          <p class="mb-0">
+            {% if service_filters_active %}
+            No se encontraron servicios con los filtros aplicados.
+            {% else %}
+            Pronto tendremos nuevos servicios disponibles.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
-  {% endif %}
-
-  {% if error %}
-  <div class="alert alert-danger mt-3">
-    {{ error }}
-  </div>
-  {% endif %}
 
 </div>
 
 <!-- Styles -->
 <style>
-  .product-card,
-  .service-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: none;
-    border-radius: 10px;
-  }
+/* Estilos CSS corregidos */
+.product-card,
+.service-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  border-radius: 10px;
+}
 
-  .product-card:hover,
-  .service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-  }
+.product-card:hover,
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
 
-  .card-title {
-    font-weight: 600;
-    color: #333;
-  }
+.card-title {
+  font-weight: 600;
+  color: #333;
+}
 
-  /* Filter badges */
-  .badge.bg-filter {
-    background-color: #6f42c1 !important;
-    color: #fff !important;
-    font-weight: 500;
-    margin-right: 5px;
-    margin-bottom: 3px;
-  }
+/* Pestañas con fondo morado */
+.nav-tabs {
+  border-bottom: 2px solid #e9ecef;
+}
 
-  /* Service badge */
-  .badge.bg-service {
-    background-color: #d63384;
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.25rem 0.5rem;
-    border-radius: 5px;
-  }
+.nav-tabs .nav-link {
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+}
 
-  /* Stock styles */
-  .text-danger {
-    font-weight: 600;
-  }
+/* Estilos específicos para cada pestaña */
+.products-tab-btn {
+  background-color: #8e5db5;
+  border-color: #8e5db5;
+}
 
-  /* Efecto blanco y negro para imágenes sin stock */
-  .grayscale {
-    filter: grayscale(100%);
-    opacity: 0.7;
-  }
+.services-tab-btn {
+  background-color: #a97acf;
+  border-color: #a97acf;
+}
 
-  /* Efecto hover para productos sin stock */
-  .product-card .grayscale {
-    transition: all 0.3s ease;
-  }
+.nav-tabs .nav-link.active {
+  font-weight: 600;
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
-  .product-card:hover .grayscale {
-    filter: grayscale(80%);
-    opacity: 0.8;
-  }
+.nav-tabs .nav-link:not(.active) {
+  opacity: 0.7;
+}
+
+.nav-tabs .nav-link:not(.active):hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* Badges para filtros */
+.badge.bg-product-filter {
+  background-color: #8e5db5 !important;
+  color: #fff !important;
+  font-weight: 500;
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
+.badge.bg-service-filter {
+  background-color: #a97acf !important;
+  color: #fff !important;
+  font-weight: 500;
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
+/* Service badge */
+.badge.bg-service {
+  background-color: #a97acf;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+}
+
+/* Stock styles */
+.text-danger {
+  font-weight: 600;
+}
+
+/* Efecto blanco y negro para imágenes sin stock */
+.grayscale {
+  filter: grayscale(100%);
+  opacity: 0.7;
+}
+
+.product-card .grayscale {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover .grayscale {
+  filter: grayscale(80%);
+  opacity: 0.8;
+}
+
+/* Botones con efectos hover */
+.btn[style*="background-color: #8e5db5"]:hover,
+.btn[style*="background-color: #a97acf"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn[style*="background-color: #8e5db5"]:hover {
+  background-color: #7a4a9d !important;
+}
+
+.btn[style*="background-color: #a97acf"]:hover {
+  background-color: #9769c0 !important;
+}
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    // Select2 para categorías
     $('.select2').select2({
       placeholder: "Seleccione categorías",
       allowClear: true,
       width: '100%'
+    });
+
+    // Usar la pestaña activa del contexto Django
+    const activeTabFromContext = "{{ active_tab }}";
+
+    if (activeTabFromContext) {
+      const tabId = activeTabFromContext === 'services' ? '#services-tab' : '#products-tab';
+      const tabElement = document.querySelector(tabId);
+      if (tabElement) {
+        const tabTrigger = new bootstrap.Tab(tabElement);
+        tabTrigger.show();
+        // Actualizar localStorage también
+        localStorage.setItem('activeCatalogTab', tabId);
+      }
+    } else {
+      // Fallback al localStorage si no hay contexto
+      const activeTab = localStorage.getItem('activeCatalogTab');
+      if (activeTab) {
+        const tabTrigger = new bootstrap.Tab(document.querySelector(activeTab));
+        tabTrigger.show();
+      }
+    }
+
+    // Guardar pestaña activa
+    document.querySelectorAll('#catalogTabs button').forEach(tab => {
+      tab.addEventListener('click', function () {
+        localStorage.setItem('activeCatalogTab', '#' + this.id);
+      });
     });
   });
 </script>
