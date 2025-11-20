@@ -10,4 +10,5 @@ urlpatterns = [
     path('', include('app.urls.order_urls')),
     path('', include('app.urls.service_urls')),
     path('', include('app.urls.admin_urls')),
+    path('',include('app.urls.stripe_urls'))
 ]
