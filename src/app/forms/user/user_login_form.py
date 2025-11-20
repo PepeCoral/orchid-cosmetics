@@ -10,18 +10,4 @@ class UserLoginForm(forms.Form):
                                validators=[MinLengthValidator(5,"Contraseña demasiado corta")],
                                widget=forms.PasswordInput())
 
-    def clean(self):
-        email = self.cleaned_data.get("email")
-        password = self.cleaned_data.get("password")
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise forms.ValidationError("No existe una cuenta con ese email.")
-
-        user = authenticate(username=user.username, password=password)
-        if not user:
-            raise forms.ValidationError("La contraseña es incorrecta.")
-
-        self.user = user
-        return self.cleaned_data
+    

@@ -12,6 +12,9 @@ class UserLoginView(LoginView):
         self.user_service = UserService()
         
     def get(self, request):
+        if not request.user.is_anonymous:
+            return redirect("/profile")
+        
         form = UserLoginForm()
         return render(request, "user/login.html", {"form":form})
 
