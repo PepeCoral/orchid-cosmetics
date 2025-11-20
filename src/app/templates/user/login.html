@@ -25,10 +25,10 @@
             {% csrf_token %}
 
             <div class="form-group">
-              {{ form.username.label_tag }}
-              {{ form.username }}
-              {% if form.username.errors %}
-              <div class="text-danger">{{ form.username.errors }}</div>
+              {{ form.email.label_tag }}
+              {{ form.email }}
+              {% if form.email.errors %}
+              <div class="text-danger">{{ form.email.errors }}</div>
               {% endif %}
             </div>
 

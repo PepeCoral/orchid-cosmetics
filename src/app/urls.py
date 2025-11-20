@@ -13,6 +13,7 @@ from app.views.static_pages import ContactView
 from app.views.user.user_register_view import UserRegisterView
 from app.views.user.user_logout_view import UserLogoutView
 from app.views.user.user_profile_view import UserProfileView
+from app.views.user.user_login_view import UserLoginView
 
 from app.views.catalog.catalog_view import CatalogView
 
@@ -41,7 +42,7 @@ urlpatterns = [
     # Páginas HTML (Template views)
     path('', HomeView.as_view(), name='home'),
     path('profile/', UserProfileView.as_view(), name='profile'),
-    path("login/", auth_views.LoginView.as_view(template_name="user/login.html", redirect_authenticated_user=True, next_page="/profile" ), name='login'),
+    path("login/", UserLoginView.as_view(), name='login'),
     path("logout/", UserLogoutView.as_view(), name='logout'),
     path("register/", UserRegisterView.as_view(), name="register"),
 

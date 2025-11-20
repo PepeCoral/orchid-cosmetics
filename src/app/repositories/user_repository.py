@@ -1,6 +1,7 @@
 from typing import Optional
 from app.repositories.base_repository import BaseRepository
 from app.models.user import User
+from django.contrib.auth import authenticate
 
 class UserRepository(BaseRepository):
     def __init__(self):
@@ -14,3 +15,10 @@ class UserRepository(BaseRepository):
 
     def create(self, **kwargs) -> User:
         return self.model.objects.create_user(**kwargs)
+
+    def authenticate_user(self, email, password):
+        user = User.objects.get(email=email)
+
+        user_log = authenticate(username=user.username,password=password)
+
+        return user_log
