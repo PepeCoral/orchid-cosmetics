@@ -1,0 +1,64 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Eliminar Producto - Orchid Cosmetics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <h3 class="mb-0">Eliminar Producto</h3>
+                </div>
+                <div class="card-body p-4 text-center">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-warning">
+                        <h5>⚠️ ¿Estás seguro?</h5>
+                        <p class="mb-0">Estás a punto de eliminar el producto:</p>
+                        <h4 class="mt-2 text-danger">"{{ product.name }}"</h4>
+                        <p class="mt-2 mb-0">Esta acción no se puede deshacer.</p>
+                    </div>
+
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url.url }}" 
+                         alt="{{ product.name }}" 
+                         class="img-fluid rounded mb-3" 
+                         style="max-height: 200px;">
+                    {% endif %}
+
+                    <div class="product-info text-start mb-4">
+                        <p><strong>Descripción:</strong> {{ product.description }}</p>
+                        <p><strong>Precio:</strong> {{ product.price }}€</p>
+                        <p><strong>Stock:</strong> {{ product.stock }} unidades</p>
+                        <p><strong>Fabricante:</strong> {{ product.fabricator }}</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-check mb-4 text-start">
+                            {{ form.confirm_delete }}
+                            <label class="form-check-label" for="{{ form.confirm_delete.id_for_label }}">
+                                {{ form.confirm_delete.label }}
+                            </label>
+                            {% if form.confirm_delete.errors %}
+                            <div class="text-danger small">{{ form.confirm_delete.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'admin/products' %}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-danger">Eliminar Producto</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

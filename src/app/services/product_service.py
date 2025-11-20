@@ -52,5 +52,5 @@ class ProductService():
     def get_products_by_category(self, category_id):
         return self.product_repository.get_products_by_category(category_id)
 
-    def search(self, filters: dict):
+    def search_products(self, filters: dict):
         return self.product_repository.search(filters)
