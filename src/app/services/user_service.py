@@ -53,10 +53,11 @@ class UserService():
             
             user_log = authenticate(username=user.username,password=password)
             login(request, user_log)
-
+            return user_log
+        
         except Exception as a:
-            raise ValidationError("Ha habido un error: ", str(a))
-        return user_log
+            raise ValidationError("Ha habido un error en la autenticacion ", a)
+        
 
         
 
