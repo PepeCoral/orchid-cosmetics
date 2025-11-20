@@ -29,5 +29,5 @@ class CartView(View):
         return render(request, "cart/cart.html", {
             "products": products,
             "services": services,
-            "total": total
+            "total": max(0.5,total)
         })
