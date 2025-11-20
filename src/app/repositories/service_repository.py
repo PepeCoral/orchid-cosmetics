@@ -34,6 +34,6 @@ class ServiceRepository(BaseRepository):
 
         return qs
 
-    def get_all_top_services(self):
-        qs = Service.objects.filter(top=True)
+    def get_all_promoted_services(self):
+        qs = Service.objects.filter(isPromoted=True)
         return qs

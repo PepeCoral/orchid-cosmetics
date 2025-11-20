@@ -11,7 +11,7 @@ class Product(models.Model):
     stock = models.IntegerField(validators=[MinValueValidator(0, "No puede haber stock negativo")])
     fabricator = models.CharField(max_length=100)
     image_url = models.ImageField(null=True)
-    top = models.BooleanField(default=False)
+    isPromoted = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category)
 
 

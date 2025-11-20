@@ -49,14 +49,17 @@
       <!-- Action Buttons (horizontal with gap) -->
       <div class="d-flex align-items-center">
         <div class="button-row">
-          <form method="post" action="{% url 'admin/cosmeticservices/toggle_top' servicio.id %}" style="display:inline;">
-            {% csrf_token %}
-            {% if servicio.top %}
-              <button type="submit" name="top" value="False" class="btn btn-sm btn-outline-primary">Quitar destacar</button>
-            {% else %}
-              <button type="submit" name="top" value="True" class="btn btn-sm btn-primary">Destacar</button>
-            {% endif %}
-          </form>
+          {% if servicio.isPromoted %}
+            <form method="post" action="{% url 'admin/cosmeticservices/demote' servicio.id %}" style="display:inline;">
+              {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-primary">Quitar destacar</button>
+            </form>
+          {% else %}
+            <form method="post" action="{% url 'admin/cosmeticservices/promote' servicio.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-primary">Destacar</button>
+            </form>
+          {% endif %}
           <a href="{% url 'admin/cosmeticservices/show' servicio.id %}" class="btn btn-sm action-btn">
             Ver
           </a>

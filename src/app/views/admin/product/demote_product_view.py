@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from app.services.product_service import ProductService
 
 
-class TopProductView(View):
+class DemoteProductView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.product_service = ProductService()
@@ -17,7 +17,7 @@ class TopProductView(View):
         
         products = self.product_service.get_all_products()
         try:
-            self.product_service.update_top_product(product_id,request)
+            self.product_service.demote_product(product_id)
             return redirect(f"/admin/products")
         except Exception as e:
             return render(

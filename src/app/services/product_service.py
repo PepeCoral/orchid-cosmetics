@@ -31,15 +31,21 @@ class ProductService():
     def get_all_products(self):
         return self.product_repository.get_all()
 
-    def get_top_products(self):
-        return self.product_repository.get_all_top_products()
+    def get_promoted_products(self):
+        return self.product_repository.get_all_promoted_products()
 
-    def update_top_product(self,product_id,request):
+    def promote_product(self,product_id):
         product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
-        top = request.POST["top"]
-        updated_product = self.product_repository.update(product_id,top=top)
+        updated_product = self.product_repository.update(id=product_id, isPromoted=True)
+        return updated_product
+    
+    def demote_product(self,product_id):
+        product = self.product_repository.get_by_id(product_id)
+        if not product:
+            raise ValidationError("Producto no encontrado.")
+        updated_product = self.product_repository.update(id=product_id, isPromoted=False)
         return updated_product
 
     def update_product(self, product_id, product_data, request):

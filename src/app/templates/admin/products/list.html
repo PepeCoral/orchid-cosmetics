@@ -42,14 +42,17 @@
       <!-- Actions (horizontal buttons) -->
       <div class="d-flex align-items-center">
         <div class="button-row">
-          <form method="post" action="{% url 'admin/products/toggle_top' product.id %}" style="display:inline;">
-            {% csrf_token %}
-            {% if product.top %}
-              <button type="submit" name="top" value="False" class="btn btn-sm btn-outline-primary">Quitar destacar</button>
-            {% else %}
-              <button type="submit" name="top" value="True" class="btn btn-sm btn-primary">Destacar</button>
-            {% endif %}
-          </form>
+          {% if product.isPromoted %}
+            <form method="post" action="{% url 'admin/products/demote' product.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-primary">Quitar Destacar</button>
+            </form>
+          {% else %}
+            <form method="post" action="{% url 'admin/products/promote' product.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-primary">Destacar</button>
+            </form>
+          {% endif %}
           <a href="{% url 'admin/products/show' product.id %}" class="btn btn-sm action-btn">Ver</a>
           <a href="{% url 'admin/products/update' product.id %}" class="btn btn-sm action-btn">Editar</a>
           <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-sm action-btn-danger">Eliminar</a>
