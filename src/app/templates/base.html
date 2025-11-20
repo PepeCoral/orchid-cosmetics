@@ -110,20 +110,19 @@
           <a class="nav-link" href="{% url 'contact' %}"> Contacto</a>
         </li>
 
-        <!-- DROPDOWN DEL CATÁLOGO -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" 
-             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             Catálogo
+          <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Catálogo
           </a>
           <div class="dropdown-menu" aria-labelledby="catalogDropdown">
-            <a class="dropdown-item" href="{% url 'catalog' %}?tab=products">
-               Catálogo de Productos
+            <a class="dropdown-item" href="{% url 'product_catalog' %}">
+              Productos
               <small class="d-block text-muted">Descubre nuestros productos</small>
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'catalog' %}?tab=services">
-               Catálogo de Servicios  
+            <a class="dropdown-item" href="{% url 'service_catalog' %}">
+              Servicios
               <small class="d-block text-muted">Reserva nuestros servicios</small>
             </a>
           </div>
@@ -131,7 +130,7 @@
 
         <li class="nav-item">
           <a class="nav-link" href="{% url 'cart' %}">
-             Carrito
+            Carrito
             {% if cart_count and cart_count > 0 %}
             <span class="badge badge-pill badge-light ml-1">{{ cart_count }}</span>
             {% endif %}
@@ -183,22 +182,23 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       // Mantener dropdown abierto al hacer hover
-      $('.nav-item.dropdown').hover(function() {
+      $('.nav-item.dropdown').hover(function () {
         $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(300);
-      }, function() {
+      }, function () {
         $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeOut(300);
       });
 
       // Cerrar alertas automáticamente después de 5 segundos
-      setTimeout(function() {
-        $('.alert').fadeTo(500, 0).slideUp(500, function(){
-          $(this).remove(); 
+      setTimeout(function () {
+        $('.alert').fadeTo(500, 0).slideUp(500, function () {
+          $(this).remove();
         });
       }, 5000);
     });
   </script>
 
 </body>
+
 </html>
