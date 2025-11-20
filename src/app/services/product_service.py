@@ -20,7 +20,6 @@ class ProductService():
         product.categories.set(categories)
         return product
 
-
     def get_product_by_id(self, product_id) -> Product:
         product =  self.product_repository.get_by_id(product_id)
 
@@ -31,6 +30,17 @@ class ProductService():
 
     def get_all_products(self):
         return self.product_repository.get_all()
+
+    def get_top_products(self):
+        return self.product_repository.get_all_top_products()
+
+    def update_top_product(self,product_id,request):
+        product = self.product_repository.get_by_id(product_id)
+        if not product:
+            raise ValidationError("Producto no encontrado.")
+        top = request.POST["top"]
+        updated_product = self.product_repository.update(product_id,top=top)
+        return updated_product
 
     def update_product(self, product_id, product_data, request):
         product = self.product_repository.get_by_id(product_id)

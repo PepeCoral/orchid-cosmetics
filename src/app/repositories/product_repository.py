@@ -30,3 +30,9 @@ class ProductRepository(BaseRepository):
             qs = qs.filter(categories__in=categories).distinct()
 
         return qs
+    
+    def get_all_top_products(self):
+        qs = Product.objects.filter(top=True)
+        return qs
+
+

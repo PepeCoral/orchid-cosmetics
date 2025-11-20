@@ -16,7 +16,7 @@
 
     {% for product in productos %}
     <li class="list-group-item d-flex align-items-center p-2 mb-2" style="border-radius: 8px;">
-
+      
       <!-- Image -->
       <div style="width:80px; height:80px; flex-shrink:0;">
         {% if product.image_url %}
@@ -42,6 +42,14 @@
       <!-- Actions (horizontal buttons) -->
       <div class="d-flex align-items-center">
         <div class="button-row">
+          <form method="post" action="{% url 'admin/products/toggle_top' product.id %}" style="display:inline;">
+            {% csrf_token %}
+            {% if product.top %}
+              <button type="submit" name="top" value="False" class="btn btn-sm btn-outline-primary">Quitar destacar</button>
+            {% else %}
+              <button type="submit" name="top" value="True" class="btn btn-sm btn-primary">Destacar</button>
+            {% endif %}
+          </form>
           <a href="{% url 'admin/products/show' product.id %}" class="btn btn-sm action-btn">Ver</a>
           <a href="{% url 'admin/products/update' product.id %}" class="btn btn-sm action-btn">Editar</a>
           <a href="{% url 'admin/products/delete' product.id %}" class="btn btn-sm action-btn-danger">Eliminar</a>
@@ -110,4 +118,27 @@
     background-color: #a97acf !important;
   }
 </style>
+
+<script>
+document.querySelectorAll('.top-star').forEach(star => {
+    star.addEventListener('click', function() {
+        const productId = this.dataset.id;
+        const isTop = this.textContent === '★';  // Currently filled?
+
+        fetch(`/admin/products/toggle_top/${productId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ top: !isTop })
+        })
+        .then(response => response.json())
+        .then(data => {
+            this.textContent = data.top ? "★" : "☆";
+        });
+    });
+});
+</script>
+
 {% endblock %}

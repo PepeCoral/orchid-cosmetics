@@ -10,8 +10,8 @@ class HomeView(View):
         self.service_service = ServiceService()
 
     def get(self, request):
-        products = self.product_service.get_all_products()
-        services = self.service_service.get_all_services()
+        products = self.product_service.get_top_products()
+        services = self.service_service.get_top_services()
 
         context = {
             "products": products,   

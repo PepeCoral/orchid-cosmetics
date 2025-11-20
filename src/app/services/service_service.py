@@ -23,6 +23,17 @@ class ServiceService():
 
         return service
 
+    def get_top_services(self):
+        return self.service_repository.get_all_top_services()
+
+    def update_top_service(self,service_id,request):
+        service = self.service_repository.get_by_id(service_id)
+        if not service:
+            raise ValidationError("Servicio no encontrado.")
+        top = request.POST["top"]
+        updated_service = self.service_repository.update(service_id,top=top)
+        return updated_service
+
     def get_service_by_id(self, service_id):
         """
         Obtiene un servicio por su ID
