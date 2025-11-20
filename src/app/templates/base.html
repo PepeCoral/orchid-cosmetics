@@ -14,14 +14,12 @@
       background: #faf7fc;
     }
 
-    /* 🔮 Navbar moderna */
     .navbar {
       background: linear-gradient(135deg, #b98de0, #a06acb);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
       padding: 0.6rem 1rem;
     }
 
-    /* 🌸 Brand más moderno */
     .navbar-brand {
       color: #fff !important;
       font-weight: 600;
@@ -29,7 +27,6 @@
       font-size: 1.3rem;
     }
 
-    /* 🎨 Links modernos */
     .nav-link {
       color: #f7ecff !important;
       font-weight: 500;
@@ -39,14 +36,12 @@
       border-radius: 6px;
     }
 
-    /* ✨ Hover más suave */
     .nav-link:hover {
       background: rgba(255, 255, 255, 0.18);
       color: #fff !important;
       transform: translateY(-1px);
     }
 
-    /* 📱 Botón toggler más moderno */
     .navbar-toggler {
       border: none;
       outline: none !important;
@@ -54,6 +49,46 @@
 
     .navbar-toggler-icon {
       background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+
+    .dropdown-menu {
+      background: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      padding: 0.5rem 0;
+      margin-top: 0.5rem;
+    }
+
+    .dropdown-item {
+      color: #5a4b69;
+      font-weight: 500;
+      padding: 0.6rem 1.2rem;
+      transition: all 0.2s ease;
+      border-radius: 6px;
+      margin: 0 0.3rem;
+    }
+
+    .dropdown-item:hover {
+      background: linear-gradient(135deg, #b98de0, #a06acb);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .dropdown-divider {
+      margin: 0.3rem 0.5rem;
+    }
+
+    .nav-item.dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-toggle::after {
+      transition: transform 0.2s ease;
+    }
+
+    .nav-item.dropdown:hover .dropdown-toggle::after {
+      transform: rotate(180deg);
     }
   </style>
 </head>
@@ -69,19 +104,38 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-
       <ul class="navbar-nav ml-auto">
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'contact' %}">Acerca de</a>
+          <a class="nav-link" href="{% url 'contact' %}"> Contacto</a>
+        </li>
+
+        <!-- DROPDOWN DEL CATÁLOGO -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" 
+             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             Catálogo
+          </a>
+          <div class="dropdown-menu" aria-labelledby="catalogDropdown">
+            <a class="dropdown-item" href="{% url 'catalog' %}?tab=products">
+               Productos
+              <small class="d-block text-muted">Descubre nuestros productos</small>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'catalog' %}?tab=services">
+               Servicios  
+              <small class="d-block text-muted">Reserva nuestros servicios</small>
+            </a>
+          </div>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'catalog' %}">Catálogo</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}">Carrito</a>
+          <a class="nav-link" href="{% url 'cart' %}">
+             Carrito
+            {% if cart_count and cart_count > 0 %}
+            <span class="badge badge-pill badge-light ml-1">{{ cart_count }}</span>
+            {% endif %}
+          </a>
         </li>
 
         {% if user.is_authenticated %}
@@ -107,11 +161,44 @@
     </div>
   </nav>
 
-  <div class="container mt-4">{% block content %}{% endblock %}</div>
+  <div class="container mt-4">
+    <!-- Mensajes de alerta -->
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
-</body>
+  <script>
+    $(document).ready(function() {
+      // Mantener dropdown abierto al hacer hover
+      $('.nav-item.dropdown').hover(function() {
+        $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(300);
+      }, function() {
+        $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeOut(300);
+      });
 
+      // Cerrar alertas automáticamente después de 5 segundos
+      setTimeout(function() {
+        $('.alert').fadeTo(500, 0).slideUp(500, function(){
+          $(this).remove(); 
+        });
+      }, 5000);
+    });
+  </script>
+
+</body>
 </html>

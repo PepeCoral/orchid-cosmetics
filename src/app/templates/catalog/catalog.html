@@ -7,34 +7,15 @@
 
   <h1 class="mb-4">Catálogo</h1>
 
-  <!-- PESTAÑAS PARA PRODUCTOS Y SERVICIOS -->
-  <ul class="nav nav-tabs mb-4" id="catalogTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link {% if active_tab == 'products' %}active{% endif %} text-white products-tab-btn" id="products-tab"
-        data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab" aria-controls="products"
-        aria-selected="{% if active_tab == 'products' %}true{% else %}false{% endif %}">
-        📦 Productos ({{ products|length }})
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link {% if active_tab == 'services' %}active{% endif %} text-white services-tab-btn" id="services-tab"
-        data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services"
-        aria-selected="{% if active_tab == 'services' %}true{% else %}false{% endif %}">
-        💅 Servicios ({{ services|length }})
-      </button>
-    </li>
-  </ul>
-
-  <!-- CONTENIDO DE PESTAÑAS -->
+  <!-- CONTENIDO DE PRODUCTOS Y SERVICIOS -->
   <div class="tab-content" id="catalogTabsContent">
 
     <!-- PESTAÑA PRODUCTOS -->
-    <div class="tab-pane fade {% if active_tab == 'products' %}show active{% endif %}" id="products" role="tabpanel"
-      aria-labelledby="products-tab">
+    <div class="tab-pane fade {% if active_tab == 'products' %}show active{% endif %}" id="products" role="tabpanel">
 
       <!-- Buscador para Productos -->
-      <button class="btn text-white mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#productSearchForm"
-        aria-expanded="false" aria-controls="productSearchForm" style="background-color: #8e5db5;">
+      <button class="btn text-white mb-3 btn-search-toggle" type="button" data-bs-toggle="collapse"
+        data-bs-target="#productSearchForm" aria-expanded="false" aria-controls="productSearchForm">
         🔍 Buscar Productos
       </button>
 
@@ -81,7 +62,7 @@
 
             <div class="col-12">
               <div class="d-flex">
-                <button type="submit" class="btn text-white mr-2" style="background-color: #8e5db5;">
+                <button type="submit" class="btn text-white mr-2 btn-apply-filter">
                   🔍 Aplicar Filtros
                 </button>
                 <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
@@ -161,12 +142,11 @@
     </div>
 
     <!-- PESTAÑA SERVICIOS -->
-    <div class="tab-pane fade {% if active_tab == 'services' %}show active{% endif %}" id="services" role="tabpanel"
-      aria-labelledby="services-tab">
+    <div class="tab-pane fade {% if active_tab == 'services' %}show active{% endif %}" id="services" role="tabpanel">
 
       <!-- Buscador para Servicios -->
-      <button class="btn text-white mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#serviceSearchForm"
-        aria-expanded="false" aria-controls="serviceSearchForm" style="background-color: #a97acf;">
+      <button class="btn text-white mb-3 btn-search-toggle-service" type="button" data-bs-toggle="collapse"
+        data-bs-target="#serviceSearchForm" aria-expanded="false" aria-controls="serviceSearchForm">
         🔍 Buscar Servicios
       </button>
 
@@ -213,7 +193,7 @@
 
             <div class="col-12">
               <div class="d-flex">
-                <button type="submit" class="btn text-white mr-2" style="background-color: #a97acf;">
+                <button type="submit" class="btn text-white mr-2 btn-apply-filter-service">
                   🔍 Aplicar Filtros
                 </button>
                 <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
@@ -289,127 +269,119 @@
 
 <!-- Styles -->
 <style>
-/* Estilos CSS corregidos */
-.product-card,
-.service-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: none;
-  border-radius: 10px;
-}
+  /* Estilos para cards */
+  .product-card,
+  .service-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    border-radius: 10px;
+  }
 
-.product-card:hover,
-.service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-}
+  .product-card:hover,
+  .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  }
 
-.card-title {
-  font-weight: 600;
-  color: #333;
-}
+  .card-title {
+    font-weight: 600;
+    color: #333;
+  }
 
-/* Pestañas con fondo morado */
-.nav-tabs {
-  border-bottom: 2px solid #e9ecef;
-}
+  /* Botones de búsqueda */
+  .btn-search-toggle {
+    background-color: #8e5db5;
+    border-color: #8e5db5;
+    font-weight: 600;
+  }
 
-.nav-tabs .nav-link {
-  border: none;
-  border-radius: 8px 8px 0 0;
-  padding: 1rem 1.5rem;
-  font-weight: 600;
-  margin-right: 5px;
-  transition: all 0.3s ease;
-}
+  .btn-search-toggle:hover {
+    background-color: #7a4a9d !important;
+    border-color: #7a4a9d !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 
-/* Estilos específicos para cada pestaña */
-.products-tab-btn {
-  background-color: #8e5db5;
-  border-color: #8e5db5;
-}
+  .btn-search-toggle-service {
+    background-color: #a97acf;
+    border-color: #a97acf;
+    font-weight: 600;
+  }
 
-.services-tab-btn {
-  background-color: #a97acf;
-  border-color: #a97acf;
-}
+  .btn-search-toggle-service:hover {
+    background-color: #9769c0 !important;
+    border-color: #9769c0 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 
-.nav-tabs .nav-link.active {
-  font-weight: 600;
-  opacity: 1;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
+  /* Botones de aplicar filtros */
+  .btn-apply-filter {
+    background-color: #8e5db5;
+    border-color: #8e5db5;
+  }
 
-.nav-tabs .nav-link:not(.active) {
-  opacity: 0.7;
-}
+  .btn-apply-filter:hover {
+    background-color: #7a4a9d !important;
+    border-color: #7a4a9d !important;
+  }
 
-.nav-tabs .nav-link:not(.active):hover {
-  opacity: 1;
-  transform: translateY(-1px);
-}
+  .btn-apply-filter-service {
+    background-color: #a97acf;
+    border-color: #a97acf;
+  }
 
-/* Badges para filtros */
-.badge.bg-product-filter {
-  background-color: #8e5db5 !important;
-  color: #fff !important;
-  font-weight: 500;
-  margin-right: 5px;
-  margin-bottom: 3px;
-}
+  .btn-apply-filter-service:hover {
+    background-color: #9769c0 !important;
+    border-color: #9769c0 !important;
+  }
 
-.badge.bg-service-filter {
-  background-color: #a97acf !important;
-  color: #fff !important;
-  font-weight: 500;
-  margin-right: 5px;
-  margin-bottom: 3px;
-}
+  /* Badges para filtros */
+  .badge.bg-product-filter {
+    background-color: #8e5db5 !important;
+    color: #fff !important;
+    font-weight: 500;
+    margin-right: 5px;
+    margin-bottom: 3px;
+  }
 
-/* Service badge */
-.badge.bg-service {
-  background-color: #a97acf;
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-}
+  .badge.bg-service-filter {
+    background-color: #a97acf !important;
+    color: #fff !important;
+    font-weight: 500;
+    margin-right: 5px;
+    margin-bottom: 3px;
+  }
 
-/* Stock styles */
-.text-danger {
-  font-weight: 600;
-}
+  /* Service badge */
+  .badge.bg-service {
+    background-color: #a97acf;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+  }
 
-/* Efecto blanco y negro para imágenes sin stock */
-.grayscale {
-  filter: grayscale(100%);
-  opacity: 0.7;
-}
+  /* Stock styles */
+  .text-danger {
+    font-weight: 600;
+  }
 
-.product-card .grayscale {
-  transition: all 0.3s ease;
-}
+  /* Efecto blanco y negro para imágenes sin stock */
+  .grayscale {
+    filter: grayscale(100%);
+    opacity: 0.7;
+  }
 
-.product-card:hover .grayscale {
-  filter: grayscale(80%);
-  opacity: 0.8;
-}
+  .product-card .grayscale {
+    transition: all 0.3s ease;
+  }
 
-/* Botones con efectos hover */
-.btn[style*="background-color: #8e5db5"]:hover,
-.btn[style*="background-color: #a97acf"]:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.btn[style*="background-color: #8e5db5"]:hover {
-  background-color: #7a4a9d !important;
-}
-
-.btn[style*="background-color: #a97acf"]:hover {
-  background-color: #9769c0 !important;
-}
+  .product-card:hover .grayscale {
+    filter: grayscale(80%);
+    opacity: 0.8;
+  }
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -423,34 +395,6 @@
       placeholder: "Seleccione categorías",
       allowClear: true,
       width: '100%'
-    });
-
-    // Usar la pestaña activa del contexto Django
-    const activeTabFromContext = "{{ active_tab }}";
-
-    if (activeTabFromContext) {
-      const tabId = activeTabFromContext === 'services' ? '#services-tab' : '#products-tab';
-      const tabElement = document.querySelector(tabId);
-      if (tabElement) {
-        const tabTrigger = new bootstrap.Tab(tabElement);
-        tabTrigger.show();
-        // Actualizar localStorage también
-        localStorage.setItem('activeCatalogTab', tabId);
-      }
-    } else {
-      // Fallback al localStorage si no hay contexto
-      const activeTab = localStorage.getItem('activeCatalogTab');
-      if (activeTab) {
-        const tabTrigger = new bootstrap.Tab(document.querySelector(activeTab));
-        tabTrigger.show();
-      }
-    }
-
-    // Guardar pestaña activa
-    document.querySelectorAll('#catalogTabs button').forEach(tab => {
-      tab.addEventListener('click', function () {
-        localStorage.setItem('activeCatalogTab', '#' + this.id);
-      });
     });
   });
 </script>

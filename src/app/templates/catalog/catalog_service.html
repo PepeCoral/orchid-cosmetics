@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo de Servicios - Orchid Cosmetics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>💅 Catálogo de Servicios</h1>
+        <a href="{% url 'product_catalog' %}" class="btn text-white" style="background-color: #8e5db5;">
+            📦 Ver Productos
+        </a>
+    </div>
+
+    <!-- Buscador de Servicios -->
+    <div class="card card-body shadow-sm mb-4">
+        <h5 class="card-title">🔍 Buscar Servicios</h5>
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="name" class="form-label">Nombre del Servicio</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ request.GET.name|default:'' }}"
+                    placeholder="Buscar por nombre...">
+            </div>
+
+            <div class="col-md-4">
+                <label for="department" class="form-label">Departamento</label>
+                <input type="text" class="form-control" id="department" name="department"
+                    value="{{ request.GET.department|default:'' }}" placeholder="Buscar por departamento...">
+            </div>
+
+            <div class="col-md-2">
+                <label for="min_price" class="form-label">Precio Mín (€)</label>
+                <input type="number" class="form-control" id="min_price" name="min_price"
+                    value="{{ request.GET.min_price|default:'' }}" placeholder="0" min="0" step="0.01">
+            </div>
+
+            <div class="col-md-2">
+                <label for="max_price" class="form-label">Precio Máx (€)</label>
+                <input type="number" class="form-control" id="max_price" name="max_price"
+                    value="{{ request.GET.max_price|default:'' }}" placeholder="1000" min="0" step="0.01">
+            </div>
+
+            <div class="col-12">
+                <label for="categories" class="form-label">Categorías</label>
+                <select class="form-control select2" id="categories" name="categories" multiple>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id|stringformat:"i" in request.GET.list|default:''
+                        %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-12">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn text-white" style="background-color: #a97acf;">
+                        🔍 Buscar
+                    </button>
+                    <a href="{% url 'service_catalog' %}" class="btn btn-outline-secondary">
+                        🗑️ Limpiar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Mostrar filtros activos -->
+    {% if request.GET %}
+    <div class="mb-3">
+        <small class="text-muted">
+            Filtros activos:
+            {% if request.GET.name %}<span class="badge bg-service-filter">Nombre: "{{ request.GET.name }}"</span>{%
+            endif %}
+            {% if request.GET.department %}<span class="badge bg-service-filter">Departamento: "{{
+                request.GET.department }}"</span>{% endif %}
+            {% if request.GET.min_price %}<span class="badge bg-service-filter">Precio mínimo: {{ request.GET.min_price
+                }}€</span>{% endif %}
+            {% if request.GET.max_price %}<span class="badge bg-service-filter">Precio máximo: {{ request.GET.max_price
+                }}€</span>{% endif %}
+            {% if request.GET.categories %}<span class="badge bg-service-filter">{{ request.GET.categories|length }}
+                categoría(s)</span>{% endif %}
+        </small>
+    </div>
+    {% endif %}
+
+    <!-- Resultados -->
+    <div class="row">
+        {% if services %}
+        {% for service in services %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <a href="{% url 'services/detail' service.id %}" class="text-decoration-none" style="color: inherit;">
+                <div class="card h-100 shadow-sm service-card">
+                    {% if service.image_url %}
+                    <img src="{{ service.image_url.url }}" class="card-img-top" alt="{{ service.name }}"
+                        style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div style="height: 200px; background: #eee;"
+                        class="d-flex align-items-center justify-content-center">
+                        <span class="text-muted">Sin imagen</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">{{ service.name }}</h6>
+                        <span class="badge bg-service mb-2">Servicio</span>
+                        <p class="card-text text-muted small mb-2">{{ service.department }}</p>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge text-white" style="background-color: #a97acf;">€{{ service.price
+                                    }}</span>
+                                <small class="text-muted">{{ service.duration_minutes }} min</small>
+                            </div>
+
+                            {% if service.categories.all %}
+                            <div class="service-categories">
+                                {% for category in service.categories.all %}
+                                <small class="badge bg-light text-dark">{{ category.name }}</small>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <div class="alert alert-info">
+                    <h5>No hay servicios disponibles</h5>
+                    <p class="mb-0">
+                        {% if request.GET %}
+                        No se encontraron servicios con los filtros aplicados.
+                        {% else %}
+                        Pronto tendremos nuevos servicios disponibles.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Paginación -->
+    {% if services.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if services.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{% param_replace page=services.previous_page_number %}"
+                    aria-label="Previous">
+                    &laquo;
+                </a>
+            </li>
+            {% endif %}
+
+            {% for i in services.paginator.page_range %}
+            {% if services.number == i %}
+            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?{% param_replace page=i %}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if services.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{% param_replace page=services.next_page_number %}" aria-label="Next">
+                    &raquo;
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    .service-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .badge.bg-service-filter {
+        background-color: #a97acf !important;
+        color: #fff !important;
+        margin-right: 5px;
+        margin-bottom: 3px;
+    }
+
+    .badge.bg-service {
+        background-color: #a97acf;
+        color: #fff;
+        font-size: 0.75rem;
+    }
+
+    .service-categories .badge {
+        font-size: 0.7rem;
+        margin-right: 2px;
+        margin-bottom: 2px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inicializar Select2
+        $('.select2').select2({
+            placeholder: "Seleccione categorías",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+{% endblock %}

@@ -5,6 +5,13 @@ from app.services.service_service import ServiceService
 from app.forms.catalog.search_catalog_form import SearchCatalogForm
 from app.models import Category
 
+from django.views import View
+from django.shortcuts import render
+from app.services.product_service import ProductService
+from app.services.service_service import ServiceService
+from app.forms.catalog.search_catalog_form import SearchCatalogForm
+from app.models import Category
+
 class CatalogView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -15,13 +22,16 @@ class CatalogView(View):
         products = self.product_service.get_all_products()
         services = self.service_service.get_all_services()
         categories = Category.objects.all()
+        
+        # Determinar pestaña activa desde parámetro GET o por defecto
+        active_tab = request.GET.get('tab', 'products')
 
         return render(request, "catalog/catalog.html", {
             "products": products,
             "services": services,
             "categories": categories,
             "form": SearchCatalogForm(),
-            "active_tab": "products"  # Pestaña por defecto
+            "active_tab": active_tab
         })
 
     def post(self, request):
@@ -38,7 +48,7 @@ class CatalogView(View):
             "services": services,
             "categories": categories,
             "form": SearchCatalogForm(),
-            "active_tab": search_type  # Pestaña activa basada en la búsqueda
+            "active_tab": search_type
         }
         
         if search_type == 'products':
