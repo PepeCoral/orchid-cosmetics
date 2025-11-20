@@ -11,6 +11,7 @@ class UserService():
           raise ValidationError("Username already in use")
 
         if self.user_repository.get_by_email(user_data["email"]) is not None:
+          print("entras aqui")
           raise ValidationError("Email already in use")
 
         if user_data["password"] != user_data["confirm_password"]:
@@ -38,12 +39,12 @@ class UserService():
           raise ValidationError("Usuario no encontrado.")
       return user
 
-    def update_user(self, user_id, user_data, request_user):
+    def update_user(self, user_id, user_data) -> User:
         user_to_update = self.user_repository.get_by_id(user_id)
         if not user_to_update:
             raise ValidationError("Usuario no encontrado.")
 
-        if request_user.id != user_to_update.id:
+        if user_id != user_to_update.id:
             raise PermissionDenied("Solo puedes modificar tu propio perfil.")
 
         # Hacer copia para no modificar el original
@@ -59,22 +60,18 @@ class UserService():
             if existing_user and existing_user.id != user_id:
                 raise ValidationError("Email already in use")
 
-        password_changed = False
-
-
         if 'password' in update_data and update_data['password']:
             # Verificar que no sea string vacío o solo espacios
             if update_data['password'].strip():
                 user_to_update.set_password(update_data['password'])
                 user_to_update.save()
-                password_changed = True
 
         update_data.pop('password', None)
 
         # Actualizar otros campos
         updated_user = self.user_repository.update(user_id, **update_data)
 
-        return updated_user, password_changed
+        return updated_user
 
     def delete_user(self, user_id, request_user):
         user_to_delete = self.user_repository.get_by_id(user_id)
