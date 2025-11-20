@@ -40,9 +40,9 @@ class UserService():
           raise ValidationError("Usuario no encontrado.")
       return user
 
-    def authenticate_user(self, request):
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+    def authenticate_user(self, auth_data):
+        email = auth_data['email']
+        password = auth_data['password']
 
         user = self.user_repository.get_by_email(email)
 
@@ -52,7 +52,6 @@ class UserService():
         try:
             
             user_log = authenticate(username=user.username,password=password)
-            login(request, user_log)
             return user_log
         
         except Exception as a:

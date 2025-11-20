@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.views import LoginView 
 from app.services.user_service import UserService
 from app.forms.user.user_login_form import UserLoginForm
+from django.contrib.auth import login
 
 class UserLoginView(LoginView):
     def __init__(self, **kwargs):
@@ -28,7 +29,8 @@ class UserLoginView(LoginView):
             return render(request, "user/login.html",{"form":form})
         
         try:
-            user = self.user_service.authenticate_user(request)
+            user = self.user_service.authenticate_user(form.cleaned_data)
+            login(request,user)
             return redirect("/profile")
         except Exception as e:
             return render(
