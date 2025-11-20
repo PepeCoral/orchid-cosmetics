@@ -103,8 +103,14 @@
       <a href="{% url 'products/detail' p.id %}" class="text-decoration-none" style="color: inherit;">
         <div class="card h-100 shadow-sm product-card">
           {% if p.image_url %}
-          <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
-            style="height: 200px; object-fit: cover;">
+            <!-- IMAGEN EN BLANCO Y NEGRO SI NO HAY STOCK -->
+            {% if p.stock == 0 %}
+            <img src="{{ p.image_url.url }}" class="card-img-top grayscale" alt="{{ p.name }}"
+              style="height: 200px; object-fit: cover;">
+            {% else %}
+            <img src="{{ p.image_url.url }}" class="card-img-top" alt="{{ p.name }}"
+              style="height: 200px; object-fit: cover;">
+            {% endif %}
           {% else %}
           <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
             <span class="text-muted">Sin imagen</span>
@@ -115,7 +121,12 @@
             <p class="card-text text-muted small mb-2">{{ p.fabricator }}</p>
             <div class="mt-auto d-flex justify-content-between align-items-center">
               <span class="badge text-white" style="background-color: #6f42c1;">€{{ p.price }}</span>
-              <small class="text-muted">{{ p.stock }} en stock</small>
+              <!-- TEXTO DE STOCK -->
+              {% if p.stock == 0 %}
+                <small class="text-danger fw-bold">Fuera de stock</small>
+              {% else %}
+                <small class="text-muted">{{ p.stock }} en stock</small>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -217,6 +228,27 @@
     font-weight: 600;
     padding: 0.25rem 0.5rem;
     border-radius: 5px;
+  }
+
+  /* Stock styles */
+  .text-danger {
+    font-weight: 600;
+  }
+
+  /* Efecto blanco y negro para imágenes sin stock */
+  .grayscale {
+    filter: grayscale(100%);
+    opacity: 0.7;
+  }
+
+  /* Efecto hover para productos sin stock */
+  .product-card .grayscale {
+    transition: all 0.3s ease;
+  }
+
+  .product-card:hover .grayscale {
+    filter: grayscale(80%);
+    opacity: 0.8;
   }
 </style>
 
