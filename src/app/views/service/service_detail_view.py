@@ -26,9 +26,6 @@ class ServiceDetailView(View):
             print(e)
 
     def post(self, request, service_id):
-        if request.user.is_anonymous:
-            return redirect("/login")
-
         service = self.service_service.get_service_by_id(service_id)
         categories = service.categories.all()
 
@@ -44,7 +41,7 @@ class ServiceDetailView(View):
         try:
 
             quantity = form.cleaned_data['quantity']
-            self.cart_service.add_item(request.user, service, quantity)
+            self.cart_service.add_item(request, service, quantity)
 
             return redirect("/cart")
         except Exception as e:

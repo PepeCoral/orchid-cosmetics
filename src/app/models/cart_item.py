@@ -1,5 +1,3 @@
-# app/models/cart_item.py
-
 from django.db import models
 from django.core.validators import MinValueValidator
 from app.models.user import User
@@ -8,7 +6,15 @@ from app.models.service import Service
 
 
 class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="cart_items",
+        null=True,
+        blank=True
+    )
+
+    session_key = models.CharField(max_length=40, null=True, blank=True)
 
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, null=True, blank=True, on_delete=models.CASCADE)
@@ -25,7 +31,14 @@ class CartItem(models.Model):
                     (models.Q(product__isnull=True) & models.Q(service__isnull=False))
                 ),
                 name="only_one_of_product_or_service",
-            )
+            ),
+            models.CheckConstraint(
+                 check=(
+                     (models.Q(user__isnull=False) & models.Q(session_key__isnull=True)) |
+                     (models.Q(user__isnull=True) & models.Q(session_key__isnull=False))
+                 ),
+                 name="one_owner_type"
+            ),
         ]
 
     @property

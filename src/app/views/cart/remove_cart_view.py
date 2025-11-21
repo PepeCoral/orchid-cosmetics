@@ -9,5 +9,5 @@ class RemoveCartView(View):
         self.cart_service = CartService()
 
     def get(self, request, cart_id):
-        self.cart_service.remove_one_by_id(cart_id, request.user)
+        self.cart_service.remove_one_by_id(cart_id, request)
         return redirect("/cart")

@@ -23,9 +23,6 @@ class ProductDetailView(View):
         })
 
     def post(self, request, product_id):
-        if request.user.is_anonymous:
-            return redirect("/login")
-
         product = self.product_service.get_product_by_id(product_id)
         categories = product.categories.all()
 
@@ -41,7 +38,7 @@ class ProductDetailView(View):
         try:
 
             quantity = form.cleaned_data['quantity']
-            self.cart_service.add_item(request.user, product, quantity)
+            self.cart_service.add_item(request, product, quantity)
 
             return redirect("/cart")
         except Exception as e:
