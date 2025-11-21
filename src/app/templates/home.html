@@ -9,83 +9,9 @@
   <h2 class="text-center mb-4" style="color: #a97acf;">Productos Destacados</h2>
 
   <div class="slider-container">
-    <button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
-      aria-expanded="false" aria-controls="searchForm" style="background-color: #6f42c1;">
-      Buscar y Filtrar
-    </button>
+    
 
-    <div class="collapse" id="searchForm">
-    <div class="card card-body shadow-sm">
-      <form method="POST" action="{% url 'search/product' %}" class="row g-3">
-        {% csrf_token %}
-
-        <div class="col-md-6">
-          <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
-          {{ form.name }}
-        </div>
-
-        <div class="col-md-6">
-          <label for="{{ form.fabricator.id_for_label }}" class="form-label">{{ form.fabricator.label }}</label>
-          {{ form.fabricator }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ form.min_price.id_for_label }}" class="form-label">{{ form.min_price.label }}</label>
-          {{ form.min_price }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ form.max_price.id_for_label }}" class="form-label">{{ form.max_price.label }}</label>
-          {{ form.max_price }}
-        </div>
-
-        <div class="col-12">
-          <label for="{{ form.categories.id_for_label }}" class="form-label">{{ form.categories.label }}</label>
-          {{ form.categories }}
-        </div>
-
-        <div class="col-12">
-          <div class="d-flex">
-              <button type="submit" class="btn text-white mr-2" style="background-color: #6f42c1;">
-                Aplicar Filtros
-              </button>
-            <a href="/" class="btn btn-outline-secondary">
-              Limpiar Filtros
-            </a>
-          </div>
-        </div>
-
-
-      </form>
-    </div>
-  </div>
-
-  <!-- Mostrar filtros activos -->
-  {% if form.is_bound %}
-  <div class="mb-3">
-    <small class="text-muted">
-      Filtros activos:
-      {% if form.name.value %}
-      <span class="badge bg-filter">Nombre: "{{ form.name.value }}"</span>
-      {% endif %}
-      {% if form.fabricator.value %}
-      <span class="badge bg-filter">Fabricante: "{{ form.fabricator.value }}"</span>
-      {% endif %}
-      {% if form.department.value %}
-      <span class="badge bg-filter">Departamento: "{{ form.department.value }}"</span>
-      {% endif %}
-      {% if form.min_price.value %}
-      <span class="badge bg-filter">Precio mínimo: {{ form.min_price.value }}€</span>
-      {% endif %}
-      {% if form.max_price.value %}
-      <span class="badge bg-filter">Precio máximo: {{ form.max_price.value }}€</span>
-      {% endif %}
-      {% if form.categories.value %}
-      <span class="badge bg-filter">{{ form.categories.value|length }} categoría(s)</span>
-      {% endif %}
-    </small>
-  </div>
-  {% endif %}
+    {% include 'components/search_home_form.html' with type='product' %}
 
     <div class="slider" id="productSlider">
       {% for p in products %}
@@ -115,81 +41,10 @@
   <h2 class="text-center mb-4" style="color: #a97acf;">Servicios Destacados</h2>
 
   <div class="slider-container">
-<button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchFormServices"
-    aria-expanded="false" aria-controls="searchForm" style="background-color: #6f42c1;">
-    Buscar y Filtrar
-  </button>
+
 
   <!-- Collapsible Search Form -->
-  <div class="collapse" id="searchFormServices">
-    <div class="card card-body shadow-sm">
-      <form method="POST" action="{% url 'search/service' %}" class="row g-3">
-        {% csrf_token %}
-
-        <div class="col-md-6">
-          <label for="{{ formS.name.id_for_label }}" class="form-label">{{ formS.name.label }}</label>
-          {{ formS.name }}
-        </div>
-
-        <div class="col-md-6">
-          <label for="{{ formS.department.id_for_label }}" class="form-label">{{ formS.department.label }}</label>
-          {{ formS.department }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ formS.min_price.id_for_label }}" class="form-label">{{ formS.min_price.label }}</label>
-          {{ formS.min_price }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ formS.max_price.id_for_label }}" class="form-label">{{ formS.max_price.label }}</label>
-          {{ formS.max_price }}
-        </div>
-
-        <div class="col-12">
-          <label for="{{ formS.categories.id_for_label }}" class="form-label">{{ formS.categories.label }}</label>
-          {{ formS.categories }}
-        </div>
-
-        <div class="col-12">
-          <div class="d-flex">
-            <button type="submit" class="btn text-white mr-2" style="background-color: #6f42c1;">
-              Aplicar Filtros
-            </button>
-            <a href="/" class="btn btn-outline-secondary">
-              Limpiar Filtros
-            </a>
-          </div>
-        </div>
-
-
-      </form>
-    </div>
-  </div>
-
-  <!-- Mostrar filtros activos -->
-  {% if formS.is_bound %}
-  <div class="mb-3">
-    <small class="text-muted">
-      Filtros activos:
-      {% if formS.name.value %}
-      <span class="badge bg-filter">Nombre: "{{ formS.name.value }}"</span>
-      {% endif %}
-      {% if formS.department.value %}
-      <span class="badge bg-filter">Departamento: "{{ formS.department.value }}"</span>
-      {% endif %}
-      {% if formS.min_price.value %}
-      <span class="badge bg-filter">Precio mínimo: {{ formS.min_price.value }}€</span>
-      {% endif %}
-      {% if formS.max_price.value %}
-      <span class="badge bg-filter">Precio máximo: {{ formS.max_price.value }}€</span>
-      {% endif %}
-      {% if formS.categories.value %}
-      <span class="badge bg-filter">{{ formS.categories.value|length }} categoría(s)</span>
-      {% endif %}
-    </small>
-  </div>
-  {% endif %}
+  {% include 'components/search_home_form.html' with type='service' %}
 
   <hr>
     <div class="slider" id="serviceSlider">

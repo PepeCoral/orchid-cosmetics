@@ -1,0 +1,79 @@
+<button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
+      aria-expanded="false" aria-controls="searchForm" style="background-color: #6f42c1;">
+      Buscar y Filtrar
+    </button>
+  <div class="collapse" id="searchForm">
+      <div class="card card-body shadow-sm">
+        {% if type == 'product' %}
+          <form method="POST" action="{% url 'search/product' %}" class="row g-3">
+        {% elif type == 'service' %}
+          <form method="POST" action="{% url 'search/service' %}" class="row g-3">
+        {% endif %}
+          
+        {% csrf_token %}
+        
+        {% if type == 'product' %}
+        <div class="col-md-6">
+          <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+          {{ form.name }}
+        </div>
+
+        <div class="col-md-6">
+          <label for="{{ form.fabricator.id_for_label }}" class="form-label">{{ form.fabricator.label }}</label>
+          {{ form.fabricator }}
+        </div>
+
+        <div class="col-md-3">
+          <label for="{{ form.min_price.id_for_label }}" class="form-label">{{ form.min_price.label }}</label>
+          {{ form.min_price }}
+        </div>
+
+        <div class="col-md-3">
+          <label for="{{ form.max_price.id_for_label }}" class="form-label">{{ form.max_price.label }}</label>
+          {{ form.max_price }}
+        </div>
+
+        <div class="col-12">
+          <label for="{{ form.categories.id_for_label }}" class="form-label">{{ form.categories.label }}</label>
+          {{ form.categories }}
+        </div>
+
+        {% elif type == 'service' %}
+        <div class="col-md-6">
+          <label for="{{ formS.name.id_for_label }}" class="form-label">{{ formS.name.label }}</label>
+          {{ formS.name }}
+        </div>
+
+        <div class="col-md-6">
+          <label for="{{ formS.department.id_for_label }}" class="form-label">{{ formS.department.label }}</label>
+          {{ formS.department }}
+        </div>
+
+        <div class="col-md-3">
+          <label for="{{ formS.min_price.id_for_label }}" class="form-label">{{ formS.min_price.label }}</label>
+          {{ formS.min_price }}
+        </div>
+
+        <div class="col-md-3">
+          <label for="{{ formS.max_price.id_for_label }}" class="form-label">{{ formS.max_price.label }}</label>
+          {{ formS.max_price }}
+        </div>
+
+        <div class="col-12">
+          <label for="{{ formS.categories.id_for_label }}" class="form-label">{{ formS.categories.label }}</label>
+          {{ formS.categories }}
+        </div>
+{% endif %}
+      <div class="col-12">
+          <div class="d-flex">
+              <button type="submit" class="btn text-white mr-2" style="background-color: #6f42c1;">
+                Aplicar Filtros
+              </button>
+            <a href="/" class="btn btn-outline-secondary">
+              Limpiar Filtros
+            </a>
+          </div>
+        </div>
+</form>
+      </div>
+    </div>
