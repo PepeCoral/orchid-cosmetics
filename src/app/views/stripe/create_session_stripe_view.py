@@ -26,7 +26,7 @@ class CreateSessionStripeView(View):
             return redirect("/cart")
 
         session = stripe.checkout.Session.create(
-            payment_method_types=["card","paypal","amazon_pay"],
+            payment_method_types=["card"],
             line_items=cart_items_stripefied,
             mode="payment",
             success_url=request.build_absolute_uri(
