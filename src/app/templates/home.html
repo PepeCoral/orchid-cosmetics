@@ -9,6 +9,9 @@
   <h2 class="text-center mb-4" style="color: #a97acf;">Productos Destacados</h2>
 
   <div class="slider-container">
+    
+
+    {% include 'components/search_home_form.html' with type='product' %}
 
     <div class="slider" id="productSlider">
       {% for p in products %}
@@ -30,7 +33,6 @@
       {% endfor %}
     </div>
 
-
   </div>
 
   <hr class="my-5">
@@ -40,6 +42,11 @@
 
   <div class="slider-container">
 
+
+  <!-- Collapsible Search Form -->
+  {% include 'components/search_home_form.html' with type='service' %}
+
+  <hr>
     <div class="slider" id="serviceSlider">
 
       {% for s in services %}
@@ -53,7 +60,7 @@
 
         <div class="card-body">
           <h5 class="card-title">{{ s.name }}</h5>
-          <p class="text-muted">Departamento: {{ s.departament }}</p>
+          <p class="text-muted">Departamento: {{ s.department }}</p>
           <span class="badge bg-success p-2"><strong>{{ s.price }} €</strong></span>
         </div>
 
@@ -75,7 +82,7 @@
         <div class="col-md-6">
           <a href="{% url 'service_catalog' %}" class="btn text-white btn-lg"
             style="background-color: #a97acf; border-color: #a97acf;">
-            Catalogo de Productos
+            Catalogo de Servicios
           </a>
 
         </div>

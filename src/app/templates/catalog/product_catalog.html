@@ -8,86 +8,7 @@
   <h1 class="mb-4">Catálogo</h1>
 
   <!-- Toggle Button -->
-  <button class="btn text-white mb-3" type="button" data-toggle="collapse" data-target="#searchForm"
-    aria-expanded="false" aria-controls="searchForm" style="background-color: #6f42c1;">
-    Buscar y Filtrar
-  </button>
-
-  <!-- Collapsible Search Form -->
-  <div class="collapse" id="searchForm">
-    <div class="card card-body shadow-sm">
-      <form method="POST" class="row g-3">
-        {% csrf_token %}
-
-        <div class="col-md-6">
-          <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
-          {{ form.name }}
-        </div>
-
-        <div class="col-md-6">
-          <label for="{{ form.fabricator.id_for_label }}" class="form-label">{{ form.fabricator.label }}</label>
-          {{ form.fabricator }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ form.min_price.id_for_label }}" class="form-label">{{ form.min_price.label }}</label>
-          {{ form.min_price }}
-        </div>
-
-        <div class="col-md-3">
-          <label for="{{ form.max_price.id_for_label }}" class="form-label">{{ form.max_price.label }}</label>
-          {{ form.max_price }}
-        </div>
-
-        <div class="col-12">
-          <label for="{{ form.categories.id_for_label }}" class="form-label">{{ form.categories.label }}</label>
-          {{ form.categories }}
-        </div>
-
-        <div class="col-12">
-          <div class="d-flex">
-            <button type="submit" class="btn text-white mr-2" style="background-color: #6f42c1;">
-              Aplicar Filtros
-            </button>
-            <a href="{% url 'product_catalog' %}" class="btn btn-outline-secondary">
-              Limpiar Filtros
-            </a>
-          </div>
-        </div>
-
-
-      </form>
-    </div>
-  </div>
-
-  <!-- Mostrar filtros activos -->
-  {% if form.is_bound %}
-  <div class="mb-3">
-    <small class="text-muted">
-      Filtros activos:
-      {% if form.name.value %}
-      <span class="badge bg-filter">Nombre: "{{ form.name.value }}"</span>
-      {% endif %}
-      {% if form.fabricator.value %}
-      <span class="badge bg-filter">Fabricante: "{{ form.fabricator.value }}"</span>
-      {% endif %}
-      {% if form.department.value %}
-      <span class="badge bg-filter">Departamento: "{{ form.department.value }}"</span>
-      {% endif %}
-      {% if form.min_price.value %}
-      <span class="badge bg-filter">Precio mínimo: {{ form.min_price.value }}€</span>
-      {% endif %}
-      {% if form.max_price.value %}
-      <span class="badge bg-filter">Precio máximo: {{ form.max_price.value }}€</span>
-      {% endif %}
-      {% if form.categories.value %}
-      <span class="badge bg-filter">{{ form.categories.value|length }} categoría(s)</span>
-      {% endif %}
-    </small>
-  </div>
-  {% endif %}
-
-  <hr>
+  {% include 'components/search_catalog_form.html' with type='product' %}
 
   <!-- PRODUCTOS -->
   {% if products %}
@@ -176,13 +97,7 @@
   }
 
   /* Filter badges */
-  .badge.bg-filter {
-    background-color: #6f42c1 !important;
-    color: #fff !important;
-    font-weight: 500;
-    margin-right: 5px;
-    margin-bottom: 3px;
-  }
+
 
   /* Service badge */
   .badge.bg-service {

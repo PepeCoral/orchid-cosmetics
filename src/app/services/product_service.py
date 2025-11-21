@@ -38,6 +38,8 @@ class ProductService():
         product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
+        if product.stock == 0:
+            raise ValidationError("Productos fuera de stock")
         updated_product = self.product_repository.update(id=product_id, isPromoted=True)
         return updated_product
     

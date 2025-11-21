@@ -35,7 +35,11 @@
         <strong style="font-size: 1rem;">{{ product.name }}</strong><br>
         <small class="text-muted">{{ product.description|truncatewords:10 }}</small><br>
         <strong class="text-primary" style="font-size: 0.9rem;">{{ product.price }}€</strong><br>
-        <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+        {% if product.stock > 0 %}
+          <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+        {% else %}
+          <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+        {% endif %}
         <small class="text-muted" style="font-size: 0.75rem;">Fabricante: {{ product.fabricator }}</small>
       </div>
 
@@ -47,7 +51,7 @@
               {% csrf_token %}
               <button type="submit" class="btn btn-sm btn-outline-primary">Quitar Destacar</button>
             </form>
-          {% else %}
+          {% elif not product.isPromoted and product.stock > 0 %}
             <form method="post" action="{% url 'admin/products/promote' product.id %}" style="display:inline;">
               {% csrf_token %}
               <button type="submit" class="btn btn-sm btn-primary">Destacar</button>
