@@ -11,9 +11,6 @@ class CartView(View):
         self.cart_service = CartService()
 
     def get(self, request):
-        if request.user.is_anonymous:
-            return redirect("/login")
-
         cart_items = self.cart_service.get_cart_items(request.user)
 
         products = []

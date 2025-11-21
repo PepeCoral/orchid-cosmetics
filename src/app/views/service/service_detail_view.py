@@ -26,9 +26,6 @@ class ServiceDetailView(View):
             print(e)
 
     def post(self, request, service_id):
-        if request.user.is_anonymous:
-            return redirect("/login")
-
         service = self.service_service.get_service_by_id(service_id)
         categories = service.categories.all()
 
