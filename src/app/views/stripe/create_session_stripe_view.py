@@ -22,7 +22,7 @@ class CreateSessionStripeView(View):
 
         cart_items_stripefied =[item.stripify() for item in self.cart_service.get_cart_items(request.user)]
 
-        if len(cart_items_stripefied) <= 0:
+        if len(cart_items_stripefied) == 0:
             return redirect("/cart")
 
         session = stripe.checkout.Session.create(

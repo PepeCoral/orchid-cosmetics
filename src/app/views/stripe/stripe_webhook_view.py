@@ -17,7 +17,7 @@ class StripeWebhookView(View):
         self.order_service = OrderService()
 
     def post(self,request: HttpRequest):
-        payload = request.body
+        payload = request.body.decode("utf-8")
         sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
 
         try:
@@ -26,7 +26,7 @@ class StripeWebhookView(View):
                 sig_header,
                 settings.STRIPE_WEBHOOK_SECRET
             )
-        except stripe.error.SignatureVerificationError:
+        except stripe.SignatureVerificationError:
             return HttpResponse(status=400)
         
         if event["type"] == "checkout.session.completed":
