@@ -1,6 +1,8 @@
 from app.models.user import RoleOptions, User
 from app.repositories.user_repository import UserRepository
 from django.core.exceptions import ValidationError, PermissionDenied
+from django.contrib.auth import login, authenticate
+
 
 class UserService():
     def __init__(self):
@@ -39,7 +41,27 @@ class UserService():
           raise ValidationError("Usuario no encontrado.")
       return user
 
-    def update_user(self, user_id, user_data) -> User:
+    def authenticate_user(self, auth_data):
+        email = auth_data['email']
+        password = auth_data['password']
+
+        user = self.user_repository.get_by_email(email)
+
+        if user is None:
+            raise ValidationError("No hay ningun usuario con ese email")
+        
+        try:
+            
+            user_log = authenticate(username=user.username,password=password)
+            return user_log
+        
+        except Exception as a:
+            raise ValidationError("Ha habido un error en la autenticacion ", a)
+        
+
+        
+
+    def update_user(self, user_id, user_data):
         user_to_update = self.user_repository.get_by_id(user_id)
         if not user_to_update:
             raise ValidationError("Usuario no encontrado.")

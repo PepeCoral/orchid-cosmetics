@@ -1,23 +1,13 @@
-# app/forms/catalog_search_form.py
 from django import forms
 from app.models.category import Category
 
-class SearchCatalogForm(forms.Form):
+class SearchServiceCatalogForm(forms.Form):
     name = forms.CharField(
         label="Nombre",
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Buscar por nombre...'
-        })
-    )
-
-    fabricator = forms.CharField(
-        label="Fabricante",
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Fabricante...'
         })
     )
 
