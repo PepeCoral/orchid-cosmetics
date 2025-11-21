@@ -38,7 +38,7 @@ class ProductDetailView(View):
         try:
 
             quantity = form.cleaned_data['quantity']
-            self.cart_service.add_item(request.user, product, quantity)
+            self.cart_service.add_item(request, product, quantity)
 
             return redirect("/cart")
         except Exception as e:

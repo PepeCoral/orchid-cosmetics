@@ -11,7 +11,7 @@ class CartView(View):
         self.cart_service = CartService()
 
     def get(self, request):
-        cart_items = self.cart_service.get_cart_items(request.user)
+        cart_items = self.cart_service.get_cart_items(request)
 
         products = []
         services = []
@@ -21,7 +21,7 @@ class CartView(View):
             elif isinstance(item.item, Service):
                 services.append(item)
 
-        total = self.cart_service.get_total(request.user)
+        total = self.cart_service.get_total(request)
 
         return render(request, "cart/cart.html", {
             "products": products,

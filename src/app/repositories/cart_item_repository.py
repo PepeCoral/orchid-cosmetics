@@ -1,23 +1,37 @@
 from typing import List, Optional
 from app.models.cart_item import CartItem
 from app.repositories.base_repository import BaseRepository
-
+from django.core.exceptions import ObjectDoesNotExist
 
 class CartItemRepository(BaseRepository):
     def __init__(self):
         super().__init__(CartItem)
 
-    def get_user_cart_items(self, user_id: int):
-        return self.model.objects.filter(user_id=user_id)
+    def get_cart_items(self, owner_filter: dict):
+          return self.model.objects.filter(**owner_filter)
 
-    def get_existing_product_item(self, user_id: int, product_id: int) -> Optional[CartItem]:
+    def get_existing_product_item(self, owner_filter: dict, product_id: int) -> Optional[CartItem]:
+        filters = owner_filter
+        owner_filter.update({"product_id": product_id})
+
         try:
-            return self.model.objects.get(user_id=user_id, product_id=product_id)
+            return self.model.objects.get(**filters)
         except CartItem.DoesNotExist:
             return None
 
-    def get_existing_service_item(self, user_id: int, service_id: int) -> Optional[CartItem]:
+    def get_existing_service_item(self, owner_filter: dict, service_id: int) -> Optional[CartItem]:
+        filters = owner_filter
+        filters.update({"service_id": service_id})
+
         try:
-            return self.model.objects.get(user_id=user_id, service_id=service_id)
+            return self.model.objects.get(**filters)
         except CartItem.DoesNotExist:
+            return None
+
+    def get_by_id_and_owner(self, id: int, owner_filter: dict) -> Optional[CartItem]:
+        try:
+            filters = owner_filter
+            filters.update({"id": id})
+            return self.model.objects.get(**filters)
+        except ObjectDoesNotExist:
             return None
