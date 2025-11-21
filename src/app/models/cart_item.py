@@ -1,5 +1,3 @@
-# app/models/cart_item.py
-
 from django.db import models
 from django.core.validators import MinValueValidator
 from app.models.user import User
