@@ -84,7 +84,7 @@ class TestUserService(TestCase):
     def test_get_user_by_id_not_found(self):
         """Test de obtención de usuario por ID inexistente"""
         with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
-            UserService.get_user_by_id(999)  # ID que no existe
+            self.user_service.get_user_by_id(999)  # ID que no existe
 
     
     def test_update_user_success(self):
@@ -141,6 +141,7 @@ class TestUserService(TestCase):
         with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             self.user_service.update_user(999, {'first_name': 'Updated'})
 
+
     def test_delete_user_success(self):
         """Test de eliminación exitosa de usuario"""
         user_data = self.user_data.copy()
@@ -150,136 +151,44 @@ class TestUserService(TestCase):
         result = self.user_service.delete_user(user.id)
         
         assert result == True
+
         # Verificar que el usuario ya no existe
         with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
             self.user_service.get_user_by_id(user.id)
 
-    def test_get_all_users(self):
-        """Test de obtención de todos los usuarios"""
-        # Crear varios usuarios
-        users_data = [
-            {'username': f'user{i}', 'email': f'user{i}@example.com', 'password': 'password123', 'confirm_password': 'password123', 'first_name': f'User{i}'}
-            for i in range(3)
-        ]
-        
-        created_users = []
-        for data in users_data:
-            created_users.append(self.user_service.create_user(data))
-        
-        all_users = self.user_service.get_all_users()
-        
-        assert all_users.count() == 3
-        for user in created_users:
-            assert user in all_users
+    def test_delete_user_not_found(self):
+        with self.assertRaises(ValidationError, msg="Usuario no encontrado."):
+            self.user_service.delete_user(999)
 
-    def test_change_user_role_success(self):
-        """Test de cambio de rol exitoso"""
-        user_data = {
-            'username': 'changerole',
-            'email': 'changerole@example.com',
-            'password': 'password123',
-            'confirm_password': 'password123',
-            'first_name': 'ChangeRole',
-            'role': RoleOptions.USER
+    def test_authenticate_user(self):
+        user_data = self.user_data.copy()
+
+        user = self.user_service.create_user(user_data)
+
+        auth_data = {
+            "email":user.email,
+            "password":user_data['password']
         }
-        
-        user = self.user_service.create_user(user_data)
-        assert user.role == RoleOptions.USER
-        
-        updated_user = self.user_service.change_user_role(user.id, RoleOptions.ADMIN)
-        assert updated_user.role == RoleOptions.ADMIN
 
-    def test_change_user_role_invalid_role(self):
-        """Test de cambio a rol inválido"""
-        user_data = {
-            'username': 'invalidrole',
-            'email': 'invalidrole@example.com',
-            'password': 'password123',
-            'confirm_password': 'password123',
-            'first_name': 'InvalidRole'
+        user_log = self.user_service.authenticate_user(auth_data)
+        self.assertIsNotNone(user_log)
+    
+    def test_authenticate_wrong_data(self):
+        user_data = self.user_data.copy()
+
+        user = self.user_service.create_user(user_data)
+
+        error_data = {
+            "email":"error@gmail.com",
+            "password":user_data['password']
         }
-        
-        user = self.user_service.create_user(user_data)
-        
-        with self.assertRaises(ValidationError, msg="Rol inválido"):
-            self.user_service.change_user_role(user.id, 'INVALID_ROLE')
 
-    def test_change_user_role_user_not_found(self):
-        """Test de cambio de rol en usuario inexistente"""
-        with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
-            self.user_service.change_user_role(999, RoleOptions.ADMIN)
+        with self.assertRaises(ValidationError, msg="No hay ningun usuario con ese email"):
+            self.user_service.authenticate_user(error_data)
 
-    def test_search_users(self):
-        """Test de búsqueda de usuarios"""
-        # Crear usuarios de prueba
-        users_data = [
-            {'email': 'john@example.com', 'password': 'pass123','confirm_password': 'pass123', 'first_name': 'John', 'last_name': 'Smith'},
-            {'email': 'jane@example.com', 'password': 'pass123', 'confirm_password': 'pass123', 'first_name': 'Jane', 'last_name': 'Doe'},
-            {'email': 'bob@example.com', 'password': 'pass123', 'confirm_password': 'pass123', 'first_name': 'Bob', 'last_name': 'Johnson'},
-        ]
-        
-        for data in users_data:
-            self.user_service.create_user(data)
-        
-        # Buscar por first_name
-        results = self.user_service.search_users('John')
-        assert results.count() == 1
-        assert results.first().first_name == 'John'
-        
-        # Buscar por last_name
-        results = self.user_service.search_users('Doe')
-        assert results.count() == 1
-        assert results.first().last_name == 'Doe'
-        
-        # Buscar por email
-        results = self.user_service.search_users('jane@example.com')
-        assert results.count() == 1
-        assert results.first().email == 'jane@example.com'
-        
-        # Búsqueda que no encuentra resultados
-        results = self.user_service.search_users('Nonexistent')
-        assert results.count() == 0
+        error_data['email']=user.email
+        error_data['password']='errorPassword'
 
-    def test_get_admin_users(self):
-        """Test de obtención de usuarios administradores"""
-        # Crear usuarios con diferentes roles
-        user_data = self.user_data.copy()
-        admin_data = self.admin_data.copy()
+        error_user = self.user_service.authenticate_user(error_data)
 
-        self.user_service.create_user(admin_data)
-        self.user_service.create_user(user_data)
-        
-        admin_users = self.user_service.get_admin_users()
-        assert admin_users.count() == 1
-        assert admin_users.first().role == RoleOptions.ADMIN
-
-    def test_get_regular_users(self):
-        """Test de obtención de usuarios regulares"""
-        # Crear usuarios con diferentes roles
-        user_data = self.user_data.copy()
-        admin_data = self.admin_data.copy()
-        
-        self.user_service.create_user(admin_data)
-        self.user_service.create_user(user_data)
-        
-        regular_users = self.user_service.get_regular_users()
-        assert regular_users.count() == 1
-        assert regular_users.first().role == RoleOptions.USER
-
-    def test_promote_to_admin(self):
-        """Test de promoción a administrador"""
-        user_data = self.user_data.copy()
-        
-        user = self.user_service.create_user(user_data)
-        promoted_user = self.user_service.promote_to_admin(user.id)
-        
-        assert promoted_user.role == RoleOptions.ADMIN
-
-    def test_demote_to_user(self):
-        """Test de degradación a usuario regular"""
-        admin_data = self.admin_data.copy()
-        
-        admin = self.user_service.create_user(admin_data)
-        demoted_user = self.user_service.demote_to_user(admin.id)
-        
-        assert demoted_user.role == RoleOptions.USER
+        self.assertIsNone(error_user)

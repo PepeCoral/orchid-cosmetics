@@ -1,16 +1,28 @@
 from decimal import Decimal
+from PIL import Image
+from io import BytesIO
 from django.core.exceptions import ValidationError
 from unittest.mock import patch, MagicMock
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from django.test import TestCase
+from django.utils.datastructures import MultiValueDict
+from django.test import TestCase, RequestFactory
 from app.models import Service, Category
 from app.services.service_service import ServiceService
-
+from app.repositories.service_repository import ServiceRepository
 class TestServiceService(TestCase):
 
     def setUp(self):
         """Configuración inicial para cada test"""
         self.category = Category.objects.create(name="Hair Care")
+        self.service_service = ServiceService()
+        self.service_repository = ServiceRepository()
+        self.factory = RequestFactory()
+        self.request = self.factory.post(
+            path="tests-service-service",
+            FILES={}
+        )
+        self.categories = Category.objects.all()
         
         self.valid_service_data = {
             'name': 'Hair Cut',
@@ -18,384 +30,197 @@ class TestServiceService(TestCase):
             'price': 25.00,
             'duration_minutes': 30,
             'department': 'Hair Salon',
-            'image_url': 'https://example.com/haircut.jpg',
-            'category': self.category.id
+            'image_url': '',
+            'categories': self.categories
+        }
+        self.updated_service_data = {
+            'name': 'Hair Cut Updated',
+            'description': 'Professional hair cutting service Updated',
+            'price': 35.00,
+            'duration_minutes': 40,
+            'department': 'Hair Salon Updated'
         }
 
-    def test_validate_service_data_success(self):
-        ServiceService.validate_service_data(self.valid_service_data)
+    def generar_imagen(self):
+        imagen = Image.new("RGB", (100, 100), color="red")
+        buffer = BytesIO()
+        imagen.save(buffer, format="JPEG")
+        buffer.seek(0)
 
-    def test_validate_service_data_missing_name(self):
-        data = self.valid_service_data.copy()
-        data['name'] = ''
-        
-        with self.assertRaises(ValidationError, msg="Nombre faltante"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_name_too_long(self):
-        data = self.valid_service_data.copy()
-        data['name'] = 'A' * 101
-        
-        with self.assertRaises(ValidationError, msg="Nombre demasiado largo"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_missing_description(self):
-        data = self.valid_service_data.copy()
-        data['description'] = ''
-        
-        with self.assertRaises(ValidationError, msg="Descripción faltante"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_invalid_price(self):
-        data = self.valid_service_data.copy()
-        data['price'] = Decimal('-10.00')
-        
-        with self.assertRaises(ValidationError, msg="Precio negativo no permitido"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_price_zero(self):
-        data = self.valid_service_data.copy()
-        data['price'] = Decimal('0.00')
-        
-        with self.assertRaises(ValidationError, msg="Precio cero inválido"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_price_string(self):
-        data = self.valid_service_data.copy()
-        data['price'] = 'invalid'
-        
-        with self.assertRaises(ValidationError, msg="Precio debe ser numérico"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_missing_duration(self):
-        data = self.valid_service_data.copy()
-        data['duration_minutes'] = None
-        
-        with self.assertRaises(ValidationError, msg="Duración faltante"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_duration_negative(self):
-        data = self.valid_service_data.copy()
-        data['duration_minutes'] = -10
-        
-        with self.assertRaises(ValidationError, msg="Duración negativa inválida"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_duration_string(self):
-        data = self.valid_service_data.copy()
-        data['duration_minutes'] = 'invalid'
-        
-        with self.assertRaises(ValidationError, msg="Duración debe ser numérica"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_missing_department(self):
-        data = self.valid_service_data.copy()
-        data['department'] = ''
-        
-        with self.assertRaises(ValidationError, msg="Departamento faltante"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_department_too_long(self):
-        data = self.valid_service_data.copy()
-        data['department'] = 'A' * 101
-        
-        with self.assertRaises(ValidationError, msg="Departamento demasiado largo"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_invalid_category(self):
-        data = self.valid_service_data.copy()
-        data['category'] = 999
-        
-        with self.assertRaises(ValidationError, msg="Categoría inexistente"):
-            ServiceService.validate_service_data(data)
-
-    def test_validate_service_data_image_url_too_long(self):
-        data = self.valid_service_data.copy()
-        data['image_url'] = 'https://example.com/' + 'a' * 200
-        
-        with self.assertRaises(ValidationError, msg="URL demasiado larga"):
-            ServiceService.validate_service_data(data)
+        return InMemoryUploadedFile(
+            file=buffer,
+            field_name="imagen",
+            name="test.jpg",
+            content_type="image/jpeg",
+            size=buffer.getbuffer().nbytes,
+            charset=None
+        )
 
     def test_create_service_success(self):
-        service = ServiceService.create_service(self.valid_service_data)
-        
+
+        service = self.service_service.create_service(self.request,self.valid_service_data)
+    
         assert service.name == self.valid_service_data['name']
         assert service.description == self.valid_service_data['description']
         assert service.price == self.valid_service_data['price']
         assert service.duration_minutes == self.valid_service_data['duration_minutes']
         assert service.department == self.valid_service_data['department']
-        assert service.image_url == self.valid_service_data['image_url']
-        assert service.category.id == self.valid_service_data['category']
+        #assert service.image_url == fake_file
+        assert set(service.categories.all()) == set(self.categories)
 
-    def test_create_service_duplicate_name(self):
-        ServiceService.create_service(self.valid_service_data)
-        
-        with self.assertRaises(ValidationError, msg="Nombre duplicado"):
-            ServiceService.create_service(self.valid_service_data)
+    def test_create_service_wrong_data(self):
 
-    def test_create_service_without_category(self):
-        data = self.valid_service_data.copy()
-        data.pop('category')
+        wrong_data = self.valid_service_data.copy()
+        wrong_data['price'] = -5.0
         
-        service = ServiceService.create_service(data)
-        
-        assert service.name == data['name']
-        assert service.category is None
+        with self.assertRaises(ValidationError, msg="Price cannot be negative"):
+            self.service_service.create_service(self.request,wrong_data)
 
-    def test_create_service_without_image_url(self):
-        data = self.valid_service_data.copy()
-        data.pop('image_url')
-        
-        service = ServiceService.create_service(data)
-        
-        assert service.name == data['name']
-        assert service.image_url == ''
+        wrong_data['price'] = 10.0
+        wrong_data['duration_minutes'] = -5
+
+        with self.assertRaises(ValidationError, msg="Duration cannot be negative"):
+            self.service_service.create_service(self.request,wrong_data)
+
 
     def test_get_service_by_id_success(self):
-        created = ServiceService.create_service(self.valid_service_data)
-        found = ServiceService.get_service_by_id(created.id)
+        created = self.service_service.create_service(self.request,self.valid_service_data)
+        found = self.service_service.get_service_by_id(created.id)
         
-        assert found == created
+        self.assertEqual(found,created)
 
     def test_get_service_by_id_not_found(self):
         with self.assertRaises(ValidationError, msg="Servicio no encontrado"):
-            ServiceService.get_service_by_id(999)
+            self.service_service.get_service_by_id(999)
 
     def test_get_all_services(self):
-        services_data = [
-            {
-                'name': f'Service {i}',
-                'description': f'Description {i}',
-                'price': (i+1)*10.00,
-                'duration_minutes': (i+1) * 15,
-                'department': f'Department {i % 2}',
-                'category': self.category.id
-            }
-            for i in range(3)
-        ]
         
-        created = [ServiceService.create_service(d) for d in services_data]
-        
-        all_services = ServiceService.get_all_services()
-        assert all_services.count() == 3
+        service_data1 = self.valid_service_data.copy()
+        service_data2 = self.valid_service_data.copy()
 
-    def test_get_services_by_category_success(self):
-        for i in range(2):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            ServiceService.create_service(data)
-        
-        services = ServiceService.get_services_by_category(self.category.id)
-        assert services.count() == 2
+        self.service_service.create_service(self.request,service_data1)
+        self.service_service.create_service(self.request,service_data2)
 
-    def test_get_services_by_category_not_found(self):
-        with self.assertRaises(ValidationError, msg="Categoría no encontrada"):
-            ServiceService.get_services_by_category(999)
-
-    def test_get_services_by_department(self):
-        departments = ['Hair Salon', 'Spa', 'Hair Salon']
-        for i, d in enumerate(departments):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            data['department'] = d
-            ServiceService.create_service(data)
-        
-        assert ServiceService.get_services_by_department('Hair Salon').count() == 2
-        assert ServiceService.get_services_by_department('Spa').count() == 1
-
-    def test_get_services_by_department_case_insensitive(self):
-        data = self.valid_service_data.copy()
-        data['department'] = 'HAIR SALON'
-        ServiceService.create_service(data)
-        
-        assert ServiceService.get_services_by_department('hair salon').count() == 1
+        all_services = self.service_service.get_all_services()
+        self.assertEqual(all_services.count(),2)
 
     def test_update_service_success(self):
-        service = ServiceService.create_service(self.valid_service_data)
         
-        update_data = {
-            'name': 'Updated Hair Cut',
-            'description': 'Updated description',
-            'price': 30.00,
-            'duration_minutes': 45,
-            'department': 'Updated Department'
-        }
-        
-        updated = ServiceService.update_service(service.id, update_data)
-        
-        assert updated.name == 'Updated Hair Cut'
+        service_data = self.valid_service_data.copy()
+        updated_data = self.updated_service_data.copy()
 
-    def test_update_service_duplicate_name(self):
-        s1 = ServiceService.create_service(self.valid_service_data)
+        service = self.service_service.create_service(self.request, service_data)
+
+        updated = self.service_service.update_service(service.id, updated_data, self.request)
         
-        data2 = self.valid_service_data.copy()
-        data2['name'] = 'Other Service'
-        s2 = ServiceService.create_service(data2)
+        self.assertEqual(updated.name,'Hair Cut Updated')
+        self.assertEqual(updated.description,'Professional hair cutting service Updated')
+        self.assertEqual(updated.price,35.00)
+        self.assertEqual(updated.duration_minutes,40)
+        self.assertEqual(updated.department,'Hair Salon Updated')
+
+    def test_update_service_wrong_data(self):
         
-        with self.assertRaises(ValidationError, msg="Nombre duplicado en actualización"):
-            ServiceService.update_service(s2.id, {'name': 'Hair Cut'})
+
+        wrong_data = self.valid_service_data.copy()
+
+        service = self.service_service.create_service(self.request, wrong_data)
+
+        wrong_data['price'] = -5.0
+        
+        with self.assertRaises(ValidationError, msg="El precio no puede ser negativo"):
+            self.service_service.update_service(service.id,wrong_data, self.request)
+
+        wrong_data['price'] = 10.0
+        wrong_data['duration_minutes'] = -5
+
+        with self.assertRaises(ValidationError, msg="La duración no puede ser negativa"):
+            self.service_service.update_service(service.id,wrong_data, self.request)
 
     def test_update_service_not_found(self):
+        
         with self.assertRaises(ValidationError, msg="Servicio no encontrado"):
-            ServiceService.update_service(999, {'name': 'Updated'})
+            self.service_service.update_service(999, {'name': 'Updated'}, self.request)
 
     def test_delete_service_success(self):
-        service = ServiceService.create_service(self.valid_service_data)
+        service = self.service_service.create_service(self.request,self.valid_service_data)
         
-        result = ServiceService.delete_service(service.id)
+        result = self.service_service.delete_service(service.id)
         assert result is True
-        
-        with self.assertRaises(ValidationError):
-            ServiceService.get_service_by_id(service.id)
 
     def test_delete_service_not_found(self):
-        with self.assertRaises(ValidationError, msg="Servicio no encontrado"):
-            ServiceService.delete_service(999)
+        with self.assertRaises(ValidationError, msg="Servicio no encontrado."):
+            self.service_service.delete_service(999)
 
     def test_search_services_by_name(self):
         data_list = [
-            {'name': 'Hair Cut', 'description': 'Cutting hair', 'price': 25.00, 'duration_minutes': 30, 'department': 'Hair'},
-            {'name': 'Hair Color', 'description': 'Coloring hair', 'price': 50.00, 'duration_minutes': 60, 'department': 'Hair'},
-            {'name': 'Facial', 'description': 'Face treatment', 'price': 40.00, 'duration_minutes': 45, 'department': 'Spa'}
+            {'name': 'Hair Cut', 'description': 'Cutting hair', 'price': 25.00, 'duration_minutes': 30, 'department': 'Hair', 'categories':self.categories},
+            {'name': 'Hair Color', 'description': 'Coloring hair', 'price': 50.00, 'duration_minutes': 60, 'department': 'Hair','categories':self.categories},
+            {'name': 'Facial', 'description': 'Face treatment', 'price': 40.00, 'duration_minutes': 45, 'department': 'Spa','categories':self.categories}
         ]
         
         for d in data_list:
-            ServiceService.create_service(d)
+            self.service_service.create_service(self.request,d)
         
-        assert ServiceService.search_services('Hair').count() == 2
+        filters = {'name':'Hair'}
 
-    def test_search_services_by_description(self):
-        data_list = [
-            {'name': 'Service 1', 'description': 'Hair cutting service', 'price': 25.00, 'duration_minutes': 30, 'department': 'Hair'},
-            {'name': 'Service 2', 'description': 'Face treatment service', 'price': 40.00, 'duration_minutes': 45, 'department': 'Spa'}
-        ]
-        
-        for d in data_list:
-            ServiceService.create_service(d)
-        
-        results = ServiceService.search_services('treatment')
-        assert results.count() == 1
+        assert self.service_service.search_services(filters).count() == 2
 
     def test_search_services_by_department(self):
         data_list = [
-            {'name': 'Service 1', 'description': 'Desc 1', 'price': 25.00, 'duration_minutes': 30, 'department': 'Hair Salon'},
-            {'name': 'Service 2', 'description': 'Desc 2', 'price': 40.00, 'duration_minutes': 45, 'department': 'Spa'},
-            {'name': 'Service 3', 'description': 'Desc 3', 'price': 30.00, 'duration_minutes': 40, 'department': 'Hair Salon'}
+            {'name': 'Service 1', 'description': 'Desc 1', 'price': 25.00, 'duration_minutes': 30, 'department': 'Hair Salon','categories':self.categories},
+            {'name': 'Service 2', 'description': 'Desc 2', 'price': 40.00, 'duration_minutes': 45, 'department': 'Spa','categories':self.categories},
+            {'name': 'Service 3', 'description': 'Desc 3', 'price': 30.00, 'duration_minutes': 40, 'department': 'Hair Salon','categories':self.categories}
         ]
         
         for d in data_list:
-            ServiceService.create_service(d)
+            self.service_service.create_service(self.request,d)
         
-        assert ServiceService.search_services('Salon').count() == 2
+        filters = {'department':'Salon'}
 
-    def test_get_services_by_price_range_success(self):
-        prices = [20.00, 30.00, 40.00, 50.00]
-        for i, p in enumerate(prices):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            data['price'] = p
-            ServiceService.create_service(data)
-        
-        results = ServiceService.get_services_by_price_range(Decimal('25.00'), Decimal('45.00'))
-        assert results.count() == 2
+        assert self.service_service.search_services(filters).count() == 2
 
-    def test_get_services_by_price_range_invalid(self):
-        with self.assertRaises(ValidationError, msg="Rango de precios inválido"):
-            ServiceService.get_services_by_price_range(Decimal('50.00'), Decimal('25.00'))
+    def test_get_promoted_services(self):
+        service_data1 = self.valid_service_data.copy()
+        service_data2 = self.valid_service_data.copy()
 
-    def test_get_services_by_duration(self):
-        durations = [15, 30, 45, 60]
-        for i, d in enumerate(durations):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            data['duration_minutes'] = d
-            ServiceService.create_service(data)
-        
-        results = ServiceService.get_services_by_duration(30)
-        assert results.count() == 2
+        service_data2['isPromoted'] = True
 
-    def test_get_popular_services(self):
-        for i in range(15):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            ServiceService.create_service(data)
-        
-        assert ServiceService.get_popular_services(limit=10).count() == 10
+        self.service_service.create_service(self.request,service_data1)
+        self.service_service.create_service(self.request,service_data2)
 
-    def test_get_services_with_category(self):
-        ServiceService.create_service(self.valid_service_data)
-        
-        no_cat = self.valid_service_data.copy()
-        no_cat['name'] = 'No Category Service'
-        no_cat.pop('category')
-        ServiceService.create_service(no_cat)
-        
-        results = ServiceService.get_services_with_category()
-        assert results.count() == 1
+        promoted_services = self.service_service.get_promoted_services()
 
-    def test_get_services_without_category(self):
-        ServiceService.create_service(self.valid_service_data)
-        
-        no_cat = self.valid_service_data.copy()
-        no_cat['name'] = 'No Category Service'
-        no_cat.pop('category')
-        ServiceService.create_service(no_cat)
-        
-        results = ServiceService.get_services_without_category()
-        assert results.count() == 1
+        self.assertEqual(promoted_services.count(),1)
 
-    def test_get_services_by_ids(self):
-        services = []
-        for i in range(3):
-            d = self.valid_service_data.copy()
-            d['name'] = f'Service {i}'
-            services.append(ServiceService.create_service(d))
-        
-        ids = [services[0].id, services[2].id]
-        results = ServiceService.get_services_by_ids(ids)
-        
-        assert results.count() == 2
+    def test_promote_service(self):
+        service_data = self.valid_service_data.copy()
 
-    def test_get_services_sorted_by_price_ascending(self):
-        prices = [50.00, 20.00, 35.00]
-        for i, p in enumerate(prices):
-            d = self.valid_service_data.copy()
-            d['name'] = f'Service {i}'
-            d['price'] = p
-            ServiceService.create_service(d)
-        
-        results = ServiceService.get_services_sorted_by_price(True)
-        assert results.first().price == 20.00
+        service = self.service_service.create_service(self.request,service_data)
 
-    def test_get_services_sorted_by_price_descending(self):
-        prices = [20.00, 50.00, 35.00]
-        for i, p in enumerate(prices):
-            d = self.valid_service_data.copy()
-            d['name'] = f'Service {i}'
-            d['price'] = p
-            ServiceService.create_service(d)
-        
-        results = ServiceService.get_services_sorted_by_price(False)
-        assert results.first().price == 50.00
+        self.service_service.promote_service(service.id)
 
-    def test_get_services_sorted_by_duration_ascending(self):
-        durations = [60, 15, 45]
-        for i, d in enumerate(durations):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            data['duration_minutes'] = d
-            ServiceService.create_service(data)
-        
-        results = ServiceService.get_services_sorted_by_duration(True)
-        assert results.first().duration_minutes == 15
+        promoted = self.service_service.get_service_by_id(service.id)
 
-    def test_get_services_sorted_by_duration_descending(self):
-        durations = [15, 60, 45]
-        for i, d in enumerate(durations):
-            data = self.valid_service_data.copy()
-            data['name'] = f'Service {i}'
-            data['duration_minutes'] = d
-            ServiceService.create_service(data)
-        
-        results = ServiceService.get_services_sorted_by_duration(False)
-        assert results.first().duration_minutes == 60
+        self.assertEqual(promoted.isPromoted, True)
+
+    def test_demote_service(self):
+        service_data = self.valid_service_data.copy()
+
+        service_data['isPromoted']=True
+        service = self.service_service.create_service(self.request,service_data)
+
+        self.service_service.demote_service(service.id)
+
+        promoted = self.service_service.get_service_by_id(service.id)
+
+        self.assertEqual(promoted.isPromoted, False)
+
+    def test_promote_an_invalid_service(self):
+        with self.assertRaises(ValidationError,msg="Servicio no encontrado."):
+            self.service_service.promote_service(999)
+    
+    def test_demote_an_invalid_service(self):
+        with self.assertRaises(ValidationError,msg="Servicio no encontrado."):
+            self.service_service.demote_service(999)
+

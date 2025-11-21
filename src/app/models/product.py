@@ -18,6 +18,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def set_categories(self,categories):
+        self.categories.set(categories)
 
 class ProductQuantity(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
