@@ -18,8 +18,7 @@ class Service(models.Model):
     def __str__(self):
         return self.name
 
-    def set_categories(self, category):
-        self.categories.set(category)
+    
 
 class ServiceQuantity(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)

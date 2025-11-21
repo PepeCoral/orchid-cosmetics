@@ -18,7 +18,7 @@ class TestProductRepository(TestCase):
 
         categories = Category.objects.all()
 
-        product.set_categories(categories)
+        product.categories.set(categories)
         return product
 
     def test_create_product(self):

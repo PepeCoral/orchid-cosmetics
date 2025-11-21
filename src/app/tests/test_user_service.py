@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.contrib.auth import authenticate
 from unittest.mock import patch, MagicMock
 
@@ -95,7 +95,7 @@ class TestUserService(TestCase):
         
         update_data = self.update_data.copy()
         
-        updated_user = self.user_service.update_user(user.id, update_data)
+        updated_user = self.user_service.update_user(user.id, update_data, user)
     
         assert updated_user.username == 'Updated'
         assert updated_user.email == 'updated@gmail.com'
@@ -119,10 +119,9 @@ class TestUserService(TestCase):
         
         # Intentar cambiar email del usuario2 al email del usuario1
         with self.assertRaises(ValidationError, msg="Username already in use"):
-            self.user_service.update_user(user2.id, {'username': 'testuser'})
+            self.user_service.update_user(user2.id, {'username': 'testuser'}, user2)
         with self.assertRaises(ValidationError, msg="Email already in use"):
-            self.user_service.update_user(user2.id, {'email': 'test@example.com'})
-
+            self.user_service.update_user(user2.id, {'email': 'test@example.com'}, user2)
 
     def test_update_user_password(self):
         """Test de actualización de contraseña"""
@@ -131,7 +130,7 @@ class TestUserService(TestCase):
         user = self.user_service.create_user(user_data)
         
         update_data = {'password': 'newpassword123', 'confirm_password': 'newpassword123'}
-        updated_user = self.user_service.update_user(user.id, update_data)
+        updated_user = self.user_service.update_user(user.id, update_data, user)
         
         # Verificar que la nueva contraseña funciona
         assert updated_user.check_password('newpassword123')
@@ -139,8 +138,23 @@ class TestUserService(TestCase):
     def test_update_user_not_found(self):
         """Test de actualización de usuario inexistente"""
         with self.assertRaises(ValidationError, msg="Usuario no encontrado"):
-            self.user_service.update_user(999, {'first_name': 'Updated'})
+            self.user_service.update_user(999, {'first_name': 'Updated'}, 999)
 
+    def test_update_other_user(self):
+        user_data1=self.user_data.copy()
+        user_data2=self.user_data.copy()
+
+        updated_data = self.update_data.copy()
+
+        user_data2['username']='otro'
+        user_data2['email']='otroemail@gmail.com'
+
+        user1 = self.user_service.create_user(user_data1)
+        user2 = self.user_service.create_user(user_data2)
+
+
+        with self.assertRaises(PermissionDenied, msg="Solo puedes modificar tu propio perfil."):
+            self.user_service.update_user(user1.id, updated_data, user2)
 
     def test_delete_user_success(self):
         """Test de eliminación exitosa de usuario"""
@@ -148,7 +162,7 @@ class TestUserService(TestCase):
         
         user = self.user_service.create_user(user_data)
         
-        result = self.user_service.delete_user(user.id)
+        result = self.user_service.delete_user(user.id, user)
         
         assert result == True
 
@@ -158,7 +172,20 @@ class TestUserService(TestCase):
 
     def test_delete_user_not_found(self):
         with self.assertRaises(ValidationError, msg="Usuario no encontrado."):
-            self.user_service.delete_user(999)
+            self.user_service.delete_user(999, 999)
+
+    def test_delete_other_user(self):
+        user_data1=self.user_data.copy()
+        user_data2=self.user_data.copy()
+
+        user_data2['username']='otro'
+        user_data2['email']='otroemail@gmail.com'
+
+        user1 = self.user_service.create_user(user_data1)
+        user2 = self.user_service.create_user(user_data2)
+
+        with self.assertRaises(PermissionDenied, msg="Solo puedes eliminar tu propio perfil."):
+            self.user_service.delete_user(user1.id, user2)
 
     def test_authenticate_user(self):
         user_data = self.user_data.copy()

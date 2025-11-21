@@ -7,10 +7,10 @@ class UserRepository(BaseRepository):
         super().__init__(User)
         self.user=User
 
-    def get_by_email(self, email) -> User:
+    def get_by_email(self, email) -> Optional[User]:
         return self.user.objects.filter(email=email).first()
 
-    def get_by_username(self,username) -> User:
+    def get_by_username(self,username) -> Optional[User]:
         return self.user.objects.filter(username=username).first()
 
     def create(self, **kwargs) -> User:

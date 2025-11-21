@@ -60,13 +60,13 @@ class UserService():
 
         
 
-    def update_user(self, user_id, user_data):
+    def update_user(self, user_id, user_data, request_user):
         user_to_update = self.user_repository.get_by_id(user_id)
         if not user_to_update:
             raise ValidationError("Usuario no encontrado.")
 
-        # if user_id != request_user.id:
-        #     raise PermissionDenied("Solo puedes modificar tu propio perfil.")
+        if user_id != request_user.id:
+            raise PermissionDenied("Solo puedes modificar tu propio perfil.")
 
         # Hacer copia para no modificar el original
         update_data = user_data.copy()
@@ -94,12 +94,12 @@ class UserService():
 
         return updated_user
 
-    def delete_user(self, user_id):
+    def delete_user(self, user_id, request_user):
         user_to_delete = self.user_repository.get_by_id(user_id)
         if not user_to_delete:
             raise ValidationError("Usuario no encontrado.")
 
-        # if request_user.id != user_to_delete.id:
-        #     raise PermissionDenied("Solo puedes eliminar tu propio perfil.")
+        if request_user.id != user_to_delete.id:
+            raise PermissionDenied("Solo puedes eliminar tu propio perfil.")
 
         return self.user_repository.delete(user_id)

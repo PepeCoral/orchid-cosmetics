@@ -23,7 +23,7 @@ class TestServiceRepository(TestCase):
         
         categories = Category.objects.all()
 
-        service.set_categories(categories)
+        service.categories.set(categories)
         return service
 
     def test_create_service(self):
@@ -61,7 +61,7 @@ class TestServiceRepository(TestCase):
         
         service2 = self.create_service(service_data2)
         
-        service2.set_categories(categories2)
+        service2.categories.set(categories2)
 
         services1 = self.service_repo.get_services_by_category_id(categories2.first().id)
         services2 = self.service_repo.get_services_by_category_id(categories2.first().id)
@@ -160,28 +160,4 @@ class TestServiceRepository(TestCase):
         services = self.service_repo.get_all_promoted_services()
 
         self.assertEqual(services.count(),1)
-    # def test_get_all_services(self):
-    #     service_data = self.service_data.copy()
-    #     self.create_service(service_data)
-    #     service_data['name']='otro servicio'
-    #     self.create_service(service_data)
-    #     services = self.service_repo.get_all()
-    #     self.assertEqual(services.count(), 2)
-    #
-    # def test_update_service(self):
-    #     service = self.create_service(category=self.category1.id)
-    #     updated = self.service_repo.update(
-    #         service.id,
-    #         name="Deep Tissue Massage",
-    #         price=90.00
-    #     )
-    #     self.assertEqual(updated.name, "Deep Tissue Massage")
-    #     self.assertEqual(updated.price, 90.00)
-    #
-    # def test_delete_service(self):
-    #     service = self.create_service(category=self.category1.id)
-    #     deleted = self.service_repo.delete(service.id)
-    #     self.assertTrue(deleted)
-    #     self.assertEqual(Service.objects.count(), 0)
-
-    
+   
