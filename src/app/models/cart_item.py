@@ -1,27 +1,38 @@
 # app/models/cart_item.py
+
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator
 from app.models.user import User
+from app.models.product import Product
+from app.models.service import Service
 
 
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
 
-    # Generic relation to Product or Service
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    item = GenericForeignKey("content_type", "object_id")
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, null=True, blank=True, on_delete=models.CASCADE)
 
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'content_type', 'object_id')
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    (models.Q(product__isnull=False) & models.Q(service__isnull=True)) |
+                    (models.Q(product__isnull=True) & models.Q(service__isnull=False))
+                ),
+                name="only_one_of_product_or_service",
+            )
+        ]
 
-    def subtotal(self):
+    @property
+    def item(self) -> Product | Service:
+        return self.product or self.service
+
+    def subtotal(self) -> float:
         return self.item.price * self.quantity
 
     def __str__(self):
