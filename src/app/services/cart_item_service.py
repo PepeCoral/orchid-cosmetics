@@ -55,6 +55,9 @@ class CartService:
 
     def get_total(self, user) -> float:
         return sum(item.subtotal() for item in self.get_cart_items(user))
+    
+    def get_total_amout(self,user) -> int:
+        return self.cart_repo.get_total_amout(user.id)
 
     def add_one_by_id(self, cart_item_id: int, user) -> CartItem:
         cart_item = self.cart_repo.get_by_id(cart_item_id)

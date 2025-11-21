@@ -1,7 +1,7 @@
 from typing import List, Optional
 from app.models.cart_item import CartItem
 from app.repositories.base_repository import BaseRepository
-
+from django.db.models import Sum
 
 class CartItemRepository(BaseRepository):
     def __init__(self):
@@ -21,3 +21,6 @@ class CartItemRepository(BaseRepository):
             return self.model.objects.get(user_id=user_id, service_id=service_id)
         except CartItem.DoesNotExist:
             return None
+
+    def get_total_amout(self, user_id:int):
+        return self.model.objects.filter(user_id=user_id).aggregate(Sum("quantity")).get("quantity__sum")
