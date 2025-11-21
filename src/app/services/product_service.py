@@ -20,7 +20,6 @@ class ProductService():
         product.categories.set(categories)
         return product
 
-
     def get_product_by_id(self, product_id) -> Product:
         product =  self.product_repository.get_by_id(product_id)
 
@@ -32,17 +31,51 @@ class ProductService():
     def get_all_products(self):
         return self.product_repository.get_all()
 
+    def get_promoted_products(self):
+        return self.product_repository.get_all_promoted_products()
+
+    def promote_product(self,product_id):
+        product = self.product_repository.get_by_id(product_id)
+        if not product:
+            raise ValidationError("Producto no encontrado.")
+        updated_product = self.product_repository.update(id=product_id, isPromoted=True)
+        return updated_product
+    
+    def demote_product(self,product_id):
+        product = self.product_repository.get_by_id(product_id)
+        if not product:
+            raise ValidationError("Producto no encontrado.")
+        updated_product = self.product_repository.update(id=product_id, isPromoted=False)
+        return updated_product
+
     def update_product(self, product_id, product_data, request):
         product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ValidationError("Producto no encontrado.")
 
-        categories = product_data.pop("categories")
-        files = request.FILES
-        product_data["image_url"] = files.get("image_url")
-        updated_product =  self.product_repository.update(product_id, **product_data)
+        # Validaciones
+        if "price" in product_data and product_data["price"] < 0:
+            raise ValidationError("El precio no puede ser negativo")
+        if "stock" in product_data and product_data["stock"] < 0:
+            raise ValidationError("El stock no puede ser negativo")
 
-        updated_product.categories.set(categories)
+        # Manejar imagen si se envió
+        files = request.FILES
+        if 'image_url' in files:
+            product_data["image_url"] = files.get("image_url")
+
+        # Manejar categorías si se enviaron
+        categories = None
+        if "categories" in product_data:
+            categories = product_data.pop("categories")
+
+        # Actualizar servicio
+        updated_product = self.product_repository.update(product_id, **product_data)
+
+        # Actualizar categorías si se proporcionaron
+        if categories is not None:
+            updated_product.categories.set(categories)
+
         return updated_product
 
 

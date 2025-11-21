@@ -33,3 +33,7 @@ class ServiceRepository(BaseRepository):
             qs = qs.filter(categories__in=categories).distinct()
 
         return qs
+
+    def get_all_promoted_services(self):
+        qs = Service.objects.filter(isPromoted=True)
+        return qs

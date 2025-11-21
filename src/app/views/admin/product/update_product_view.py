@@ -26,7 +26,8 @@ class UpdateProductView(View):
         if not request.user.is_superuser:
             return redirect("/")
 
-        form = UpdateProductForm(request.POST)
+        product = self.product_service.get_product_by_id(product_id)
+        form = UpdateProductForm(request.POST, request.FILES, instance=product)
 
         if not form.is_valid():
             return render(request, "admin/products/update.html", {"form": form})

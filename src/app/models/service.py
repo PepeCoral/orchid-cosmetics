@@ -11,6 +11,7 @@ class Service(models.Model):
     duration_minutes = models.IntegerField(validators=[MinValueValidator(0)])
     department = models.CharField(max_length=100)
     image_url = models.ImageField(null=True)
+    isPromoted = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category)
 
 
