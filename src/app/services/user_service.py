@@ -57,17 +57,17 @@ class UserService():
         except Exception as a:
             raise ValidationError("Ha habido un error en la autenticacion ", a)
         
-
-        
-
     def update_user(self, user_id, user_data, request_user):
         user_to_update = self.user_repository.get_by_id(user_id)
         if not user_to_update:
             raise ValidationError("Usuario no encontrado.")
-
+    
         if user_id != request_user.id:
-            raise PermissionDenied("Solo puedes modificar tu propio perfil.")
-
+            if not request_user.is_superuser:
+                raise PermissionDenied("Solo puedes modificar tu propio perfil.")
+            if user_to_update.is_superuser:
+                raise PermissionDenied("No se puede modificar a otro admin.")
+            
         # Hacer copia para no modificar el original
         update_data = user_data.copy()
 
@@ -100,6 +100,12 @@ class UserService():
             raise ValidationError("Usuario no encontrado.")
 
         if request_user.id != user_to_delete.id:
-            raise PermissionDenied("Solo puedes eliminar tu propio perfil.")
+            if not request_user.is_superuser:
+                raise PermissionDenied("Solo puedes eliminar tu propio perfil.")
+            elif user_to_delete.is_superuser:
+                raise PermissionDenied("No se puede eliminar a otro admin.")
 
         return self.user_repository.delete(user_id)
+    
+    def get_all_users(self):
+        return self.user_repository.get_all()
