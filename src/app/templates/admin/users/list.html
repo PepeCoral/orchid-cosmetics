@@ -1,0 +1,102 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Lista de Usuarios - Orchid Cosmetics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Lista de Usuarios</h2>
+
+  {% if usuarios %}
+  <ul class="list-group">
+
+    {% for user in usuarios %}
+    <li class="list-group-item d-flex align-items-center p-2 mb-2" style="border-radius: 8px;">
+
+      <!-- Details -->
+      <div class="ml-3 flex-grow-1" style="line-height: 1.2;">
+        {% if user.first_name %}
+          <strong style="font-size: 1rem;">{{ user.first_name }} {{ user.last_name }}</strong><br>
+        {% else %}
+          <strong style="font-size: 1rem;">{{ user.username }} (Username)</strong><br>
+        {% endif %}
+        <small class="text-muted">{{ user.email }}</small><br>
+        {% if user.role == role %}
+          <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ user.role }}</span><br>
+        {% else %}
+          <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">{{ user.role }}</span><br>
+        {% endif %}
+      </div>
+
+      <!-- Actions (horizontal buttons) -->
+      <div class="d-flex align-items-center">
+        <div class="button-row">
+          <a href="{% url 'admin/users/show' user.id %}" class="btn btn-sm action-btn">Ver</a>
+            {% if not user.is_superuser %}
+            <a href="{% url 'admin/users/update' user.id %}" class="btn btn-sm action-btn">Editar</a>
+            <a href="{% url 'admin/users/delete' user.id %}" class="btn btn-sm action-btn-danger">Eliminar</a>
+            {% endif %}
+        </div>
+      </div>
+
+    </li>
+    {% endfor %}
+
+  </ul>
+
+  {% else %}
+  <div class="alert alert-info text-center">
+    No hay usuarios registrados.
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .list-group-item img {
+    border-radius: 6px;
+  }
+
+  /* Smaller buttons + added spacing */
+  .button-row {
+    display: flex;
+    gap: 6px;
+    /* <-- small gap between buttons */
+  }
+
+  .button-row .btn {
+    min-width: 65px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+    border-radius: 6px !important;
+  }
+
+  /* Softer brand color theme */
+  .action-btn {
+    background-color: #e8e0f6;
+    border: 1px solid #d4c5ee;
+    color: #44365d;
+  }
+
+  .action-btn:hover {
+    background-color: #dcd0f2;
+    border-color: #c9b8e8;
+    color: #2a2140;
+  }
+
+  .action-btn-danger {
+    background-color: #f4d8d8;
+    border: 1px solid #e8bcbc;
+    color: #6b2828;
+  }
+
+  .action-btn-danger:hover {
+    background-color: #ecc2c2;
+    border-color: #d9a5a5;
+    color: #4a1b1b;
+  }
+
+  /* Purple brand badge */
+  .badge.bg-secondary {
+    background-color: #a97acf !important;
+  }
+</style>
+
+{% endblock %}
