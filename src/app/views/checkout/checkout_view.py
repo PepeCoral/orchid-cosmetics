@@ -15,35 +15,45 @@ class CheckoutView(View):
 
     def get(self, request):
         cart_items = self.cart_service.get_cart_items(request)
+        form = CheckoutForm()
+        total = self.cart_service.get_total(request)
 
         products = []
         services = []
         for item in cart_items:
             if isinstance(item.item, Product):
                 products.append(item)
+                if item.quantity> item.item.stock:
+                    error = f"El producto {item.item.name} tiene stock {item.item.stock} y está intentando comprar {item.quantity}"
+                    return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": error})
             elif isinstance(item.item, Service):
                 services.append(item)
 
-        total = self.cart_service.get_total(request)
 
-        form = CheckoutForm()
+        
+
         return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
+
+    
 
     def post(self, request):
 
         cart_items = self.cart_service.get_cart_items(request)
-
+        form = CheckoutForm(request.POST)
+        total = self.cart_service.get_total(request)
+        
         products = []
         services = []
         for item in cart_items:
             if isinstance(item.item, Product):
                 products.append(item)
+                if item.quantity> item.item.stock:
+                    error = f"El producto {item.item.name} tiene stock {item.item.stock} y está intentando comprar {item.quantity}"
+                    return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": error})
             elif isinstance(item.item, Service):
                 services.append(item)
 
-        total = self.cart_service.get_total(request)
 
-        form = CheckoutForm(request.POST)
 
         if not form.is_valid():
             return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})

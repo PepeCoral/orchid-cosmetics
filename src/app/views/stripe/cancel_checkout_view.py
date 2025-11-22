@@ -14,7 +14,5 @@ class CancelCheckoutView(View):
             return redirect("/", {"message": "No se encontró la sesión"})
         
         session = stripe.checkout.Session.retrieve(session_id)
-        if str(request.user.id) != session.metadata.get("user_id"):
-            return redirect("/")
-        
+       
         return render(request, "checkout/cancel.html")

@@ -88,9 +88,9 @@ class CartService:
         cart_item = self.cart_repo.get_by_id_and_owner(cart_item_id, owner_filter)
         if not cart_item:
             raise ValidationError("Cart item not found.")
-
-        cart_item.quantity += 1
-        cart_item.save()
+        if isinstance(cart_item.item,Service) or (isinstance(cart_item.item,Product) and cart_item.item.stock > cart_item.quantity):
+            cart_item.quantity += 1
+            cart_item.save()
         return cart_item
 
     def remove_one_by_id(self, cart_item_id: int, request) -> Optional[CartItem]:

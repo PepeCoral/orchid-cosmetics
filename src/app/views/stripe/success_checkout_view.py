@@ -14,8 +14,6 @@ class SuccessCheckoutView(View):
             return render(request, "/", {"message": "No se encontró la sesión"})
         
         session = stripe.checkout.Session.retrieve(session_id)
-        if str(request.user.id) != session.metadata.get("user_id"):
-            return redirect("/")
         
         total = session.amount_total/100
         
