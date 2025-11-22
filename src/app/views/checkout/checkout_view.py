@@ -48,6 +48,7 @@ class CheckoutView(View):
 
 
         try:
+
             pass
         except Exception as e:
             return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": e})

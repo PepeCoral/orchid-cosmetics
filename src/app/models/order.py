@@ -17,7 +17,6 @@ class Order(models.Model):
         PENDING = 'pending', 'Pending'
         SHIPPED = 'shipped', 'Shipped'
         DELIVERED = 'delivered', 'Delivered'
-        CANCELED = 'canceled', 'Canceled'
 
 
 

@@ -38,7 +38,3 @@ class CreateSessionStripeView(View):
         )
 
         return redirect(session.url)
-
-
-    
-        
