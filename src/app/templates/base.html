@@ -11,7 +11,7 @@
   <style>
     body {
       padding-top: 70px;
-      background: #faf7fc;
+      background: #fdfbf7;
     }
 
     .navbar {
@@ -131,8 +131,8 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'cart' %}">
             Carrito
-            {% if cart_count and cart_count > 0 %}
-            <span class="badge badge-pill badge-light ml-1">{{ cart_count }}</span>
+            {% if cart_items_amount and cart_items_amount > 0 %}
+            <span class="badge badge-pill badge-light ml-1">{{ cart_items_amount }}</span>
             {% endif %}
           </a>
         </li>

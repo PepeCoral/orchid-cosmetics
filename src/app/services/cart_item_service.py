@@ -82,6 +82,11 @@ class CartService:
 
     def get_total(self, request) -> float:
         return sum(item.subtotal() for item in self.get_cart_items(request))
+    
+    def get_total_amout(self,request) -> int:
+        owner_filter = self._create_owner_filter(request)
+
+        return self.cart_repo.get_total_amount(owner_filter)
 
     def add_one_by_id(self, cart_item_id: int, request) -> CartItem:
         owner_filter = self._create_owner_filter(request)
