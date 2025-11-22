@@ -79,15 +79,11 @@
       margin: 0.3rem 0.5rem;
     }
 
-    .nav-item.dropdown:hover .dropdown-menu {
-      display: block;
-    }
-
     .dropdown-toggle::after {
       transition: transform 0.2s ease;
     }
 
-    .nav-item.dropdown:hover .dropdown-toggle::after {
+    .nav-item.dropdown.show .dropdown-toggle::after {
       transform: rotate(180deg);
     }
   </style>
@@ -183,12 +179,45 @@
 
   <script>
     $(document).ready(function () {
-      // Mantener dropdown abierto al hacer hover
-      $('.nav-item.dropdown').hover(function () {
-        $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(300);
-      }, function () {
-        $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeOut(300);
+      // Variable para controlar si el dropdown está abierto
+      let catalogOpen = false;
+
+      // Hover para abrir el dropdown
+      $('.nav-item.dropdown').hover(
+        function() {
+          // Solo abrir si no está ya abierto
+          if (!catalogOpen) {
+            $(this).addClass('show');
+            $(this).find('.dropdown-menu').addClass('show');
+            $(this).find('.dropdown-toggle').attr('aria-expanded', 'true');
+            catalogOpen = true;
+          }
+        }
+      );
+
+      // Cerrar el dropdown solo con clic fuera o en otro enlace
+      $(document).on('click', function(e) {
+        if (!$(e.target).closest('.nav-item.dropdown').length && catalogOpen) {
+          $('.nav-item.dropdown').removeClass('show');
+          $('.dropdown-menu').removeClass('show');
+          $('.dropdown-toggle').attr('aria-expanded', 'false');
+          catalogOpen = false;
+        }
       });
+
+      // Cerrar si se hace clic en un enlace del dropdown
+      $('.dropdown-item').on('click', function() {
+        $('.nav-item.dropdown').removeClass('show');
+        $('.dropdown-menu').removeClass('show');
+        $('.dropdown-toggle').attr('aria-expanded', 'false');
+        catalogOpen = false;
+      });
+
+      // Para móviles, mantener comportamiento normal
+      if ($(window).width() < 992) {
+        catalogOpen = false;
+        $('.nav-item.dropdown').off('hover');
+      }
 
       // Cerrar alertas automáticamente después de 5 segundos
       setTimeout(function () {
