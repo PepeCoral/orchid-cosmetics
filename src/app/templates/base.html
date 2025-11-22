@@ -6,7 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %} Orchid Cosmetics {% endblock %}</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-  <link rel="shortcut icon" href="/static/Orchid-Logo.ico" />
+  
+  <!-- Cargar static files -->
+  {% load static %}
+  
+  <!-- Favicon con la nueva imagen PNG -->
+  <link rel="shortcut icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
+  <link rel="icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
 
   <style>
     body {
@@ -25,6 +31,8 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       font-size: 1.3rem;
+      display: flex;
+      align-items: center;
     }
 
     .nav-link {
@@ -86,13 +94,24 @@
     .nav-item.dropdown.show .dropdown-toggle::after {
       transform: rotate(180deg);
     }
+
+ 
+    .navbar-logo {
+      width: 40px;  
+      height: 40px; 
+      object-fit: contain;
+    }
   </style>
 </head>
 
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <a class="navbar-brand" href="/">Orchid Cosmetics</a>
+    <a class="navbar-brand" href="/">
+      <!-- Logo en el navbar con formato PNG -->
+      <img src="{% static 'Orchid_Cosmetics_no_background.png' %}" alt="Orchid Cosmetics" class="navbar-logo mr-3">
+      Orchid Cosmetics
+    </a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
