@@ -49,6 +49,8 @@ class OrderService():
                 self.order_item_repo.create(quantity=quantity,service=cart_item.item,order=order)
             
 
+    def get_total_cost_by_order_id(self, order_id:int):
+        return round(self.order_item_repo.get_total_amount(order_id),2)
 
     def create_stripe_session(self,request:HttpRequest, form: CheckoutForm):
        
