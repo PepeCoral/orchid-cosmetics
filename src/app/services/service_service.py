@@ -30,7 +30,6 @@ class ServiceService():
         service = self.service_repository.get_by_id(service_id)
         if not service:
             raise ValidationError("Servicio no encontrado.")
-        print("hola")
         updated_service = self.service_repository.update(id=service_id,isPromoted=True)
         return updated_service
 
@@ -54,7 +53,7 @@ class ServiceService():
         """
         Obtiene todos los servicios con sus categorías
         """
-        return Service.objects.all().prefetch_related('categories')
+        return self.service_repository.get_all()
 
     def update_service(self, service_id, service_data, request):
         """

@@ -6,7 +6,7 @@ class ServiceRepository(BaseRepository):
         super().__init__(Service)
 
     def get_services_by_category_id(self, category_id:str):
-        return self.model.objects.filter(categories__id=category_id)
+        return Service.objects.filter(categories__id=category_id)
 
     def search(self, filters):
         qs = Service.objects.all()
