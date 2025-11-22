@@ -35,3 +35,6 @@ class CartItemRepository(BaseRepository):
             return self.model.objects.get(**filters)
         except ObjectDoesNotExist:
             return None
+
+    def clear_cart(self, owner_filter:dict):
+        self.model.objects.filter(**owner_filter).delete()

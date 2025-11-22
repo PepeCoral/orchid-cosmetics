@@ -37,8 +37,8 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True,blank=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE,null=True,blank=True)
 
     quantity = models.IntegerField()
 

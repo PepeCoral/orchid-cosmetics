@@ -71,6 +71,14 @@ class CartService:
     def get_cart_items(self, request) -> List[CartItem]:
         owner_filter = self._create_owner_filter(request)
         return list(self.cart_repo.get_cart_items(owner_filter))
+    
+    def get_cart_items_by_user_id(self,user_id:int):
+
+        return list(self.cart_repo.get_cart_items({"user_id":user_id}))
+        
+    def get_cart_items_by_session_key(self,session_key:int):
+
+        return list(self.cart_repo.get_cart_items({"session_key":session_key}))
 
     def get_total(self, request) -> float:
         return sum(item.subtotal() for item in self.get_cart_items(request))
@@ -105,3 +113,10 @@ class CartService:
             raise ValidationError("Cart item not found.")
         cart_item.delete()
         return True
+
+    def clear_cart_by_user_id(self, user_id:int):
+        self.cart_repo.clear_cart({"user_id":user_id})
+
+    
+    def clear_cart_by_session_key(self, session_key:int):
+        self.cart_repo.clear_cart({"session_key":session_key})

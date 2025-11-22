@@ -1,6 +1,7 @@
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from app.forms.checkout.checkout_form import CheckoutForm
+from app.services.order_service import OrderService
 from app.services.user_service import UserService
 from app.services.cart_item_service import CartService
 from app.models.product import Product
@@ -10,6 +11,7 @@ class CheckoutView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cart_service = CartService()
+        self.order_service = OrderService()
 
     def get(self, request):
         cart_items = self.cart_service.get_cart_items(request)
@@ -48,7 +50,7 @@ class CheckoutView(View):
 
 
         try:
-
-            pass
+            session_url = self.order_service.create_stripe_session(request=request,form=form)
+            return redirect(session_url)
         except Exception as e:
             return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": e})

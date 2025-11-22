@@ -6,7 +6,6 @@ from app.views.stripe.cancel_checkout_view import CancelCheckoutView
 
 urlpatterns = [
     path("stripe/webhook/", StripeWebhookView.as_view(), name="stripe_webhook"),
-    path("checkout/stripe", CreateSessionStripeView.as_view(), name="checkout_stripe"),
     path("checkout/success/", SuccessCheckoutView.as_view(), name="checkout_success"),
     path("checkout/cancel/", CancelCheckoutView.as_view(), name="checkout_cancel"),
 
