@@ -1,39 +1,53 @@
 from django.views import View
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from app.forms.user.user_register_form import UserRegisterForm
+from django.shortcuts import render
+from app.forms.checkout.checkout_form import CheckoutForm
 from app.services.user_service import UserService
-
+from app.services.cart_item_service import CartService
+from app.models.product import Product
+from app.models.service import Service
 
 class CheckoutView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.user_service = UserService()
+        self.cart_service = CartService()
 
     def get(self, request):
-        if not request.user.is_anonymous:
-            return redirect("/profile")
+        cart_items = self.cart_service.get_cart_items(request)
 
-        form = UserRegisterForm()
-        return render(request, "user/register.html", {"form": form})
+        products = []
+        services = []
+        for item in cart_items:
+            if isinstance(item.item, Product):
+                products.append(item)
+            elif isinstance(item.item, Service):
+                services.append(item)
+
+        total = self.cart_service.get_total(request)
+
+        form = CheckoutForm()
+        return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
 
     def post(self, request):
 
-        if not request.user.is_anonymous:
-            return redirect("/profile")
+        cart_items = self.cart_service.get_cart_items(request)
 
-        form = UserRegisterForm(request.POST)
+        products = []
+        services = []
+        for item in cart_items:
+            if isinstance(item.item, Product):
+                products.append(item)
+            elif isinstance(item.item, Service):
+                services.append(item)
+
+        total = self.cart_service.get_total(request)
+
+        form = CheckoutForm(request.POST)
 
         if not form.is_valid():
-            return render(request, "user/register.html", {"form": form})
+            return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
+
 
         try:
-            user = self.user_service.create_user(form.cleaned_data)
-            login(request, user)
-            return redirect("/profile")
+            pass
         except Exception as e:
-            return render(
-                request,
-                "user/register.html",
-                {"form": form, "error": str(e)}
-            )
+            return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": e})

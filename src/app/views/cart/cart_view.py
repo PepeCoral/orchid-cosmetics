@@ -1,9 +1,8 @@
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from app.services.cart_item_service import CartService
 from app.models.product import Product
 from app.models.service import Service
-from django.contrib.contenttypes.models import ContentType
 
 class CartView(View):
     def __init__(self, **kwargs):
