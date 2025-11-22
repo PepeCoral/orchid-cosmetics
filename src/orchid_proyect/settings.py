@@ -118,6 +118,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+
 # Cloudinary Configuration - MUST be at module level
 if ENVIRONMENT == "production":
     # Add cloudinary apps BEFORE checking config
@@ -161,6 +165,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://orchid-cosmetics.onrender.com",
+    "https://myrl-monologic-jules.ngrok-free.dev"
 ]
 
 # Debug prints
