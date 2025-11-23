@@ -26,8 +26,10 @@
                                     {{ form.first_name.label_tag }}
                                     {{ form.first_name }}
                                     {% if form.first_name.errors %}
-                                        <div class="text-danger">
-                                            {{ form.first_name.errors }}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
@@ -37,8 +39,10 @@
                                     {{ form.last_name.label_tag }}
                                     {{ form.last_name }}
                                     {% if form.last_name.errors %}
-                                        <div class="text-danger">
-                                            {{ form.last_name.errors }}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
@@ -49,8 +53,10 @@
                             {{ form.email.label_tag }}
                             {{ form.email }}
                             {% if form.email.errors %}
-                                <div class="text-danger">
-                                    {{ form.email.errors }}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
@@ -59,8 +65,10 @@
                             {{ form.username.label_tag }}
                             {{ form.username }}
                             {% if form.username.errors %}
-                                <div class="text-danger">
-                                    {{ form.username.errors }}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
@@ -69,8 +77,10 @@
                             {{ form.address.label_tag }}
                             {{ form.address }}
                             {% if form.address.errors %}
-                                <div class="text-danger">
-                                    {{ form.address.errors }}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.address.errors %}
+                                        {{ error }}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
@@ -79,8 +89,10 @@
                             {{ form.pay_method.label_tag }}
                             {{ form.pay_method }}
                             {% if form.pay_method.errors %}
-                                <div class="text-danger">
-                                    {{ form.pay_method.errors }}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.pay_method.errors %}
+                                        {{ error }}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
@@ -92,8 +104,10 @@
                                 {{ form.password.help_text }}
                             </small>
                             {% if form.password.errors %}
-                                <div class="text-danger">
-                                    {{ form.password.errors }}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
@@ -118,23 +132,37 @@
         font-weight: 500;
         margin-bottom: 0.5rem;
         color: #333;
+        display: block;
     }
     
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    select {
         width: 100%;
         padding: 0.75rem;
         border: 1px solid #ddd;
         border-radius: 0.375rem;
         font-size: 1rem;
+        background-color: white;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
     }
     
     input[type="text"]:focus,
     input[type="email"]:focus,
-    input[type="password"]:focus {
+    input[type="password"]:focus,
+    select:focus {
         border-color: #a97acf;
         box-shadow: 0 0 0 0.2rem rgba(169, 122, 207, 0.25);
+        outline: none;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
     }
     
     select {
@@ -153,6 +181,81 @@
     .btn:hover {
         background-color: #8e5db5 !important;
         border-color: #8e5db5 !important;
+        transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268 !important;
+        color: white;
+    }
+    
+    /* Estilos específicos para el dropdown de método de pago */
+    select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 0.65rem;
+        padding-right: 2.5rem;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 0.5rem;
+    }
+    
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1.25rem;
+    }
+    
+    .alert {
+        border-radius: 0.375rem;
+        border: none;
+        margin-bottom: 1.5rem;
+    }
+    
+    .text-danger {
+        font-size: 0.875rem;
+    }
+    
+    .form-text {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .small {
+        font-size: 0.875rem;
+    }
+    
+    .mt-1 {
+        margin-top: 0.25rem;
+    }
+    
+    .mt-4 {
+        margin-top: 1.5rem;
+    }
+    
+    /* Validación visual opcional */
+    input:valid,
+    select:valid {
+        border-color: #28a745;
+    }
+    
+    input:invalid,
+    select:invalid {
+        border-color: #dc3545;
+    }
+    
+    /* Mejorar la legibilidad de las opciones del dropdown */
+    select option {
+        padding: 0.5rem;
     }
 </style>
 {% endblock %}

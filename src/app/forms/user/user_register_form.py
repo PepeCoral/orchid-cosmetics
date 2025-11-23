@@ -1,26 +1,46 @@
 from django import forms
-from app.models import User
-from django.core.validators import MaxLengthValidator,EmailValidator, MinLengthValidator
-
-from app.models.user import PaymentMethodOptions
-
+from django.core.validators import MaxLengthValidator, MinLengthValidator, EmailValidator
+from app.models.user import PAYMENT_METHOD_CHOICES, User, PaymentMethodOptions
 
 
 class UserRegisterForm(forms.Form):
-    username = forms.CharField(label="Nombre de usuario",validators=[MaxLengthValidator(150,"Nombre de usuario demasiado largo")])
-    first_name = forms.CharField(label="Nombre/s", validators=[MaxLengthValidator(100,"First name too long")])
-    last_name = forms.CharField(label="Apellidos", validators=[MaxLengthValidator(100,"Last name too long")])
-    email = forms.EmailField(label="Email", validators=[EmailValidator("Formato incorrecto")])
-    address = forms.CharField(label="Dirección",validators=[MaxLengthValidator(200,"Address too long")],required=False)
-    pay_method = forms.ChoiceField(label="Método de pago", required=False, choices=PaymentMethodOptions.choices+ [("", "---------")])
-    password = forms.CharField(label="Introduzca una contraseña",
-                               validators=[MinLengthValidator(5,"Contraseña demasiado corta")],
-                               widget=forms.PasswordInput())
-    confirm_password = forms.CharField(label="Confirma la contraseña",
-                                       validators=[MinLengthValidator(5,"Contraseña demasiado corta")],
-                                       widget=forms.PasswordInput())
-
-
+    username = forms.CharField(
+        label="Nombre de usuario",
+        validators=[MaxLengthValidator(150, "Nombre de usuario demasiado largo")]
+    )
+    first_name = forms.CharField(
+        label="Nombre/s",
+        validators=[MaxLengthValidator(100, "First name too long")]
+    )
+    last_name = forms.CharField(
+        label="Apellidos",
+        validators=[MaxLengthValidator(100, "Last name too long")]
+    )
+    email = forms.EmailField(
+        label="Email",
+        validators=[EmailValidator("Formato incorrecto")]
+    )
+    address = forms.CharField(
+        label="Dirección",
+        validators=[MaxLengthValidator(200, "Address too long")],
+        required=False
+    )
+    pay_method = forms.ChoiceField(
+        label="Método de pago",
+        choices=PAYMENT_METHOD_CHOICES,  # Usar la misma constante
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(
+        label="Introduzca una contraseña",
+        validators=[MinLengthValidator(5, "Contraseña demasiado corta")],
+        widget=forms.PasswordInput()
+    )
+    confirm_password = forms.CharField(
+        label="Confirma la contraseña",
+        validators=[MinLengthValidator(5, "Contraseña demasiado corta")],
+        widget=forms.PasswordInput()
+    )
     # def clean(self):
     #     cleaned_data = super().clean()
     #     password = cleaned_data.get("password")

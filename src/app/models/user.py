@@ -2,12 +2,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class RoleOptions(models.TextChoices):
-        USER = 'User'
-        ADMIN = 'Admin'
+    USER = 'User', 'User'
+    ADMIN = 'Admin', 'Admin'
 
 class PaymentMethodOptions(models.TextChoices):
     CASH_ON_DELIVERY = 'contrarembolso', 'Contrarembolso'
     PAYMENT_GATEWAY = 'pasarela', 'Pasarela de Pago'
+
+# Opción completamente vacía
+PAYMENT_METHOD_CHOICES = [('', '')] + list(PaymentMethodOptions.choices)
 
 class User(AbstractUser):
 

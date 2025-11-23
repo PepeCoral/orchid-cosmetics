@@ -20,8 +20,14 @@
       <!-- Image -->
       <div style="width:80px; height:80px; flex-shrink:0;">
         {% if product.image_url %}
-        <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded"
-          style="height:80px; width:80px; object-fit:cover;">
+          <!-- IMAGEN EN BLANCO Y NEGRO SI NO HAY STOCK -->
+          {% if product.stock == 0 %}
+          <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded grayscale"
+            style="height:80px; width:80px; object-fit:cover;">
+          {% else %}
+          <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded"
+            style="height:80px; width:80px; object-fit:cover;">
+          {% endif %}
         {% else %}
         <div style="height:80px; width:80px; background:#eee;"
           class="d-flex align-items-center justify-content-center rounded">
@@ -35,11 +41,14 @@
         <strong style="font-size: 1rem;">{{ product.name }}</strong><br>
         <small class="text-muted">{{ product.description|truncatewords:10 }}</small><br>
         <strong class="text-primary" style="font-size: 0.9rem;">{{ product.price }}€</strong><br>
-        {% if product.stock > 0 %}
-          <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+        
+        <!-- TEXTO DE STOCK COMO EN EL CATÁLOGO -->
+        {% if product.stock == 0 %}
+          <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">Fuera de stock</span><br>
         {% else %}
-          <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
+          <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ product.stock }} en stock</span><br>
         {% endif %}
+        
         <small class="text-muted" style="font-size: 0.75rem;">Fabricante: {{ product.fabricator }}</small>
       </div>
 
@@ -123,6 +132,25 @@
   /* Purple brand badge */
   .badge.bg-secondary {
     background-color: #a97acf !important;
+  }
+
+  /* Efecto blanco y negro para imágenes sin stock */
+  .grayscale {
+    filter: grayscale(100%);
+    opacity: 0.7;
+  }
+
+  /* Efecto hover para productos sin stock */
+  .list-group-item:hover .grayscale {
+    filter: grayscale(80%);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+  }
+
+  /* Badge styles para stock */
+  .badge.bg-danger {
+    background-color: #dc3545 !important;
+    font-weight: 600;
   }
 </style>
 
