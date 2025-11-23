@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Checkout - Orchid Cosmetics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+
+    <div class="col-md-10">
+
+      <div class="card shadow-sm">
+
+        <!-- HEADER -->
+        <div class="card-header text-white text-center" style="background-color: #a97acf;">
+          <h3 class="mb-0">Checkout</h3>
+        </div>
+
+        <div class="card-body p-4">
+
+          {% if error %}
+          <div class="alert alert-danger">
+            <div>{{ error }}</div>
+          </div>
+          {% endif %}
+
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="row">
+
+              <!-- LEFT COLUMN -->
+              <div class="col-md-7">
+
+                <!-- MÉTODO DE PAGO -->
+                <div class="form-group compact mb-3">
+                  <label class="fw-medium">{{ form.pay_method.label }}</label>
+
+                  {% for value, label in form.pay_method.field.choices %}
+                  <label class="form-check d-flex align-items-center mb-1" style="cursor: pointer;">
+                    <input class="form-check-input me-2"
+                           type="radio"
+                           name="{{ form.pay_method.html_name }}"
+                           value="{{ value }}"
+                           {% if form.pay_method.value == value %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                  </label>
+                  {% endfor %}
+
+                  {% for error in form.pay_method.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- MÉTODO DE ENTREGA -->
+                <div class="form-group compact mb-3">
+                  <label class="fw-medium">{{ form.delivery_method.label }}</label>
+
+                  {% for value, label in form.delivery_method.field.choices %}
+                  <label class="form-check d-flex align-items-center mb-1" style="cursor: pointer;">
+                    <input class="form-check-input me-2"
+                           type="radio"
+                           name="{{ form.delivery_method.html_name }}"
+                           value="{{ value }}"
+                           {% if form.delivery_method.value == value %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                  </label>
+                  {% endfor %}
+
+                  {% for error in form.delivery_method.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- DIRECCIÓN -->
+                <div class="form-group compact mb-3">
+                  {{ form.address.label_tag }}
+                  {{ form.address }}
+                  {% for error in form.address.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+              </div>
+
+              <!-- RIGHT COLUMN -->
+              <div class="col-md-5">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-body">
+
+                    <h5 class="text-center mb-3">Resumen del pedido</h5>
+
+                    <ul class="list-unstyled small">
+                      {% for item in products %}
+                      <li>• {{ item.item.name }} (x{{ item.quantity }})</li>
+                      {% endfor %}
+
+                      {% for item in services %}
+                      <li>• {{ item.item.name }} (x{{ item.quantity }})</li>
+                      {% endfor %}
+                    </ul>
+
+                    <hr>
+
+                    <h5 class="text-end fw-bold">Total: €{{ total }}</h5>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn text-white btn-block mt-3"
+              style="background-color: #a97acf;">
+              Continuar
+            </button>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-group.compact {
+    margin-bottom: 0.8rem;
+  }
+
+  label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #333;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+    transition: 0.2s;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #a97acf !important;
+    box-shadow: 0 0 0 0.12rem rgba(169, 122, 207, 0.25) !important;
+  }
+
+  .btn:hover {
+    background-color: #8e5db5 !important;
+  }
+
+  /* Optional: make entire radio label highlight on hover */
+  .form-check:hover {
+    background-color: rgba(169,122,207,0.1);
+    border-radius: 0.35rem;
+  }
+</style>
+
+{% endblock %}

@@ -71,18 +71,31 @@ class CartService:
     def get_cart_items(self, request) -> List[CartItem]:
         owner_filter = self._create_owner_filter(request)
         return list(self.cart_repo.get_cart_items(owner_filter))
+    
+    def get_cart_items_by_user_id(self,user_id:int):
+
+        return list(self.cart_repo.get_cart_items({"user_id":user_id}))
+        
+    def get_cart_items_by_session_key(self,session_key:int):
+
+        return list(self.cart_repo.get_cart_items({"session_key":session_key}))
 
     def get_total(self, request) -> float:
         return sum(item.subtotal() for item in self.get_cart_items(request))
+    
+    def get_total_amout(self,request) -> int:
+        owner_filter = self._create_owner_filter(request)
+
+        return self.cart_repo.get_total_amount(owner_filter)
 
     def add_one_by_id(self, cart_item_id: int, request) -> CartItem:
         owner_filter = self._create_owner_filter(request)
         cart_item = self.cart_repo.get_by_id_and_owner(cart_item_id, owner_filter)
         if not cart_item:
             raise ValidationError("Cart item not found.")
-
-        cart_item.quantity += 1
-        cart_item.save()
+        if isinstance(cart_item.item,Service) or (isinstance(cart_item.item,Product) and cart_item.item.stock > cart_item.quantity):
+            cart_item.quantity += 1
+            cart_item.save()
         return cart_item
 
     def remove_one_by_id(self, cart_item_id: int, request) -> Optional[CartItem]:
@@ -105,3 +118,10 @@ class CartService:
             raise ValidationError("Cart item not found.")
         cart_item.delete()
         return True
+
+    def clear_cart_by_user_id(self, user_id:int):
+        self.cart_repo.clear_cart({"user_id":user_id})
+
+    
+    def clear_cart_by_session_key(self, session_key:int):
+        self.cart_repo.clear_cart({"session_key":session_key})

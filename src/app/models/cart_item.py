@@ -20,8 +20,6 @@ class CartItem(models.Model):
     service = models.ForeignKey(Service, null=True, blank=True, on_delete=models.CASCADE)
 
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         constraints = [
@@ -50,3 +48,16 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.item.name} x {self.quantity}"
+    
+    def stripify(self):
+        return {
+            "price_data": {
+                "currency": "eur", 
+                "product_data": {
+                    "name": self.item.name,
+                    "description":self.item.description
+                },
+                "unit_amount": int(self.item.price * 100)
+            },
+            "quantity": self.quantity
+        }

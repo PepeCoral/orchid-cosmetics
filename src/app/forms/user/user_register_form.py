@@ -9,15 +9,15 @@ class UserRegisterForm(forms.Form):
         validators=[MaxLengthValidator(150, "Nombre de usuario demasiado largo")]
     )
     first_name = forms.CharField(
-        label="Nombre/s", 
+        label="Nombre/s",
         validators=[MaxLengthValidator(100, "First name too long")]
     )
     last_name = forms.CharField(
-        label="Apellidos", 
+        label="Apellidos",
         validators=[MaxLengthValidator(100, "Last name too long")]
     )
     email = forms.EmailField(
-        label="Email", 
+        label="Email",
         validators=[EmailValidator("Formato incorrecto")]
     )
     address = forms.CharField(

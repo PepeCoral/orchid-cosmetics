@@ -9,6 +9,7 @@ from .cart_urls import urlpatterns as cart_urls
 from .order_urls import urlpatterns as order_urls
 from .service_urls import urlpatterns as service_urls
 from .admin_urls import urlpatterns as admin_urls
+from .stripe_urls import urlpatterns as stripe_urls
 
 urlpatterns = (
     home_urls +
@@ -19,5 +20,6 @@ urlpatterns = (
     cart_urls +
     order_urls +
     service_urls +
+    stripe_urls +
     admin_urls
 )
