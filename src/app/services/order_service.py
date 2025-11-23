@@ -96,6 +96,12 @@ class OrderService():
             raise ValidationError("No se ha encontrado la orden")
         return order
     
+    def get_orders_by_user_id(self, user_id:int):
+        user = self.user_service.get_user_by_id(user_id)
+        if not user:
+            raise ValidationError("No se ha encontrado el usuario")
+        return self.order_repository.get_by_user_id(user_id)
+
     def get_services_by_order_id(self, order_id:int):
         order = self.order_repository.get_by_id(order_id)
         if not order:
@@ -130,4 +136,11 @@ class OrderService():
         if order.status != Order.StatusOptions.SHIPPED:
             raise ValidationError("Solo las órdenes enviadas pueden ser entregadas.")
         return self.order_repository.update(id=order_id, status=Order.StatusOptions.DELIVERED)
+    
+    def get_order_by_identifier(self, form_data: dict):
+        identifier = form_data["identifier"]
+        order = self.order_repository.get_order_by_identifier(identifier)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden con el identificador proporcionado")
+        return order.first()
     

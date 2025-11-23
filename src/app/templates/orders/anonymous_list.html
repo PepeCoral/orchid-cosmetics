@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Buscar Pedido - Orchid Cosmetics{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5" style="max-width: 520px;">
+
+  <div class="card shadow-sm search-card p-4">
+    <h3 class="text-center mb-4">Buscar Pedido</h3>
+
+    <form method="POST" action="/orders/anonymous_search/" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      {% for field in form %}
+        {% include "components/form_field.html" with field=field %}
+      {% endfor %}
+
+      <button type="submit" class="btn btn-purple btn-block mt-3">
+        Buscar Pedido
+      </button>
+    </form>
+  </div>
+
+  <!-- BOTÓN DE VOLVER -->
+  <div class="text-center mt-4">
+    <a href="/" class="btn btn-outline-secondary back-btn">
+      ← Volver al inicio
+    </a>
+  </div>
+
+</div>
+
+<!-- ESTILOS MODERNOS -->
+<style>
+  .search-card {
+      border-radius: 16px;
+      transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .search-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  .btn-purple {
+      background-color: #6f42c1;
+      color: white;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 1rem;
+      width: 100%;
+      transition: .2s ease;
+  }
+
+  .btn-purple:hover {
+      background-color: #5a34a0;
+      color: white;
+  }
+
+  .back-btn {
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: .95rem;
+      transition: .2s ease;
+  }
+
+  .back-btn:hover {
+      background-color: #e9e9e9;
+  }
+</style>
+
+{% endblock %}

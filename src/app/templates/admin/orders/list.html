@@ -1,79 +1,128 @@
-{% extends 'base.html' %}
+{% extends 'admin/base_admin.html' %}
 
 {% block content %}
-<h2>Lista de Pedidos</h2>
 
-<div class="mt-3">
+<h2 class="mb-4">Lista de Pedidos</h2>
 
-    {% for order in ordenes %}
-    <div class="card p-4 mb-3 shadow-sm" style="max-width: 550px; border-radius: 12px;">
+<div class="container-fluid">
 
-    <h5 class="mb-3">Pedido #{{ order.identifier }}</h5>
-    
-    
-    <div class="mb-2">
-        {% if order.user %}
-            <strong>Usuario:</strong> 
-            <span>{{ order.user }}</span>
-        {% else %}
-            <span>Anonimo</span>
-        {% endif %}
-    </div>
-    
+    <div class="row">
+        <div class="col-12 col-lg-10 mx-auto">
 
-    <div class="mb-2">
-        <strong>Método de pago:</strong>
-        <span class="badge" style="background-color: #d3d3d3; color: #000;">
-            {{ order.pay_method }}
-        </span>
-    </div>
+            {% for order in ordenes %}
 
-    <div class="mb-2">
-        <strong>Dirección:</strong>
-        <span>{{ order.address }}</span>
-    </div>
+            <div class="card shadow-sm order-card p-4 mb-4">
 
-    <div class="mb-2">
-        <strong>Estado:</strong>
-        {% if order.status == "pending" %}
-            <span class="badge bg-warning text-dark">Pendiente</span>
-        {% elif order.status == "shipped" %}
-            <span class="badge bg-primary">Enviado</span>
-        {% else %}
-            <span class="badge bg-success">Entregado</span>
-        {% endif %}
-    </div>
+                <!-- Título -->
+                <h4 class="mb-3 font-weight-bold">Pedido #{{ order.identifier }}</h4>
 
-    <hr>
+                <!-- Usuario -->
+                <p class="mb-2">
+                    <strong>Usuario:</strong>
+                    {% if order.user %}
+                        <span>{{ order.user }}</span>
+                    {% else %}
+                        <span class="text-muted">Anónimo</span>
+                    {% endif %}
+                </p>
 
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            {% if order.status == "pending" %}
-                <form method="post" action="{% url 'admin/orders/ship' order.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-primary">Marcar como enviado</button>
-                </form>
-            {% elif order.status == "shipped" %}
-                <form method="post" action="{% url 'admin/orders/deliver' order.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-primary">Marcar como entregado</button>
-                </form>
-            {% endif %}
+                <!-- Método de pago -->
+                <p class="mb-2">
+                    <strong>Método de pago:</strong>
+                    <span class="badge badge-payment">{{ order.pay_method }}</span>
+                </p>
+
+                <!-- Dirección -->
+                <p class="mb-2">
+                    <strong>Dirección:</strong> {{ order.address }}
+                </p>
+
+                <!-- Estado -->
+                <p class="mb-2">
+                    <strong>Estado:</strong>
+                    {% if order.status == "pending" %}
+                        <span class="badge badge-warning">Pendiente</span>
+                    {% elif order.status == "shipped" %}
+                        <span class="badge badge-primary">Enviado</span>
+                    {% else %}
+                        <span class="badge badge-success">Entregado</span>
+                    {% endif %}
+                </p>
+
+                <hr>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+                        {% if order.status == "pending" %}
+                            <form method="post" action="{% url 'admin/orders/ship' order.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-purple">Marcar como enviado</button>
+                            </form>
+
+                        {% elif order.status == "shipped" %}
+                            <form method="post" action="{% url 'admin/orders/deliver' order.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-purple">Marcar como entregado</button>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'admin/orders/items' order.id %}" 
+                       class="btn btn-sm btn-outline-info view-btn">
+                       Ver detalles
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
         </div>
-
-        <a href="{% url 'admin/orders/items' order.id %}" 
-           class="btn btn-sm btn-outline-info ms-2"
-           style="border-radius: 8px; padding: 4px 12px; font-weight: 500;">
-           Ver
-        </a>
     </div>
 
 </div>
 
-    {% endfor %}
-    
-    
+<!-- ESTILOS MODERNOS -->
+<style>
+    .order-card {
+        border-radius: 14px;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
 
-</div>
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .badge-payment {
+        background-color: #d9d9d9;
+        color: #333;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    .btn-purple {
+        background-color: #6f42c1;
+        color: white;
+        border-radius: 8px;
+        padding: 6px 12px;
+        transition: .2s ease;
+    }
+
+    .btn-purple:hover {
+        background-color: #5a34a0;
+        color: white;
+    }
+
+    .view-btn {
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-weight: 500;
+    }
+</style>
 
 {% endblock %}

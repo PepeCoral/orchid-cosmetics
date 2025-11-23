@@ -7,13 +7,16 @@ class OrderRepository(BaseRepository):
         super().__init__(Order)
         self.product_repository = ProductRepository()
 
+    def get_by_user_id(self, user_id):
+        return self.model.objects.filter(user_id=user_id)
+
     def get_orders_by_user(self, user_id):
         return self.model.objects.filter(user_id=user_id)
     
     def get_orders_by_status(self, status):
         return self.model.objects.filter(status=status)
     
-    def get_orders_by_identifier(self, identifier):
+    def get_order_by_identifier(self, identifier):
         return self.model.objects.filter(identifier=identifier)
     
     def get_number_of_products(self, product_id, order_id):
