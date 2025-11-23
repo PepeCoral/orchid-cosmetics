@@ -26,4 +26,8 @@ class HomeView(View):
           }
           return render(request, "home.html", context)
         except Exception as e:
-            print(e)
+            return render(
+                request,
+                "home.html",
+                {"form": form, "error": str(e)}
+            )
