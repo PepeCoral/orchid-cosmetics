@@ -1,5 +1,6 @@
 from typing import List, Optional
 from app.models.order import OrderItem
+from app.models import Product, Service
 from app.repositories.base_repository import BaseRepository
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, F, Case, When, DecimalField
@@ -23,5 +24,11 @@ class OrderItemRepository(BaseRepository):
 
         return total
     
+    def get_products_of_order(self, order_id:int) -> List[Product]:
+        return self.model.objects.filter(order__id=order_id, product__isnull=False)
+    
+    def get_services_of_order(self, order_id:int) -> List[Service]:
+        return self.model.objects.filter(order__id=order_id, service__isnull=False)
+
     def get_items_by_order_id(self, order_id:int) -> List[OrderItem]:
         return self.model.objects.filter(order__id=order_id)

@@ -43,7 +43,7 @@ class OrderItem(models.Model):
     quantity = models.IntegerField()
 
     def __str__(self):
-        return f"{self.quantity} of {self.product.name} in order {self.order}"
+        return f"{self.quantity} of {self.item.name} in order {self.order}"
 
     class Meta:
         constraints = [

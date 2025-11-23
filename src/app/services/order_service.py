@@ -92,5 +92,12 @@ class OrderService():
     def get_order_by_id(self, order_id:int) -> Order:
         return self.order_repository.get_by_id(order_id)
     
+    def get_services_by_order_id(self, order_id:int):
+        return self.order_item_repo.get_services_of_order(order_id)
+
+    def get_products_by_order_id(self, order_id:int):
+        return self.order_item_repo.get_products_of_order(order_id)
+    
     def get_items_by_order_id(self, order_id:int):
         return self.order_item_repo.get_items_by_order_id(order_id)
+    
