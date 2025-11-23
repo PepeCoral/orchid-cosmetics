@@ -75,6 +75,11 @@
                   {% csrf_token %}
                   {{ form.as_p }}
                   <button type="submit" class="btn btn-brand w-100">Añadir al carrito</button>
+                   <button type="submit"
+                          formaction="{% url 'products/buy-now' product.id %}"
+                          class="btn btn-success w-100 mt-2">
+                      Comprar ahora
+                  </button>
                 </form>
               </div>
               {% else %}

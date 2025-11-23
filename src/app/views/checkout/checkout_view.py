@@ -68,7 +68,8 @@ class CheckoutView(View):
             return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
         form_cleaned_data = form.cleaned_data
         pay_method = form_cleaned_data.get("pay_method")
-        if pay_method is PaymentMethodOptions.PAYMENT_GATEWAY:
+        if pay_method == PaymentMethodOptions.PAYMENT_GATEWAY.value:
+            
             try:
                 session_url = self.order_service.create_stripe_session(request=request,form=form)
                 return redirect(session_url)
