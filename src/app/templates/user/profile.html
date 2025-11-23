@@ -40,22 +40,6 @@
                   </div>
                 </div>
               </div>
-
-              <div class="info-item mb-4">
-                <div class="d-flex align-items-center">
-                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">📍</span>
-                  <div>
-                    <strong class="d-block" style="color: #a97acf;">Dirección</strong>
-                    <span class="text-dark">
-                      {% if user.address %}
-                      {{ user.address }}
-                      {% else %}
-                      <span class="text-muted">No especificada</span>
-                      {% endif %}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Columna derecha -->
@@ -85,13 +69,24 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
 
+          <!-- Dirección expandida para ocupar todo el ancho -->
+          <div class="row">
+            <div class="col-12">
               <div class="info-item mb-4">
-                <div class="d-flex align-items-center">
-                  <span class="icon me-3" style="color: #a97acf; font-size: 1.2rem;">🎯</span>
-                  <div>
-                    <strong class="d-block" style="color: #a97acf;">Rol</strong>
-                    <span class="badge text-white" style="background-color: #a97acf;">{{ user.role }}</span>
+                <div class="d-flex align-items-start">
+                  <span class="icon me-3 mt-1" style="color: #a97acf; font-size: 1.2rem;">📍</span>
+                  <div class="flex-grow-1">
+                    <strong class="d-block" style="color: #a97acf;">Dirección</strong>
+                    <span class="text-dark">
+                      {% if user.address %}
+                      {{ user.address }}
+                      {% else %}
+                      <span class="text-muted">No especificada</span>
+                      {% endif %}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -183,6 +178,11 @@
 
   .mb-3 {
     margin-bottom: 1rem !important;
+  }
+
+  /* Asegurar que la dirección ocupe todo el ancho */
+  .flex-grow-1 {
+    flex-grow: 1;
   }
 </style>
 {% endblock %}

@@ -115,36 +115,38 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+# -------------------------
+# Static & Media Files
+# -------------------------
 
-# Cloudinary Configuration - MUST be at module level
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"   # required for production collectstatic
+
+MEDIA_URL = "/media/"
+
 if ENVIRONMENT == "production":
-    # Add cloudinary apps BEFORE checking config
+    # Cloudinary for MEDIA ONLY
     INSTALLED_APPS += ["cloudinary_storage", "cloudinary"]
 
-    # Cloudinary configuration
     CLOUDINARY_STORAGE = {
         "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
         "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
         "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
     }
 
-    # Django 5.2+ uses STORAGES setting (replaces DEFAULT_FILE_STORAGE)
     STORAGES = {
         "default": {
             "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
         },
-        "staticfiles": {
-            "BACKEND": "cloudinary_storage.storage.StaticHashedCloudinaryStorage",
+        "staticfiles": {  # static stays local on Render
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
 
-    MEDIA_URL = '/media/'
-    STATIC_URL = '/static/'
-
 else:
-    # Local storage
+    # Local development storage
+    MEDIA_ROOT = BASE_DIR / "media"
+
     STORAGES = {
         "default": {
             "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -153,8 +155,6 @@ else:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
-    MEDIA_URL = "/media/"
-    MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
