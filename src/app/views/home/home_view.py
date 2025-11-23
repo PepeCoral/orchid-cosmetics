@@ -12,16 +12,18 @@ class HomeView(View):
         self.service_service = ServiceService()
 
     def get(self, request):
-        products = self.product_service.get_promoted_products()
-        services = self.service_service.get_promoted_services()
+        try:
+          products = self.product_service.get_promoted_products()
+          services = self.service_service.get_promoted_services()
 
-        form = SearchProductCatalogForm()
-        formS = SearchServiceCatalogForm()
-        context = {
-            "products": products,   
-            "services": services,
-            "form":form,
-            "formS":formS
-        }
-        return render(request, "home.html", context)
-    
+          form = SearchProductCatalogForm()
+          formS = SearchServiceCatalogForm()
+          context = {
+              "products": products,
+              "services": services,
+              "form":form,
+              "formS":formS
+          }
+          return render(request, "home.html", context)
+        except Exception as e:
+            print(e)
