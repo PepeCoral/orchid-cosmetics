@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %} Orchid Cosmetics {% endblock %}</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-  
+
   <!-- Cargar static files -->
   {% load static %}
-  
+
   <!-- Favicon con la nueva imagen PNG -->
   <link rel="shortcut icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
   <link rel="icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
@@ -95,10 +95,10 @@
       transform: rotate(180deg);
     }
 
- 
+
     .navbar-logo {
-      width: 40px;  
-      height: 40px; 
+      width: 40px;
+      height: 40px;
       object-fit: contain;
     }
   </style>
@@ -167,7 +167,7 @@
 
         {% if user.is_superuser %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'admin' %}">Admin</a>
+          <a class="nav-link" href="{% url 'admin' %}">Panel de Administrador</a>
         </li>
         {% endif %}
 
@@ -203,7 +203,7 @@
 
       // Hover para abrir el dropdown
       $('.nav-item.dropdown').hover(
-        function() {
+        function () {
           // Solo abrir si no está ya abierto
           if (!catalogOpen) {
             $(this).addClass('show');
@@ -215,7 +215,7 @@
       );
 
       // Cerrar el dropdown solo con clic fuera o en otro enlace
-      $(document).on('click', function(e) {
+      $(document).on('click', function (e) {
         if (!$(e.target).closest('.nav-item.dropdown').length && catalogOpen) {
           $('.nav-item.dropdown').removeClass('show');
           $('.dropdown-menu').removeClass('show');
@@ -225,7 +225,7 @@
       });
 
       // Cerrar si se hace clic en un enlace del dropdown
-      $('.dropdown-item').on('click', function() {
+      $('.dropdown-item').on('click', function () {
         $('.nav-item.dropdown').removeClass('show');
         $('.dropdown-menu').removeClass('show');
         $('.dropdown-toggle').attr('aria-expanded', 'false');

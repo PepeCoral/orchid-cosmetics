@@ -18,9 +18,15 @@ class CheckoutView(View):
         cart_items = self.cart_service.get_cart_items(request)
         user = request.user
         initial_data = {}
-       
+
         if hasattr(user,"pay_method") and user.pay_method:
             initial_data["pay_method"] =user.pay_method
+
+        if hasattr(user,"address") and user.address:
+            initial_data["address"] =user.address
+
+        if hasattr(user,"email") and user.email:
+            initial_data["email"] =user.email
 
 
 
@@ -39,18 +45,18 @@ class CheckoutView(View):
                 services.append(item)
 
 
-        
+
 
         return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
 
-    
+
 
     def post(self, request: HttpRequest):
 
         cart_items = self.cart_service.get_cart_items(request)
         form = CheckoutForm(request.POST)
         total = self.cart_service.get_total(request)
-        
+
         products = []
         services = []
         for item in cart_items:
@@ -75,7 +81,7 @@ class CheckoutView(View):
                 return redirect(session_url)
             except Exception as e:
                 return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": e})
-        
+
 
         user = request.user
         user_id = None
@@ -88,8 +94,8 @@ class CheckoutView(View):
             user_id = user.id
 
         order = self.order_service.create_current_order(user_id=user_id,session_key=session_key,
-                                                address=form_cleaned_data.get("address"), 
-                                                delivery_method=form_cleaned_data.get("delivery_method"), 
+                                                address=form_cleaned_data.get("address"),
+                                                delivery_method=form_cleaned_data.get("delivery_method"),
                                                 pay_method=form_cleaned_data.get("pay_method") )
 
         total = self.order_service.get_total_cost_by_order_id(order.id)
