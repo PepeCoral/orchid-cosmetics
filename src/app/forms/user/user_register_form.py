@@ -2,6 +2,8 @@ from django import forms
 from app.models import User
 from django.core.validators import MaxLengthValidator,EmailValidator, MinLengthValidator
 
+from app.models.user import PaymentMethodOptions
+
 
 
 class UserRegisterForm(forms.Form):
@@ -10,7 +12,7 @@ class UserRegisterForm(forms.Form):
     last_name = forms.CharField(label="Apellidos", validators=[MaxLengthValidator(100,"Last name too long")])
     email = forms.EmailField(label="Email", validators=[EmailValidator("Formato incorrecto")])
     address = forms.CharField(label="Dirección",validators=[MaxLengthValidator(200,"Address too long")],required=False)
-    pay_method = forms.CharField(label="Método de pago", required=False)
+    pay_method = forms.ChoiceField(label="Método de pago", required=False, choices=PaymentMethodOptions.choices+ [("", "---------")])
     password = forms.CharField(label="Introduzca una contraseña",
                                validators=[MinLengthValidator(5,"Contraseña demasiado corta")],
                                widget=forms.PasswordInput())

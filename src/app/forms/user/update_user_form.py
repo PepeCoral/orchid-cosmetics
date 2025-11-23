@@ -1,5 +1,5 @@
 from django import forms
-from app.models.user import User
+from app.models.user import PaymentMethodOptions, User
 from django.core.validators import MaxLengthValidator
 
 class UpdateUserForm(forms.ModelForm):
@@ -29,11 +29,9 @@ class UpdateUserForm(forms.ModelForm):
         required=False
     )
 
-    pay_method = forms.CharField(
-        label="Método de pago",
-        validators=[MaxLengthValidator(50, "Método de pago demasiado largo")],
-        required=False
-    )
+    pay_method = forms.ChoiceField(label="Método de pago", required=False, choices=[("", "---------")]+PaymentMethodOptions.choices )
+
+    
 
     password = forms.CharField(
         label="Contraseña",
