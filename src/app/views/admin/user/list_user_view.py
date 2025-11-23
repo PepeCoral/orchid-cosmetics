@@ -1,6 +1,6 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from app.models.user import RoleOptions
+from app.models.user import User
 from app.services.user_service import UserService
 
 
@@ -18,6 +18,4 @@ class ListUserView(View):
 
         users = self.user_service.get_all_users()
 
-        role = RoleOptions.USER
-        
-        return render(request, "admin/users/list.html", {"usuarios": users, "role": role})
+        return render(request, "admin/users/list.html", {"usuarios": users})
