@@ -6,8 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %} Orchid Cosmetics Admin {% endblock %}</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-  <link rel="shortcut icon" href="/static/Orchid-Logo.ico" />
 
+  <!-- Cargar static files -->
+  {% load static %}
+
+  <!-- Favicon con la nueva imagen PNG -->
+  <link rel="shortcut icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
+  <link rel="icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
   <style>
     body {
       padding-top: 70px;
@@ -59,7 +64,7 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <a class="navbar-brand" href="/admin">Admin Panel</a>
+    <a class="navbar-brand" href="/admin">Panel de Administrador</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
