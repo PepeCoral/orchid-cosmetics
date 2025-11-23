@@ -16,6 +16,7 @@ class ListOrderView(View):
 
         # Obtener todos los servicios
         orders = self.order_service.get_all_orders()
+
         
         # Pasar como "ordenes" para que coincida con el template
         return render(request, "admin/orders/list.html", {"ordenes": orders})
