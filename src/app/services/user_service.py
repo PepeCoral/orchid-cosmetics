@@ -1,4 +1,4 @@
-from app.models.user import RoleOptions, User
+from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.contrib.auth import login, authenticate

@@ -19,10 +19,10 @@
           <strong style="font-size: 1rem;">{{ user.username }} (Username)</strong><br>
         {% endif %}
         <small class="text-muted">{{ user.email }}</small><br>
-        {% if user.role == role %}
-          <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">{{ user.role }}</span><br>
+        {% if user.is_superuser %}
+          <span class="badge bg-secondary mt-1" style="font-size: 0.7rem;">Admin</span><br>
         {% else %}
-          <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">{{ user.role }}</span><br>
+          <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">User</span><br>
         {% endif %}
       </div>
 
