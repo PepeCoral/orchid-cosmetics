@@ -5,14 +5,29 @@ from app.services.order_service import OrderService
 from app.services.cart_item_service import CartService
 from app.models.product import Product
 from app.models.service import Service
+from app.models.order import Order
 from app.models.order import PaymentMethodOptions
 from django.http import HttpRequest
+from django.core.mail import send_mail
+from django.conf import settings
 
 class CheckoutView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cart_service = CartService()
         self.order_service = OrderService()
+
+    def send_order_confirmation_email(self, order: Order):
+        user_email = order.user.email if order.user else None
+        if not user_email:
+            return  
+
+        subject = f"Confirmación de pedido #{order.id}"
+        message = f"Gracias por su pedido. Su pedido #{order.id} ha sido recibido y está siendo procesado."
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [user_email]
+
+        send_mail(subject, message, from_email, recipient_list)
 
     def get(self, request: HttpRequest):
         cart_items = self.cart_service.get_cart_items(request)
@@ -92,5 +107,7 @@ class CheckoutView(View):
                                                 pay_method=form_cleaned_data.get("pay_method") )
 
         total = self.order_service.get_total_cost_by_order_id(order.id)
+
+        self.send_order_confirmation_email(order)
 
         return render(request, "checkout/success_cod.html", {"total": total})
