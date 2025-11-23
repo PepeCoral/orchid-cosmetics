@@ -92,7 +92,7 @@
                   <button type="submit" class="btn btn-brand w-100">Reservar servicio</button>
                   <button type="submit"
                           formaction="{% url 'service_reserve_now' service.id %}"
-                          class="btn btn-success w-100 mt-2">
+                          class="btn btn-buy-now w-100 mt-2">
                       Reservar ahora
                   </button>
                 </form>
@@ -199,6 +199,21 @@
   .buy-form select:focus {
     border-color: #a97acf;
     box-shadow: 0 0 0 0.2rem rgba(169, 122, 207, 0.25);
+  }
+
+  .btn-buy-now {
+    background-color: white;       /* fondo blanco */
+    color: #a97acf;               /* texto morado */
+    border: 2px solid #a97acf;    /* borde morado */
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  .btn-buy-now:hover {
+      background-color: #f5efe2;     /* morado al pasar el ratón */
+      color: #a97acf;                  /* texto blanco */
+      transform: translateY(-1px);
   }
 
   .btn-outline-secondary:hover {
