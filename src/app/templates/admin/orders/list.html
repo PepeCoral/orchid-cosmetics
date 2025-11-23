@@ -15,10 +15,10 @@
         <p><strong>Estado:</strong> {{ order.status }}</p>
         <p><strong>Indentifier:</strong> {{ order.identifier }}</p>
 
-        
+        <a href="{% url 'admin/orders/items' order.id %}" class="btn btn-sm action-btn">Ver</a>
     </div>
     {% endfor %}
-
+    
     
 
 </div>

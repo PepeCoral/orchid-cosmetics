@@ -28,6 +28,9 @@ from app.views.admin.service.delete_service_view import DeleteServiceView
 # Order
 from app.views.admin.order.list_order_view import ListOrderView
 
+# Order Items
+from app.views.admin.order.orderItems.list_items_view import ListItemView
+
 urlpatterns = [
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
@@ -57,5 +60,8 @@ urlpatterns = [
 
     # Orders
     path('admin/orders/', ListOrderView.as_view(), name='admin/orders'),
+
+    # Order Items
+    path('admin/orders/<int:order_id>/items/', ListItemView.as_view(), name='admin/orders/items'),
 
 ]

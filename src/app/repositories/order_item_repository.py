@@ -22,3 +22,6 @@ class OrderItemRepository(BaseRepository):
         )['total_cost']
 
         return total
+    
+    def get_items_by_order_id(self, order_id:int) -> List[OrderItem]:
+        return self.model.objects.filter(order__id=order_id)
