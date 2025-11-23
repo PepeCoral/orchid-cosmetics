@@ -15,10 +15,9 @@ class ListItemView(View):
             return redirect("/")
 
         # Obtener todos los servicios
-        items = self.order_service.get_items_by_order_id(order_id)
-        for i in items:
-            print(i.product)
-            print(i.quantity)
+        products_items = self.order_service.get_products_by_order_id(order_id)
+        services_items = self.order_service.get_services_by_order_id(order_id)
+        
         
         # Pasar como "ordenes" para que coincida con el template
-        return render(request, "admin/items/list.html", {"items": items})
+        return render(request, "admin/items/list.html", {"products_items": products_items, "services_items": services_items})
