@@ -9,7 +9,7 @@ class PaymentMethodOptions(models.TextChoices):
 PAYMENT_METHOD_CHOICES = [('', '')] + list(PaymentMethodOptions.choices)
 
 class User(AbstractUser):
-    
+
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

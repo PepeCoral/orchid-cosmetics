@@ -25,10 +25,16 @@ from app.views.admin.service.show_service_view import ShowServiceView
 from app.views.admin.service.update_service_view import UpdateServiceView
 from app.views.admin.service.delete_service_view import DeleteServiceView
 
+# User
 from app.views.admin.user.list_user_view import ListUserView
 from app.views.admin.user.show_user_view import ShowUserView
 from app.views.admin.user.update_user_view import UpdateUserView
 from app.views.admin.user.delete_user_view import DeleteUserView
+# Order
+from app.views.admin.order.list_order_view import ListOrderView
+
+# Order Items
+from app.views.admin.order.orderItems.list_items_view import ListItemView
 
 urlpatterns = [
     path("admin/", AdminPanelView.as_view(), name="admin"),
@@ -57,8 +63,16 @@ urlpatterns = [
     path('admin/cosmeticservices/update/<int:service_id>/', UpdateServiceView.as_view(), name='admin/cosmeticservices/update'),
     path('admin/cosmeticservices/delete/<int:service_id>/', DeleteServiceView.as_view(), name='admin/cosmeticservices/delete'),
 
+    # Users
     path('admin/users/', ListUserView.as_view(), name='admin/users'),
     path('admin/users/show/<int:user_id>/', ShowUserView.as_view(), name='admin/users/show'),
     path('admin/users/update/<int:user_id>/', UpdateUserView.as_view(), name='admin/users/update'),
     path('admin/users/delete/<int:user_id>/', DeleteUserView.as_view(), name='admin/users/delete'),
+    
+    # Orders
+    path('admin/orders/', ListOrderView.as_view(), name='admin/orders'),
+
+    # Order Items
+    path('admin/orders/<int:order_id>/items/', ListItemView.as_view(), name='admin/orders/items'),
+
 ]

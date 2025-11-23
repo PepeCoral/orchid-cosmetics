@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Pedidos</h2>
+
+<div class="mt-3">
+
+    {% for order in ordenes %}
+    <div class="card p-4 mb-3 shadow-sm" style="max-width: 500px;">
+
+
+        <p><strong>Usuario:</strong> {{ order.user }}</p>
+        <p><strong>Metodo de pago:</strong> {{ order.payMethod }}</p>
+        <p><strong>Direccion:</strong> {{ order.address }}</p>
+        <p><strong>Estado:</strong> {{ order.status }}</p>
+        <p><strong>Indentifier:</strong> {{ order.identifier }}</p>
+
+        <a href="{% url 'admin/orders/items' order.id %}" class="btn btn-sm action-btn">Ver</a>
+    </div>
+    {% endfor %}
+    
+    
+
+</div>
+
+{% endblock %}

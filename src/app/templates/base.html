@@ -6,12 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %} Orchid Cosmetics {% endblock %}</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-  <link rel="shortcut icon" href="/static/Orchid-Logo.ico" />
+  
+  <!-- Cargar static files -->
+  {% load static %}
+  
+  <!-- Favicon con la nueva imagen PNG -->
+  <link rel="shortcut icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
+  <link rel="icon" href="{% static 'Orchid_Cosmetics_no_background.png' %}" type="image/png" />
 
   <style>
     body {
       padding-top: 70px;
-      background: #faf7fc;
+      background: #fdfbf7;
     }
 
     .navbar {
@@ -25,6 +31,8 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       font-size: 1.3rem;
+      display: flex;
+      align-items: center;
     }
 
     .nav-link {
@@ -79,16 +87,19 @@
       margin: 0.3rem 0.5rem;
     }
 
-    .nav-item.dropdown:hover .dropdown-menu {
-      display: block;
-    }
-
     .dropdown-toggle::after {
       transition: transform 0.2s ease;
     }
 
-    .nav-item.dropdown:hover .dropdown-toggle::after {
+    .nav-item.dropdown.show .dropdown-toggle::after {
       transform: rotate(180deg);
+    }
+
+ 
+    .navbar-logo {
+      width: 40px;  
+      height: 40px; 
+      object-fit: contain;
     }
   </style>
 </head>
@@ -96,7 +107,11 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <a class="navbar-brand" href="/">Orchid Cosmetics</a>
+    <a class="navbar-brand" href="/">
+      <!-- Logo en el navbar con formato PNG -->
+      <img src="{% static 'Orchid_Cosmetics_no_background.png' %}" alt="Orchid Cosmetics" class="navbar-logo mr-3">
+      Orchid Cosmetics
+    </a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,8 +146,8 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'cart' %}">
             Carrito
-            {% if cart_count and cart_count > 0 %}
-            <span class="badge badge-pill badge-light ml-1">{{ cart_count }}</span>
+            {% if cart_items_amount and cart_items_amount > 0 %}
+            <span class="badge badge-pill badge-light ml-1">{{ cart_items_amount }}</span>
             {% endif %}
           </a>
         </li>
@@ -143,10 +158,10 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
+          <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'register' %}">Sign Up</a>
+          <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
         </li>
         {% endif %}
 
@@ -183,12 +198,45 @@
 
   <script>
     $(document).ready(function () {
-      // Mantener dropdown abierto al hacer hover
-      $('.nav-item.dropdown').hover(function () {
-        $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(300);
-      }, function () {
-        $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeOut(300);
+      // Variable para controlar si el dropdown está abierto
+      let catalogOpen = false;
+
+      // Hover para abrir el dropdown
+      $('.nav-item.dropdown').hover(
+        function() {
+          // Solo abrir si no está ya abierto
+          if (!catalogOpen) {
+            $(this).addClass('show');
+            $(this).find('.dropdown-menu').addClass('show');
+            $(this).find('.dropdown-toggle').attr('aria-expanded', 'true');
+            catalogOpen = true;
+          }
+        }
+      );
+
+      // Cerrar el dropdown solo con clic fuera o en otro enlace
+      $(document).on('click', function(e) {
+        if (!$(e.target).closest('.nav-item.dropdown').length && catalogOpen) {
+          $('.nav-item.dropdown').removeClass('show');
+          $('.dropdown-menu').removeClass('show');
+          $('.dropdown-toggle').attr('aria-expanded', 'false');
+          catalogOpen = false;
+        }
       });
+
+      // Cerrar si se hace clic en un enlace del dropdown
+      $('.dropdown-item').on('click', function() {
+        $('.nav-item.dropdown').removeClass('show');
+        $('.dropdown-menu').removeClass('show');
+        $('.dropdown-toggle').attr('aria-expanded', 'false');
+        catalogOpen = false;
+      });
+
+      // Para móviles, mantener comportamiento normal
+      if ($(window).width() < 992) {
+        catalogOpen = false;
+        $('.nav-item.dropdown').off('hover');
+      }
 
       // Cerrar alertas automáticamente después de 5 segundos
       setTimeout(function () {

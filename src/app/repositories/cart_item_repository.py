@@ -1,6 +1,7 @@
 from typing import List, Optional
 from app.models.cart_item import CartItem
 from app.repositories.base_repository import BaseRepository
+from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
 
 class CartItemRepository(BaseRepository):
@@ -28,6 +29,8 @@ class CartItemRepository(BaseRepository):
         except CartItem.DoesNotExist:
             return None
 
+    def get_total_amount(self, owner_filter:dict):
+        return self.model.objects.filter(**owner_filter).aggregate(Sum("quantity")).get("quantity__sum")
     def get_by_id_and_owner(self, id: int, owner_filter: dict) -> Optional[CartItem]:
         try:
             filters = owner_filter
@@ -35,3 +38,6 @@ class CartItemRepository(BaseRepository):
             return self.model.objects.get(**filters)
         except ObjectDoesNotExist:
             return None
+
+    def clear_cart(self, owner_filter:dict):
+        self.model.objects.filter(**owner_filter).delete()

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Pago Cancelado{% endblock %}
+
+{% block content %}
+<div class="container mt-4 text-center">
+
+  <div class="card p-5" style="border-radius: 12px; max-width: 600px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <h2 class="text-danger mb-3">Pago Cancelado</h2>
+    <p class="mb-4">Parece que has cancelado el pago o hubo un error durante la transacción.</p>
+    
+    <div class="d-flex flex-column align-items-center mt-3 w-50 mx-auto">
+      <a href="/cart" class="btn btn-primary btn-lg mb-2 w-100">Volver al carrito</a>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .btn-lg {
+    min-width: 150px;
+  }
+</style>
+{% endblock %}

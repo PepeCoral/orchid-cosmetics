@@ -18,6 +18,9 @@ class UserService():
         if user_data["password"] != user_data["confirm_password"]:
           raise ValidationError("Passwords do not match")
 
+        if user_data["pay_method"] == "":
+            user_data.pop("pay_method",None)
+
         is_super_user = False
         if len(self.user_repository.get_all()) == 0:
             is_super_user = True
