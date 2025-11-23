@@ -1,65 +1,88 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Lista de Pedidos</h2>
 
-<div class="mt-3">
+<h2 class="mb-4">Lista de Pedidos</h2>
 
-    {% for order in ordenes %}
-    <div class="card p-4 mb-3 shadow-sm" style="max-width: 550px; border-radius: 12px;">
+<div class="container-fluid">
 
-    <h5 class="mb-3">Pedido {{ order.identifier }}</h5>
-    
-    
-    <div class="mb-2">
-        {% if order.user %}
-            <strong>Usuario:</strong> 
-            <span>{{ order.user }}</span>
-        {% else %}
-            <span>Anonimo</span>
-        {% endif %}
-    </div>
-    
+    <div class="row">
+        <div class="col-12 col-lg-10 mx-auto">
 
-    <div class="mb-2">
-        <strong>Método de pago:</strong>
-        <span class="badge" style="background-color: #d3d3d3; color: #000;">
-            {{ order.pay_method }}
-        </span>
-    </div>
+            {% for order in ordenes %}
+            
+            <div class="card mb-4 p-4 shadow-sm order-card">
+                
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="mb-2 font-weight-bold">Pedido {{ order.identifier }}</h5>
 
-    <div class="mb-2">
-        <strong>Dirección:</strong>
-        <span>{{ order.address }}</span>
-    </div>
+                        <!-- Usuario -->
+                        <p class="mb-1">
+                            <strong>Usuario:</strong>
+                            {% if order.user %}
+                                <span>{{ order.user }}</span>
+                            {% else %}
+                                <span class="text-muted">Anónimo</span>
+                            {% endif %}
+                        </p>
 
-    <div class="mb-2">
-        <strong>Estado:</strong>
-        {% if order.status == "pending" %}
-            <span class="badge bg-warning text-dark">Pendiente</span>
-        {% elif order.status == "shipped" %}
-            <span class="badge bg-primary">Enviado</span>
-        {% else %}
-            <span class="badge bg-success">Entregado</span>
-        {% endif %}
-    </div>
+                        <!-- Método de pago -->
+                        <p class="mb-1">
+                            <strong>Método de pago:</strong>
+                            <span class="badge" style="background-color: #e2e2e2; color: #333;">
+                                {{ order.pay_method }}
+                            </span>
+                        </p>
 
-    <hr>
+                        <!-- Dirección -->
+                        <p class="mb-1">
+                            <strong>Dirección:</strong>
+                            <span>{{ order.address }}</span>
+                        </p>
 
-    <div class="d-flex justify-content-between align-items-center">
-        <a href="{% url 'orders/items' order.id %}" 
-           class="btn btn-sm btn-outline-info ms-2"
-           style="border-radius: 8px; padding: 4px 12px; font-weight: 500;">
-           Ver
-        </a>
+                        <!-- Estado -->
+                        <p class="mb-1">
+                            <strong>Estado:</strong>
+                            {% if order.status == "pending" %}
+                                <span class="badge badge-warning text-dark">Pendiente</span>
+                            {% elif order.status == "shipped" %}
+                                <span class="badge badge-primary">Enviado</span>
+                            {% else %}
+                                <span class="badge badge-success">Entregado</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Botón ver -->
+                    <div>
+                        <a href="{% url 'orders/items' order.id %}" 
+                           class="btn btn-info btn-sm" 
+                           style="border-radius: 6px;">
+                           Ver
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
     </div>
 
 </div>
 
-    {% endfor %}
-    
-    
+<style>
+    .order-card {
+        border-radius: 14px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
 
-</div>
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0px 6px 15px rgba(0,0,0,0.12);
+    }
+</style>
 
 {% endblock %}

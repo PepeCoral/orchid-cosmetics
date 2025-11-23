@@ -5,84 +5,165 @@
 
 <div class="container mt-4">
 
-  <h2 class="mb-4">Estado:<strong> {{ order.status }}</strong></h2>
-  <h3 class="mb-4">Costo total: <strong>€{{ coste }}</strong></h3>
+  <!-- BOTÓN PARA VOLVER ATRÁS -->
+  <a href="/orders" class="btn btn-outline-secondary mb-4" style="border-radius: 8px;">
+    ← Volver
+  </a>
+
+  <!-- Estado y coste -->
+  <h2 class="mb-2">
+    Estado: <span class="badge badge-info">{{ order.status }}</span>
+  </h2>
+
+  <h3 class="mb-4">
+    Costo total: <strong>€{{ coste }}</strong>
+  </h3>
 
 
-  <!-- PRODUCTOS -->
+  <!-- =================== PRODUCTOS =================== -->
   {% if products_items %}
-  <h2 class="mb-3">Productos</h2>
-  <div class="row">
-    {% for i in products_items %}
-    <div class="col-md-4 col-lg-3 mb-4">
-        <div class="card h-100 shadow-sm product-card">
+  <div class="card shadow-sm p-4 mb-5 section-card">
+    <h2 class="mb-4">Productos</h2>
+
+    <div class="row">
+      {% for i in products_items %}
+      <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+
+        <div class="card shadow-sm h-100 modern-card">
+
           {% if i.product.image_url %}
-          <!-- IMAGEN EN BLANCO Y NEGRO SI NO HAY STOCK -->
-          {% if i.product.stock == 0 %}
-          <img src="{{ i.product.image_url.url }}" class="card-img-top grayscale" alt="{{ i.product.name }}"
-            style="height: 200px; object-fit: cover;">
+            {% if i.product.stock == 0 %}
+              <img src="{{ i.product.image_url.url }}" class="card-img-top grayscale"
+                   style="height: 200px; object-fit: cover;">
+            {% else %}
+              <img src="{{ i.product.image_url.url }}" class="card-img-top"
+                   style="height: 200px; object-fit: cover;">
+            {% endif %}
           {% else %}
-          <img src="{{ i.product.image_url.url }}" class="card-img-top" alt="{{ i.product.name }}"
-            style="height: 200px; object-fit: cover;">
+            <div class="no-image d-flex align-items-center justify-content-center">
+              <span class="text-muted">Sin imagen</span>
+            </div>
           {% endif %}
-          {% else %}
-          <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
-            <span class="text-muted">Sin imagen</span>
-          </div>
-          {% endif %}
+
           <div class="card-body d-flex flex-column">
-            <h6 class="card-title">{{ i.product.name }}</h6>
-            <small><strong>{{ i.quantity }}</strong></small>
+            <h6 class="card-title font-weight-bold mb-1">{{ i.product.name }}</h6>
+
+            <small class="text-muted mb-2">
+              Cantidad: <strong>{{ i.quantity }}</strong>
+            </small>
+
             <p class="card-text text-muted small mb-2">{{ i.product.fabricator }}</p>
+
             <div class="mt-auto d-flex justify-content-between align-items-center">
-              <span class="badge text-white" style="background-color: #6f42c1;">€{{ i.product.price }}</span>
-              <!-- TEXTO DE STOCK -->
+              <span class="badge price-badge">€{{ i.product.price }}</span>
+
               {% if i.product.stock == 0 %}
-              <small class="text-danger fw-bold">Fuera de stock</small>
+                <small class="text-danger font-weight-bold">Sin stock</small>
               {% else %}
-              <small class="text-muted">{{ i.product.stock }} en stock</small>
+                <small class="text-muted">{{ i.product.stock }} en stock</small>
               {% endif %}
             </div>
           </div>
+
         </div>
-      </a>
+
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
+
   </div>
   {% endif %}
 
-{% if services_items %}
-<div class="container mt-4">
-  <!-- SERVICIOS -->
-  <h2 class="mb-3">Servicios</h2>
-  <div class="row">
-    {% for i in services_items %}
-    <div class="col-md-4 col-lg-3 mb-4">
-        <div class="card h-100 shadow-sm service-card">
+
+
+  <!-- =================== SERVICIOS =================== -->
+  {% if services_items %}
+  <div class="card shadow-sm p-4 mb-5 section-card">
+    <h2 class="mb-4">Servicios</h2>
+
+    <div class="row">
+      {% for i in services_items %}
+      <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+
+        <div class="card shadow-sm h-100 modern-card">
+
           {% if i.service.image_url %}
-          <img src="{{ i.service.image_url.url }}" class="card-img-top" alt="{{ i.service.name }}"
-            style="height: 200px; object-fit: cover;">
+            <img src="{{ i.service.image_url.url }}" class="card-img-top"
+                 style="height: 200px; object-fit: cover;">
           {% else %}
-          <div style="height: 200px; background: #eee;" class="d-flex align-items-center justify-content-center">
-            <span class="text-muted">Sin imagen</span>
-          </div>
+            <div class="no-image d-flex align-items-center justify-content-center">
+              <span class="text-muted">Sin imagen</span>
+            </div>
           {% endif %}
+
           <div class="card-body d-flex flex-column">
-            <h6 class="card-title">{{ i.service.name }}</h6>
-            <small><strong>{{ i.quantity }}</strong></small>
-            <span class="badge bg-service mb-2">Servicio</span>
+            <h6 class="card-title font-weight-bold mb-1">{{ i.service.name }}</h6>
+
+            <small class="text-muted mb-1">
+              Cantidad: <strong>{{ i.quantity }}</strong>
+            </small>
+
+            <span class="badge badge-purple mb-2">Servicio</span>
+
             <p class="card-text text-muted small mb-2">{{ i.service.department }}</p>
+
             <div class="mt-auto d-flex justify-content-between align-items-center">
-              <span class="badge text-white" style="background-color: #6f42c1;">€{{ i.service.price }}</span>
+              <span class="badge price-badge">€{{ i.service.price }}</span>
               <small class="text-muted">{{ i.service.duration_minutes }} min</small>
             </div>
           </div>
+
         </div>
-      </a>
+
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
+
   </div>
+  {% endif %}
+
 </div>
-{% endif %}
+
+<!-- =================== ESTILOS =================== -->
+<style>
+  .modern-card {
+      border-radius: 14px;
+      transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .modern-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  .section-card {
+      border-radius: 16px;
+      background: #ffffff;
+  }
+
+  .grayscale {
+      filter: grayscale(100%);
+  }
+
+  .no-image {
+      height: 200px;
+      background: #eee;
+      border-radius: 4px;
+  }
+
+  .badge-purple {
+      background-color: #6f42c1;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+  }
+
+  .price-badge {
+      background-color: #6f42c1;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 8px;
+  }
+</style>
 
 {% endblock %}

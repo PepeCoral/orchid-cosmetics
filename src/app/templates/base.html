@@ -144,11 +144,11 @@
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'orders' %}"> Registro Pedidos</a>
+          <a class="nav-link" href="{% url 'orders' %}"> Mis Pedidos</a>
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'orders/anonymous_search' %}"> Seguimiento Pedidos</a>
+          <a class="nav-link" href="{% url 'orders/anonymous_search' %}"> Mis Pedidos</a>
         </li>
         {% endif %}
 
