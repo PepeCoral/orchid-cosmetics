@@ -90,6 +90,11 @@
                   {% endif %}
 
                   <button type="submit" class="btn btn-brand w-100">Reservar servicio</button>
+                  <button type="submit"
+                          formaction="{% url 'service_reserve_now' service.id %}"
+                          class="btn btn-success w-100 mt-2">
+                      Reservar ahora
+                  </button>
                 </form>
               </div>
 
