@@ -14,9 +14,17 @@ class CheckoutView(View):
         self.cart_service = CartService()
         self.order_service = OrderService()
 
-    def get(self, request):
+    def get(self, request: HttpRequest):
         cart_items = self.cart_service.get_cart_items(request)
-        form = CheckoutForm()
+        user = request.user
+        initial_data = {}
+       
+        if hasattr(user,"pay_method") and user.pay_method:
+            initial_data["pay_method"] =user.pay_method
+
+
+
+        form = CheckoutForm(initial=initial_data)
         total = self.cart_service.get_total(request)
 
         products = []

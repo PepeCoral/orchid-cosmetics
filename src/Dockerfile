@@ -11,8 +11,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . .
 
+# Run collectstatic
+RUN python manage.py collectstatic --noinput
+
 # Expose port
 EXPOSE 8000
 
 # Entrypoint: run migrations, then start server
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000 --insecure"]

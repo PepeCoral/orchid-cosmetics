@@ -28,10 +28,6 @@ class Migration(migrations.Migration):
             model_name='order',
             name='services',
         ),
-        migrations.RemoveField(
-            model_name='order',
-            name='payMethod',
-        ),
         migrations.AddField(
             model_name='order',
             name='pay_method',
