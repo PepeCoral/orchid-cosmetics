@@ -85,3 +85,6 @@ class OrderService():
         )
 
         return session.url
+    
+    def get_all_orders(self):
+        return self.order_repository.get_all()

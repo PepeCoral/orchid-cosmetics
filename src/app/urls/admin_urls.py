@@ -25,6 +25,9 @@ from app.views.admin.service.show_service_view import ShowServiceView
 from app.views.admin.service.update_service_view import UpdateServiceView
 from app.views.admin.service.delete_service_view import DeleteServiceView
 
+# Order
+from app.views.admin.order.list_order_view import ListOrderView
+
 urlpatterns = [
     path("admin/", AdminPanelView.as_view(), name="admin"),
 
@@ -51,5 +54,8 @@ urlpatterns = [
     path('admin/cosmeticservices/<int:service_id>/', ShowServiceView.as_view(), name='admin/cosmeticservices/show'),
     path('admin/cosmeticservices/update/<int:service_id>/', UpdateServiceView.as_view(), name='admin/cosmeticservices/update'),
     path('admin/cosmeticservices/delete/<int:service_id>/', DeleteServiceView.as_view(), name='admin/cosmeticservices/delete'),
+
+    # Orders
+    path('admin/orders/', ListOrderView.as_view(), name='admin/orders'),
 
 ]
