@@ -1,5 +1,5 @@
 from django import forms
-from django.core.validators import MaxLengthValidator
+from django.core.validators import MaxLengthValidator,EmailValidator
 from app.models.order import DeliveryMethodOptions
 from app.models.user import PaymentMethodOptions
 
@@ -17,3 +17,8 @@ class CheckoutForm(forms.Form):
     pay_method = forms.ChoiceField(
         label="Metodo de pago",
         choices=PaymentMethodOptions.choices)
+
+    email = forms.EmailField(
+        label="Email",
+        validators=[EmailValidator("Formato incorrecto")]
+    )

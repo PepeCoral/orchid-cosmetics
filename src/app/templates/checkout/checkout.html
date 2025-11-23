@@ -30,6 +30,15 @@
               <!-- LEFT COLUMN -->
               <div class="col-md-7">
 
+                <!-- EMAIL -->
+                <div class="form-group compact mb-3">
+                  {{ form.email.label_tag }}
+                  {{ form.email }}
+                  {% for error in form.email.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
                 <!-- MÉTODO DE PAGO -->
                 <div class="form-group compact mb-3">
                   <label class="fw-medium">{{ form.pay_method.label }}</label>
@@ -155,7 +164,6 @@
     background-color: #8e5db5 !important;
   }
 
-  /* Optional: make entire radio label highlight on hover */
   .form-check:hover {
     background-color: rgba(169,122,207,0.1);
     border-radius: 0.35rem;

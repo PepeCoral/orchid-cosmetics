@@ -25,6 +25,9 @@ class CheckoutView(View):
         if hasattr(user,"address") and user.address:
             initial_data["address"] =user.address
 
+        if hasattr(user,"email") and user.email:
+            initial_data["email"] =user.email
+
 
 
         form = CheckoutForm(initial=initial_data)

@@ -18,10 +18,10 @@ class OrderService():
         self.order_repository = OrderRepository()
         self.order_item_repo= OrderItemRepository()
         self.user_service = UserService()
-        self.cart_service = CartService() 
+        self.cart_service = CartService()
         self.product_repo = ProductRepository()
 
-    def create_current_order(self,user_id:int | None, session_key: int | None, address: str, delivery_method, pay_method) -> Order:
+    def create_current_order(self,user_id:int | None, session_key: int | None, address: str, delivery_method, pay_method, email) -> Order:
         with transaction.atomic():
             if user_id is not None:
                 cart_items: list[CartItem] = self.cart_service.get_cart_items_by_user_id(user_id)
@@ -38,7 +38,7 @@ class OrderService():
 
         return order
 
-    
+
     def _create_order_items(self, cart_items, order):
         for cart_item in cart_items:
             quantity = cart_item.quantity
@@ -47,13 +47,13 @@ class OrderService():
                 self.order_item_repo.create(quantity=quantity,product=cart_item.item,order=order)
             else:
                 self.order_item_repo.create(quantity=quantity,service=cart_item.item,order=order)
-            
+
 
     def get_total_cost_by_order_id(self, order_id:int):
         return round(self.order_item_repo.get_total_amount(order_id),2)
 
     def create_stripe_session(self,request:HttpRequest, form: CheckoutForm):
-       
+
         success_url = reverse(viewname="checkout_success")
         cancel_url = reverse(viewname="checkout_cancel")
 
@@ -61,9 +61,9 @@ class OrderService():
 
         if len(cart_items_stripefied) == 0:
             raise Exception("El carrito no puede estar vacío")
-        
+
         user = request.user
-        
+
         if user.is_anonymous:
             if not request.session.session_key:
               request.session.create()
@@ -79,25 +79,24 @@ class OrderService():
                 success_url)+ '?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=request.build_absolute_uri(cancel_url)+ '?session_id={CHECKOUT_SESSION_ID}',
             metadata={
-            **owner_data, 
+            **owner_data,
             **form.cleaned_data
         }
         )
 
         return session.url
-    
+
     def get_all_orders(self):
         return self.order_repository.get_all()
-    
+
     def get_order_by_id(self, order_id:int) -> Order:
         return self.order_repository.get_by_id(order_id)
-    
+
     def get_services_by_order_id(self, order_id:int):
         return self.order_item_repo.get_services_of_order(order_id)
 
     def get_products_by_order_id(self, order_id:int):
         return self.order_item_repo.get_products_of_order(order_id)
-    
+
     def get_items_by_order_id(self, order_id:int):
         return self.order_item_repo.get_items_by_order_id(order_id)
-    
