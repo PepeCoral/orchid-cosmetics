@@ -1,4 +1,4 @@
-from app.models.user import User, RoleOptions
+from app.models.user import PaymentMethodOptions, User
 from app.repositories.user_repository import UserRepository
 from django.test import TestCase
 
@@ -9,8 +9,7 @@ class TestUserRepository(TestCase):
                 "username":"sofia",
                 "last_name":"gomez",
                 "address":"456 Elm St",
-                "pay_method":"credit card",
-                "role":RoleOptions.ADMIN
+                "pay_method":PaymentMethodOptions.PAYMENT_GATEWAY
             }
 
     # def test_create_user(self):
@@ -31,8 +30,7 @@ class TestUserRepository(TestCase):
         self.assertEqual(test_user.username, "sofia")
         self.assertEqual(test_user.last_name, "gomez")
         self.assertEqual(test_user.address, "456 Elm St")
-        self.assertEqual(test_user.pay_method, "credit card")
-        self.assertEqual(test_user.role, RoleOptions.ADMIN)
+        self.assertEqual(test_user.pay_method, PaymentMethodOptions.PAYMENT_GATEWAY)
         
     def test_get_all_users(self):
         User.objects.create(username="maria")
@@ -66,10 +64,12 @@ class TestUserRepository(TestCase):
 
 
     def test_user_is_admin(self):
-        user1 = User.objects.create(username="admin_user", role=RoleOptions.ADMIN)
-        user2 = User.objects.create(username="normal_user", role=RoleOptions.USER)
-        self.assertTrue(user1.is_admin())
-        self.assertFalse(user2.is_admin())
+        user1 = User.objects.create(username="admin_user")
+        user1.is_superuser = True
+        user1.save()
+        user2 = User.objects.create(username="normal_user")
+        self.assertTrue(user1.is_superuser)
+        self.assertFalse(user2.is_superuser)
 
     def test_get_by_email(self):
         user = User.objects.create(username="juan", email="juan@gmail.com")

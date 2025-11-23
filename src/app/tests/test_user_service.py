@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from unittest.mock import patch, MagicMock
 
 from django.test import TestCase
-from app.models.user import User, RoleOptions
+from app.models.user import PaymentMethodOptions, User
 from app.services.user_service import UserService
 
 
@@ -18,8 +18,7 @@ class TestUserService(TestCase):
             'first_name': 'John',
             'last_name': 'Doe',
             'address': '123 Main St',
-            'pay_method': 'Credit Card',
-            'role': RoleOptions.USER
+            'pay_method': PaymentMethodOptions.PAYMENT_GATEWAY
         }
         self.admin_data = {
             'username': 'admin',
@@ -29,8 +28,7 @@ class TestUserService(TestCase):
             'first_name': 'admin',
             'last_name': 'admin',
             'address': '123 Main St',
-            'pay_method': 'Credit Card',
-            'role': RoleOptions.ADMIN
+            'pay_method': PaymentMethodOptions.PAYMENT_GATEWAY
         }
         self.update_data = {
             'username':'Updated',
@@ -39,8 +37,7 @@ class TestUserService(TestCase):
             'first_name': 'Updated',
             'last_name': 'LastName',
             'address': 'New Address',
-            'pay_method': 'PayPal',
-            'role':RoleOptions.ADMIN
+            'pay_method': PaymentMethodOptions.CASH_ON_DELIVERY
         }
 
     def test_create_user_success(self):
@@ -53,7 +50,6 @@ class TestUserService(TestCase):
         assert user.last_name == test_data['last_name']
         assert user.address == test_data['address']
         assert user.pay_method == test_data['pay_method']
-        assert user.role == test_data['role']
         assert user.username == test_data['username']
 
     def test_create_invalid_data(self):
@@ -103,8 +99,7 @@ class TestUserService(TestCase):
         assert updated_user.first_name == 'Updated'
         assert updated_user.last_name == 'LastName'
         assert updated_user.address == 'New Address'
-        assert updated_user.pay_method == 'PayPal'
-        assert updated_user.role == RoleOptions.ADMIN
+        assert updated_user.pay_method == PaymentMethodOptions.CASH_ON_DELIVERY
 
     def test_update_user_duplicate_information(self):
         """Test que evita actualizar a un email ya existente"""

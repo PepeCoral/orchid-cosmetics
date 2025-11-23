@@ -5,6 +5,7 @@ from app.repositories.product_repository import ProductRepository
 from app.services.cart_item_service import CartService
 from app.models.order import Order
 from app.models.cart_item import CartItem
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 import stripe
 from django.db import transaction
@@ -90,14 +91,43 @@ class OrderService():
         return self.order_repository.get_all()
     
     def get_order_by_id(self, order_id:int) -> Order:
-        return self.order_repository.get_by_id(order_id)
+        order = self.order_repository.get_by_id(order_id)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden")
+        return order
     
     def get_services_by_order_id(self, order_id:int):
+        order = self.order_repository.get_by_id(order_id)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden")
         return self.order_item_repo.get_services_of_order(order_id)
 
     def get_products_by_order_id(self, order_id:int):
+        order = self.order_repository.get_by_id(order_id)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden")
         return self.order_item_repo.get_products_of_order(order_id)
     
     def get_items_by_order_id(self, order_id:int):
+        order = self.order_repository.get_by_id(order_id)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden")
         return self.order_item_repo.get_items_by_order_id(order_id)
+    
+    def update_order_status_to_shipped(self, order_id:int):
+        order = self.order_repository.get_by_id(order_id)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden")
+        
+        if order.status != Order.StatusOptions.PENDING:
+            raise ValidationError("Solo las órdenes pendientes pueden ser enviadas.")
+        return self.order_repository.update(id=order_id, status=Order.StatusOptions.SHIPPED)
+
+    def update_order_status_to_delivered(self, order_id:int):
+        order = self.order_repository.get_by_id(order_id)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden")
+        if order.status != Order.StatusOptions.SHIPPED:
+            raise ValidationError("Solo las órdenes enviadas pueden ser entregadas.")
+        return self.order_repository.update(id=order_id, status=Order.StatusOptions.DELIVERED)
     
