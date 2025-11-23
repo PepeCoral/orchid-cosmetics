@@ -75,7 +75,7 @@ class CheckoutView(View):
         form_cleaned_data = form.cleaned_data
         pay_method = form_cleaned_data.get("pay_method")
         if pay_method == PaymentMethodOptions.PAYMENT_GATEWAY.value:
-            
+
             try:
                 session_url = self.order_service.create_stripe_session(request=request,form=form)
                 return redirect(session_url)
@@ -96,7 +96,7 @@ class CheckoutView(View):
         order = self.order_service.create_current_order(user_id=user_id,session_key=session_key,
                                                 address=form_cleaned_data.get("address"),
                                                 delivery_method=form_cleaned_data.get("delivery_method"),
-                                                pay_method=form_cleaned_data.get("pay_method"), email=form_cleaned_data.get("email") )
+                                                pay_method=form_cleaned_data.get("pay_method"), email=form_cleaned_data.get("email"), request=request )
 
         total = self.order_service.get_total_cost_by_order_id(order.id)
 

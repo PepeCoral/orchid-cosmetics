@@ -12,6 +12,7 @@ from django.db import transaction
 from django.http import HttpRequest
 from app.forms.checkout.checkout_form import CheckoutForm
 from app.services.user_service import UserService
+from app.utils.email.resend_util import send_email
 
 class OrderService():
 
@@ -22,7 +23,7 @@ class OrderService():
         self.cart_service = CartService()
         self.product_repo = ProductRepository()
 
-    def create_current_order(self,user_id:int | None, session_key: int | None, address: str, delivery_method, pay_method, email) -> Order:
+    def create_current_order(self,user_id:int | None, session_key: int | None, address: str, delivery_method, pay_method, email, request) -> Order:
         with transaction.atomic():
             if user_id is not None:
                 cart_items: list[CartItem] = self.cart_service.get_cart_items_by_user_id(user_id)
@@ -36,6 +37,10 @@ class OrderService():
                 order = self.order_repository.create(address=address,delivery_method=delivery_method,pay_method=pay_method)
 
             self._create_order_items(cart_items, order)
+            try:
+              send_email(email, order.identifier,request)
+            except Exception as e:
+              print(e)
 
         return order
 
@@ -95,7 +100,7 @@ class OrderService():
         if not order:
             raise ValidationError("No se ha encontrado la orden")
         return order
-    
+
     def get_orders_by_user_id(self, user_id:int):
         user = self.user_service.get_user_by_id(user_id)
         if not user:
@@ -119,12 +124,12 @@ class OrderService():
         if not order:
             raise ValidationError("No se ha encontrado la orden")
         return self.order_item_repo.get_items_by_order_id(order_id)
-    
+
     def update_order_status_to_shipped(self, order_id:int):
         order = self.order_repository.get_by_id(order_id)
         if not order:
             raise ValidationError("No se ha encontrado la orden")
-        
+
         if order.status != Order.StatusOptions.PENDING:
             raise ValidationError("Solo las órdenes pendientes pueden ser enviadas.")
         return self.order_repository.update(id=order_id, status=Order.StatusOptions.SHIPPED)
@@ -136,11 +141,16 @@ class OrderService():
         if order.status != Order.StatusOptions.SHIPPED:
             raise ValidationError("Solo las órdenes enviadas pueden ser entregadas.")
         return self.order_repository.update(id=order_id, status=Order.StatusOptions.DELIVERED)
-    
+
     def get_order_by_identifier(self, form_data: dict):
         identifier = form_data["identifier"]
         order = self.order_repository.get_order_by_identifier(identifier)
         if not order:
             raise ValidationError("No se ha encontrado la orden con el identificador proporcionado")
         return order.first()
-    
+
+    def get_order_by_identifier_2(self, identifier):
+        order = self.order_repository.get_order_by_identifier(identifier)
+        if not order:
+            raise ValidationError("No se ha encontrado la orden con el identificador proporcionado")
+        return order.first()
