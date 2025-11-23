@@ -101,3 +101,10 @@ class OrderService():
     def get_items_by_order_id(self, order_id:int):
         return self.order_item_repo.get_items_by_order_id(order_id)
     
+    def update_order_status_to_shipped(self, order_id:int):
+        print(f"Updating order {order_id} to shipped in service")
+        return self.order_repository.update(id=order_id, status=Order.StatusOptions.SHIPPED)
+
+    def update_order_status_to_delivered(self, order_id:int):
+        return self.order_repository.update(id=order_id, status=Order.StatusOptions.DELIVERED)
+    

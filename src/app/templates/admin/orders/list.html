@@ -15,7 +15,22 @@
         <p><strong>Estado:</strong> {{ order.status }}</p>
         <p><strong>Indentifier:</strong> {{ order.identifier }}</p>
 
-        <a href="{% url 'admin/orders/items' order.id %}" class="btn btn-sm action-btn">Ver</a>
+        <div class="d-flex align-items-center">
+        <div class="button-row">
+          {% if order.status == "pending" %}
+            <form method="post" action="{% url 'admin/orders/ship' order.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-primary">Marcar pedido como enviado</button>
+            </form>
+          {% elif order.status == "shipped" %}
+            <form method="post" action="{% url 'admin/orders/deliver' order.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-primary">Marcar pedido como entregado</button>
+            </form>
+          {% endif %}
+          <a href="{% url 'admin/orders/items' order.id %}" class="btn btn-sm action-btn">Ver</a>
+        </div>
+      </div>
     </div>
     {% endfor %}
     

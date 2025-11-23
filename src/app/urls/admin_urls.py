@@ -27,9 +27,11 @@ from app.views.admin.service.delete_service_view import DeleteServiceView
 
 # Order
 from app.views.admin.order.list_order_view import ListOrderView
+from app.views.admin.order.shipped_status_update_view import ShippedStatusUpdateView
+from app.views.admin.order.delivered_status_update_view import DeliveredStatusUpdateView
 
 # Order Items
-from app.views.admin.order.orderItems.list_items_view import ListItemView
+from app.views.admin.items.list_items_view import ListItemView
 
 urlpatterns = [
     path("admin/", AdminPanelView.as_view(), name="admin"),
@@ -60,6 +62,8 @@ urlpatterns = [
 
     # Orders
     path('admin/orders/', ListOrderView.as_view(), name='admin/orders'),
+    path('admin/orders/<int:order_id>/ship/', ShippedStatusUpdateView.as_view(), name='admin/orders/ship'),
+    path('admin/orders/<int:order_id>/deliver/', DeliveredStatusUpdateView.as_view(), name='admin/orders/deliver'),
 
     # Order Items
     path('admin/orders/<int:order_id>/items/', ListItemView.as_view(), name='admin/orders/items'),
