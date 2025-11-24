@@ -38,7 +38,7 @@ class OrderService():
 
             self._create_order_items(cart_items, order)
             try:
-              send_email(email, order.identifier,request)
+              send_email(email=email, order_identifier=order.identifier,request=request)
             except Exception as e:
               print(e)
 
