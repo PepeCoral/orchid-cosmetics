@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'admin/base_admin.html' %}
 {% block title %}Lista de Productos - Orchid Cosmetics{% endblock %}
 
 {% block content %}
@@ -12,7 +12,13 @@
 
   <!-- Estado y coste -->
   <h2 class="mb-2">
-    Estado: <span class="badge badge-info">{{ order.status }}</span>
+    {% if order.status == "pending" %}
+        Estado: <span class="badge badge-warning text-dark">Pendiente</span>
+    {% elif order.status == "shipped" %}
+        Estado: <span class="badge badge-primary">Enviado</span>
+    {% else %}
+        Estado: <span class="badge badge-success">Entregado</span>
+    {% endif %}
   </h2>
 
   <h3 class="mb-4">

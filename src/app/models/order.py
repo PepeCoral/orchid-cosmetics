@@ -14,9 +14,9 @@ class Order(models.Model):
     def generate_identifier():
          pass
     class StatusOptions(models.TextChoices):
-        PENDING = 'pending', 'Pending'
-        SHIPPED = 'shipped', 'Shipped'
-        DELIVERED = 'delivered', 'Delivered'
+        PENDING = 'pending', 'Pendiente'
+        SHIPPED = 'shipped', 'Enviado'
+        DELIVERED = 'delivered', 'Entregado'
 
 
 
