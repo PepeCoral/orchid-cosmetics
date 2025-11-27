@@ -38,9 +38,11 @@ class StripeWebhookView(View):
             delivery_method = metadata.get('delivery_method', None)
             pay_method = metadata.get('pay_method', None)
             email = metadata.get('email', None)
+            identifier = metadata.get('identifier', None)
 
             order = self.order_service.create_current_order(user_id=user_id,
                                                             session_key=session_key, address=address,
-                                                            delivery_method=delivery_method,pay_method=pay_method, email=email,request=request)
+                                                            delivery_method=delivery_method,pay_method=pay_method, email=email,request=request
+                                                            , identifier=identifier)
 
         return HttpResponse(status = 200)

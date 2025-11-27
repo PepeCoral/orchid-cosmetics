@@ -18,5 +18,6 @@ class SuccessCheckoutView(View):
         
         total = session.amount_total/100
         
+        identifier = session.metadata.identifier
         
-        return render(request, "checkout/success.html", {"total": total, "session": session})
+        return render(request, "checkout/success.html", {"total": total, "identifier": identifier})
