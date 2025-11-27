@@ -14,10 +14,9 @@ class PromoteServiceView(View):
 
         if not request.user.is_superuser:
             return redirect("/")
-        print("HOLAAA")
+        
         services = self.service_service.get_all_services()
         try:
-            print("hola")
             self.service_service.promote_service(service_id)
             return redirect(f"/admin/cosmeticservices")
         except Exception as e:

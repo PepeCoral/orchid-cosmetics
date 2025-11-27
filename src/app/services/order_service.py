@@ -98,7 +98,6 @@ class OrderService():
         }
         )
 
-        print(session.metadata)
         return session.url
 
     def get_all_orders(self):
