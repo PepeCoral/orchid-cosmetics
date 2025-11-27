@@ -1,6 +1,6 @@
 {# components/product_card.html #}
-<a href="{% url 'products/detail' product.id %}" class="text-decoration-none" style="color: inherit;">
-  <div class="card h-100 shadow-sm product-card">
+<div class="card h-100 shadow-sm product-card">
+    <a href="{% url 'products/detail' product.id %}" class="text-decoration-none" style="color: inherit;">
     {% if product.image_url %}
     {% if product.stock == 0 %}
     <img src="{{ product.image_url.url }}" class="card-img-top grayscale" alt="{{ product.name }}"
@@ -14,6 +14,9 @@
       <span class="text-muted">Sin imagen</span>
     </div>
     {% endif %}
+    </a>
+
+
     <div class="card-body d-flex flex-column">
       <h6 class="card-title">{{ product.name }}</h6>
       <p class="card-text text-muted small mb-2">{{ product.fabricator }}</p>
@@ -25,6 +28,62 @@
         <small class="text-muted">{{ product.stock }} en stock</small>
         {% endif %}
       </div>
+      {% if buy_form and product.stock != 0 %}
+      <form method="POST" action="{% url 'products/detail' product.id %}" class="product-buy-group mt-2">
+          {% csrf_token %}
+          <div class="input-group">
+              <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="form-control text-end">
+              <button type="submit" class="btn">Añadir al carrito</button>
+          </div>
+      </form>
+      {% endif %}
     </div>
   </div>
-</a>
+
+
+
+
+<style>
+
+.product-buy-group .input-group {
+  display: flex;
+  width: 100%;
+}
+
+.product-buy-group .input-group input {
+  flex: 1 1 auto;
+  height: 35px;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.product-buy-group .input-group button {
+  flex: 0 0 auto;
+  height: 35px;
+  font-size: 0.9rem;
+  background-color: #b19cd9;
+  border-color: #b19cd9;
+  padding: 0 0.75rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.product-buy-group .input-group button:hover {
+  background-color: #a17dcf;
+  border-color: #a17dcf;
+}
+
+@media (max-width: 576px) {
+  .product-buy-group .input-group {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .product-buy-group .input-group input,
+  .product-buy-group .input-group button {
+    width: 100%;
+    border-radius: 0.25rem;
+  }
+}
+
+</style>
