@@ -9,6 +9,8 @@ class CreateCategoryView(View):
         self.category_service = CategoryService()
 
     def get(self, request):
+        return redirect("/")
+
         if request.user.is_anonymous:
             return redirect("/")
 
@@ -19,6 +21,8 @@ class CreateCategoryView(View):
         return render(request, "admin/categories/create.html", {"form": form})
 
     def post(self, request):
+        return redirect("/")
+
         if request.user.is_anonymous:
             return redirect("/")
 
