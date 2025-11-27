@@ -100,4 +100,4 @@ class CheckoutView(View):
 
         total = self.order_service.get_total_cost_by_order_id(order.id)
 
-        return render(request, "checkout/success_cod.html", {"total": total})
+        return render(request, "checkout/success_cod.html", {"total": total, "identifier": order.identifier})
