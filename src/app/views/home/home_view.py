@@ -1,5 +1,7 @@
 from django.views import View
 from django.shortcuts import render
+from app.forms.product.buy_product_form import BuyProductForm
+from app.forms.service.buy_service_form import BuyServiceForm
 from app.services.product_service import ProductService
 from app.services.service_service import ServiceService
 from app.forms.catalog.search_product_catalog_form import SearchProductCatalogForm
@@ -18,11 +20,15 @@ class HomeView(View):
 
           form = SearchProductCatalogForm()
           formS = SearchServiceCatalogForm()
+          buy_form = BuyProductForm()
+          rent_form= BuyServiceForm()
           context = {
               "products": products,
               "services": services,
               "form":form,
-              "formS":formS
+              "formS":formS,
+              "buy_form":buy_form,
+              "rent_form":rent_form
           }
           return render(request, "home.html", context)
         except Exception as e:

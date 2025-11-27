@@ -1,6 +1,6 @@
 {# components/service_card.html #}
-<a href="/services/{{ service.id }}/" class="text-decoration-none" style="color: inherit;">
-  <div class="card h-100 shadow-sm service-card">
+<div class="card h-100 shadow-sm service-card">
+    <a href="/services/{{ service.id }}/" class="text-decoration-none" style="color: inherit;">
     {% if service.image_url %}
     <img src="{{ service.image_url.url }}" class="card-img-top" alt="{{ service.name }}"
       style="height: 200px; object-fit: cover;">
@@ -9,6 +9,7 @@
       <span class="text-muted">Sin imagen</span>
     </div>
     {% endif %}
+  </a>
     <div class="card-body d-flex flex-column">
       <h6 class="card-title">{{ service.name }}</h6>
       <span class="badge bg-service mb-2">Servicio</span>
@@ -17,6 +18,59 @@
         <span class="badge text-white" style="background-color: #6f42c1;">€{{ service.price }}</span>
         <small class="text-muted">{{ service.duration_minutes }} min</small>
       </div>
+       {% if rent_form %}
+      <form method="POST" action="{% url 'service_detail' service.id %}" class="service-buy-group mt-2">
+          {% csrf_token %}
+          <div class="input-group">
+              <input type="number" name="quantity" min="1" value="1" class="form-control text-end">
+              <button type="submit" class="btn">Añadir al carrito</button>
+          </div>
+      </form>
+      {% endif %}
     </div>
-  </div>
-</a>
+</div>
+
+<style>
+
+.service-buy-group .input-group {
+  display: flex;
+  width: 100%;
+}
+
+.service-buy-group .input-group input {
+  flex: 1 1 auto;
+  height: 35px;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.service-buy-group .input-group button {
+  flex: 0 0 auto;
+  height: 35px;
+  font-size: 0.9rem;
+  background-color: #b19cd9;
+  border-color: #b19cd9;
+  padding: 0 0.75rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.service-buy-group .input-group button:hover {
+  background-color: #a17dcf;
+  border-color: #a17dcf;
+}
+
+@media (max-width: 576px) {
+  .service-buy-group .input-group {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .service-buy-group .input-group input,
+  .service-buy-group .input-group button {
+    width: 100%;
+    border-radius: 0.25rem;
+  }
+}
+
+</style>
