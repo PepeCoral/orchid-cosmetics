@@ -9,6 +9,8 @@ class UpdateCategoryView(View):
         self.category_service = CategoryService()
 
     def get(self, request, category_id):
+        return redirect("/")
+
         if request.user.is_anonymous:
             return redirect("/")
 
@@ -21,6 +23,8 @@ class UpdateCategoryView(View):
         return render(request, "admin/categories/update.html", {"form": form})
 
     def post(self, request, category_id):
+        return redirect("/")
+
         if request.user.is_anonymous:
             return redirect("/")
 
