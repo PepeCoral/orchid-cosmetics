@@ -15,7 +15,7 @@
   <div class="row">
     {% for s in services %}
     <div class="col-md-4 col-lg-3 mb-4">
-      {% include 'components/service_card.html' with service=s %}
+      {% include 'components/service_card.html' with service=s rent_form=rent_form %}
     </div>
     {% endfor %}
 
