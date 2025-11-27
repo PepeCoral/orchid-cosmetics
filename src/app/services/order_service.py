@@ -7,6 +7,7 @@ from app.models.order import Order
 from app.models.cart_item import CartItem
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+import uuid
 import stripe
 from django.db import transaction
 from django.http import HttpRequest
@@ -23,7 +24,7 @@ class OrderService():
         self.cart_service = CartService()
         self.product_repo = ProductRepository()
 
-    def create_current_order(self,user_id:int | None, session_key: int | None, address: str, delivery_method, pay_method, email, request) -> Order:
+    def create_current_order(self,user_id:int | None, session_key: int | None, address: str, delivery_method, pay_method, email, request, identifier = None) -> Order:
         with transaction.atomic():
             if user_id is not None:
                 cart_items: list[CartItem] = self.cart_service.get_cart_items_by_user_id(user_id)
@@ -36,6 +37,10 @@ class OrderService():
                 self.cart_service.clear_cart_by_session_key(session_key=session_key)
                 order = self.order_repository.create(address=address,delivery_method=delivery_method,pay_method=pay_method)
 
+            if identifier:
+                order.identifier = identifier
+                order.save()
+            
             self._create_order_items(cart_items, order)
             try:
               send_email(email=email, order_identifier=order.identifier,request=request)
@@ -70,6 +75,8 @@ class OrderService():
 
         user = request.user
 
+        identifier = str(uuid.uuid4())
+
         if user.is_anonymous:
             if not request.session.session_key:
               request.session.create()
@@ -86,7 +93,8 @@ class OrderService():
             cancel_url=request.build_absolute_uri(cancel_url)+ '?session_id={CHECKOUT_SESSION_ID}',
             metadata={
             **owner_data,
-            **form.cleaned_data
+            **form.cleaned_data,
+            "identifier": identifier
         }
         )
 

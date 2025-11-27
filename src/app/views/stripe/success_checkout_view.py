@@ -9,6 +9,7 @@ class SuccessCheckoutView(View):
         super().__init__(**kwargs)
     
     def get(self,request:HttpRequest):
+        
         session_id = request.GET.get("session_id")
         if not session_id:
             return render(request, "/", {"message": "No se encontró la sesión"})
@@ -17,4 +18,6 @@ class SuccessCheckoutView(View):
         
         total = session.amount_total/100
         
-        return render(request, "checkout/success.html", {"total": total})
+        identifier = session.metadata.identifier
+        
+        return render(request, "checkout/success.html", {"total": total, "identifier": identifier})
