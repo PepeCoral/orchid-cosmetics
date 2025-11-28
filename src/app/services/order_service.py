@@ -16,6 +16,7 @@ from app.services.user_service import UserService
 from app.utils.email.resend_util import send_email
 from app.models.order import OrderItem
 from app.models.cart_item import CartItem
+from app.models.user import User
 
 class OrderService():
 
@@ -49,8 +50,8 @@ class OrderService():
             try:
               total = self.get_total_cost_by_order_id(order.id)  + order.shipping_costs
               if user_id is not None:
-                  user = self.user_service.get_user_by_id(user_id)
-                  send_email(email=email, order_identifier=order.identifier, request=request, name=user.name, total=total, address=order.address )
+                  user: User = self.user_service.get_user_by_id(user_id)
+                  send_email(email=email, order_identifier=order.identifier, request=request, name=user.first_name, total=total, address=order.address )
               else:
                   send_email(email=email, order_identifier=order.identifier, request=request, total=total, address=order.address )
             except Exception as e:
