@@ -14,6 +14,8 @@ from django.http import HttpRequest
 from app.forms.checkout.checkout_form import CheckoutForm
 from app.services.user_service import UserService
 from app.utils.email.resend_util import send_email
+from app.models.order import OrderItem
+from app.models.cart_item import CartItem
 
 class OrderService():
 
@@ -29,18 +31,20 @@ class OrderService():
             if user_id is not None:
                 cart_items: list[CartItem] = self.cart_service.get_cart_items_by_user_id(user_id)
                 user = self.user_service.get_user_by_id(user_id)
+                shipping_costs = OrderService.calculate_shipping_costs(OrderService.extract_products(cart_items))
                 order = self.order_repository.create(user=user,address=address,
-                                                    delivery_method=delivery_method,pay_method=pay_method)
+                                                    delivery_method=delivery_method,pay_method=pay_method,shipping_costs=shipping_costs)
                 self.cart_service.clear_cart_by_user_id(user_id)
             else:
                 cart_items: list[CartItem] = self.cart_service.get_cart_items_by_session_key(session_key)
                 self.cart_service.clear_cart_by_session_key(session_key=session_key)
-                order = self.order_repository.create(address=address,delivery_method=delivery_method,pay_method=pay_method)
+                shipping_costs = OrderService.calculate_shipping_costs(OrderService.extract_products(cart_items))
+                order = self.order_repository.create(address=address,delivery_method=delivery_method,pay_method=pay_method,shipping_costs=shipping_costs)
 
             if identifier:
                 order.identifier = identifier
                 order.save()
-            
+
             self._create_order_items(cart_items, order)
             try:
               send_email(email=email, order_identifier=order.identifier,request=request)
@@ -69,6 +73,10 @@ class OrderService():
         cancel_url = reverse(viewname="checkout_cancel")
 
         cart_items_stripefied =[item.stripify() for item in self.cart_service.get_cart_items(request)]
+        shipping_costs = OrderService.calculate_shipping_costs(OrderService.extract_products(self.cart_service.get_cart_items(request)))
+        shipping_costs_stipefied = OrderService.stripify_shipping(shipping_costs)
+
+        cart_items_stripefied += shipping_costs_stipefied
 
         if len(cart_items_stripefied) == 0:
             raise Exception("El carrito no puede estar vacío")
@@ -162,3 +170,35 @@ class OrderService():
         if not order:
             raise ValidationError("No se ha encontrado la orden con el identificador proporcionado")
         return order.first()
+
+    def calculate_shipping_costs(products: list[CartItem | OrderItem]) -> float:
+        if len(products) == 0:
+            return 0
+
+        total = sum(item.subtotal() for item in products)
+        THRESHOLD = 15
+        if(total >= THRESHOLD):
+            return 0
+        SHIPPING_COSTS = 4.99
+        return SHIPPING_COSTS
+
+    def extract_products(cart_items: list[CartItem])-> list[CartItem]:
+        products = []
+        for item in cart_items:
+            if isinstance(item.item, Product):
+                products.append(item)
+
+        return products
+
+    def stripify_shipping(shipping_cost):
+      return {
+          "price_data": {
+              "currency": "eur",
+              "product_data": {
+                  "name": "Gastos de envío",
+                  "description": "Coste de envío"
+              },
+              "unit_amount": int(shipping_cost * 100)
+          },
+          "quantity": 1
+      }

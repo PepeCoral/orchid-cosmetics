@@ -27,6 +27,7 @@ class Order(models.Model):
     delivery_method = models.CharField(max_length=20, choices=DeliveryMethodOptions.choices, default=DeliveryMethodOptions.CORREO)
     pay_method = models.CharField(max_length=20, choices=PaymentMethodOptions.choices, default=PaymentMethodOptions.PAYMENT_GATEWAY)
     identifier = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    shipping_costs = models.FloatField(default=0)
 
 
     def __str__(self):
@@ -59,3 +60,6 @@ class OrderItem(models.Model):
     @property
     def item(self) -> Product | Service:
         return self.product or self.service
+
+    def subtotal(self) -> float:
+        return self.item.price * self.quantity
