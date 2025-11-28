@@ -20,7 +20,6 @@ def send_email(request, email, order_identifier, total, address, name=None):
     base_url = request.build_absolute_uri('/')[:-1]
     order_url = f"{base_url}/orders/uuid/{order_identifier}"
 
-    # Greeting depending on name availability
     if name:
         greeting = f"Hola {name}, gracias por tu compra en <strong>Orchid Cosmetics</strong>."
     else:

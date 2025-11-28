@@ -35,6 +35,7 @@ class CheckoutView(View):
           form = CheckoutForm(initial=initial_data)
           total = self.cart_service.get_total(request)
 
+
           products = []
           services = []
           for item in cart_items:
@@ -48,6 +49,7 @@ class CheckoutView(View):
           shipping_cost = OrderService.calculate_shipping_costs(products)
           total = float(total) + shipping_cost
 
+          total = round(total,2)
 
 
 
@@ -76,6 +78,7 @@ class CheckoutView(View):
                 services.append(item)
         shipping_cost = OrderService.calculate_shipping_costs(products)
         total = float(total) + shipping_cost
+        total = round(total,2)
 
 
         if not form.is_valid():
@@ -107,5 +110,7 @@ class CheckoutView(View):
                                                 pay_method=form_cleaned_data.get("pay_method"), email=form_cleaned_data.get("email"), request=request )
 
         total = self.order_service.get_total_cost_by_order_id(order.id)
+        total = round(total,2)
+
 
         return render(request, "checkout/success_cod.html", {"total": total, "identifier": order.identifier})

@@ -48,10 +48,10 @@ class OrderService():
 
             self._create_order_items(cart_items, order)
             try:
-              total = self.get_total_cost_by_order_id(order.id)  + order.shipping_costs
+              total = round(float(self.get_total_cost_by_order_id(order.id))  + order.shipping_costs,2 )
               if user_id is not None:
                   user: User = self.user_service.get_user_by_id(user_id)
-                  send_email(email=email, order_identifier=order.identifier, request=request, name=user.first_name, total=total, address=order.address )
+                  send_email(email=email, order_identifier=order.identifier, request=request, total=total, address=order.address,name=user.first_name  )
               else:
                   send_email(email=email, order_identifier=order.identifier, request=request, total=total, address=order.address )
             except Exception as e:
