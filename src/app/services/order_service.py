@@ -76,7 +76,7 @@ class OrderService():
         shipping_costs = OrderService.calculate_shipping_costs(OrderService.extract_products(self.cart_service.get_cart_items(request)))
         shipping_costs_stipefied = OrderService.stripify_shipping(shipping_costs)
 
-        cart_items_stripefied += shipping_costs_stipefied
+        cart_items_stripefied.append(shipping_costs_stipefied)
 
         if len(cart_items_stripefied) == 0:
             raise Exception("El carrito no puede estar vacío")
