@@ -5,14 +5,14 @@ import requests
 load_dotenv()
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL") 
+SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_NAME = os.getenv("SENDER_NAME", "Orchid Cosmetics")
 
 def send_email(request, email, order_identifier):
     if not BREVO_API_KEY:
         print("Error: BREVO_API_KEY no está configurada")
         return False
-        
+
     if not SENDER_EMAIL:
         print("Error: SENDER_EMAIL no está configurada")
         return False
@@ -22,7 +22,8 @@ def send_email(request, email, order_identifier):
     order_url = f"{base_url}/orders/uuid/{order_identifier}"
 
     html_template = """
-      <html>
+    <!DOCTYPE html>
+    <html>
       <head>
         <meta charset="UTF-8" />
         <title>Orchid Cosmetics - Detalles de tu pedido</title>
@@ -75,7 +76,5 @@ def send_email(request, email, order_identifier):
         response = requests.post(url, json=data, headers=headers)
         response.raise_for_status()
         print(f"Email enviado a {email}")
-        return True
     except requests.exceptions.RequestException as e:
         print(f"Error enviando email: {e}")
-        return False
