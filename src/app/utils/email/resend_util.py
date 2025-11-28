@@ -8,7 +8,7 @@ BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL") 
 SENDER_NAME = os.getenv("SENDER_NAME", "Orchid Cosmetics")
 
-def send_email(request, email, order_identifier):
+def send_email(request, email, order_identifier, address, cost):
     if not BREVO_API_KEY:
         print("Error: BREVO_API_KEY no está configurada")
         return False
@@ -22,40 +22,64 @@ def send_email(request, email, order_identifier):
     order_url = f"{base_url}/orders/uuid/{order_identifier}"
 
     html_template = """
-      <html>
-      <head>
-        <meta charset="UTF-8" />
-        <title>Orchid Cosmetics - Detalles de tu pedido</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; background-color: #f3f0f8; padding: 40px;">
-        <div style="max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 6px solid #7b3fa1;">
-          <h2 style="text-align:center; color:#4a2767; margin-bottom: 20px; font-weight: 600;">
-            Orchid Cosmetics
-          </h2>
-          <p style="color:#444; font-size: 16px; line-height: 1.6;">
-            Hola, gracias por tu compra en <strong>Orchid Cosmetics</strong>.
-            Tu pedido ha sido creado con éxito y ahora puedes consultarlo en el siguiente enlace.
-          </p>
-          <div style="text-align:center; margin: 32px 0;">
-            <a href="{{ORDER_URL}}"
-               style="background:#7b3fa1; color:white; padding:14px 28px; text-decoration:none; font-size:16px; border-radius:8px; display:inline-block; font-weight:600;">
-              Ver mi pedido
-            </a>
-          </div>
-          <p style="color:#555; font-size:15px; line-height:1.6;">
-            Si el botón no funciona, también puedes acceder directamente a este enlace:<br>
-            <a href="{{ORDER_URL}}" style="color:#7b3fa1;">{{ORDER_URL}}</a>
-          </p>
-          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-          <p style="color:#777; text-align:center; font-size:12px; line-height:1.5;">
-            Este es un correo automático. Si no realizaste ningún pedido, puedes ignorar este mensaje.
-          </p>
-        </div>
-      </body>
-    </html>
-    """
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Orchid Cosmetics - Detalles de tu pedido</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f3f0f8; padding: 40px;">
+  <div style="max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 6px solid #7b3fa1;">
+      
+    <h2 style="text-align:center; color:#4a2767; margin-bottom: 20px; font-weight: 600;">
+      Orchid Cosmetics
+    </h2>
 
-    html_content = html_template.replace("{{ORDER_URL}}", order_url)
+    <p style="color:#444; font-size: 16px; line-height: 1.6;">
+      Hola, gracias por tu compra en <strong>Orchid Cosmetics</strong>.
+      Tu pedido ha sido creado con éxito y ahora puedes consultarlo en el siguiente enlace.
+    </p>
+
+    <div style="text-align:center; margin: 32px 0;">
+      <a href="{{ORDER_URL}}"
+         style="background:#7b3fa1; color:white; padding:14px 28px; text-decoration:none; font-size:16px; border-radius:8px; display:inline-block; font-weight:600;">
+        Ver mi pedido
+      </a>
+    </div>
+
+    <p style="color:#555; font-size:15px; line-height:1.6;">
+      Si el botón no funciona, también puedes acceder directamente a este enlace:<br>
+      <a href="{{ORDER_URL}}" style="color:#7b3fa1;">{{ORDER_URL}}</a>
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+    <h3 style="color:#4a2767; margin-bottom:10px;">Detalles del pedido</h3>
+
+    <p style="color:#444; font-size:15px; line-height:1.6;">
+      <strong>Dirección de envío:</strong><br>
+      {{ADDRESS}}
+    </p>
+
+    <p style="color:#444; font-size:15px; line-height:1.6;">
+      <strong>Coste total:</strong> {{COST}} €
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+    <p style="color:#777; text-align:center; font-size:12px; line-height:1.5;">
+      Este es un correo automático. Si no realizaste ningún pedido, puedes ignorar este mensaje.
+    </p>
+  </div>
+</body>
+</html>
+"""
+
+    html_content = (
+        html_template
+        .replace("{{ORDER_URL}}", order_url)
+        .replace("{{ADDRESS}}", address)
+        .replace("{{COST}}", str(cost))
+    )
 
     url = "https://api.brevo.com/v3/smtp/email"
     headers = {

@@ -8,6 +8,7 @@ from app.models.service import Service
 from app.models.order import PaymentMethodOptions
 from django.http import HttpRequest
 
+
 class CheckoutView(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -15,40 +16,46 @@ class CheckoutView(View):
         self.order_service = OrderService()
 
     def get(self, request: HttpRequest):
-        cart_items = self.cart_service.get_cart_items(request)
-        user = request.user
-        initial_data = {}
+        try:
+          cart_items = self.cart_service.get_cart_items(request)
+          user = request.user
+          initial_data = {}
 
-        if hasattr(user,"pay_method") and user.pay_method:
-            initial_data["pay_method"] =user.pay_method
+          if hasattr(user,"pay_method") and user.pay_method:
+              initial_data["pay_method"] =user.pay_method
 
-        if hasattr(user,"address") and user.address:
-            initial_data["address"] =user.address
+          if hasattr(user,"address") and user.address:
+              initial_data["address"] =user.address
 
-        if hasattr(user,"email") and user.email:
-            initial_data["email"] =user.email
-
-
-
-        form = CheckoutForm(initial=initial_data)
-        total = self.cart_service.get_total(request)
-
-        products = []
-        services = []
-        for item in cart_items:
-            if isinstance(item.item, Product):
-                products.append(item)
-                if item.quantity> item.item.stock:
-                    error = f"El producto {item.item.name} tiene stock {item.item.stock} y está intentando comprar {item.quantity}"
-                    return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": error})
-            elif isinstance(item.item, Service):
-                services.append(item)
+          if hasattr(user,"email") and user.email:
+              initial_data["email"] =user.email
 
 
 
+          form = CheckoutForm(initial=initial_data)
+          total = self.cart_service.get_total(request)
 
-        return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
+          products = []
+          services = []
+          for item in cart_items:
+              if isinstance(item.item, Product):
+                  products.append(item)
+                  if item.quantity> item.item.stock:
+                      error = f"El producto {item.item.name} tiene stock {item.item.stock} y está intentando comprar {item.quantity}"
+                      return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": error})
+              elif isinstance(item.item, Service):
+                  services.append(item)
+          shipping_cost = OrderService.calculate_shipping_costs(products)
+          total = float(total) + shipping_cost
 
+
+
+
+          return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "shipping": shipping_cost})
+        except Exception as e:
+          import traceback
+          print("Error:", e)
+          traceback.print_exc()
 
 
     def post(self, request: HttpRequest):
@@ -64,14 +71,15 @@ class CheckoutView(View):
                 products.append(item)
                 if item.quantity> item.item.stock:
                     error = f"El producto {item.item.name} tiene stock {item.item.stock} y está intentando comprar {item.quantity}"
-                    return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": error})
+                    return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": error, "shipping": shipping_cost})
             elif isinstance(item.item, Service):
                 services.append(item)
-
+        shipping_cost = OrderService.calculate_shipping_costs(products)
+        total = float(total) + shipping_cost
 
 
         if not form.is_valid():
-            return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total})
+            return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "shipping": shipping_cost})
         form_cleaned_data = form.cleaned_data
         pay_method = form_cleaned_data.get("pay_method")
         if pay_method == PaymentMethodOptions.PAYMENT_GATEWAY.value:
@@ -80,7 +88,7 @@ class CheckoutView(View):
                 session_url = self.order_service.create_stripe_session(request=request,form=form)
                 return redirect(session_url)
             except Exception as e:
-                return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": e})
+                return render(request, "checkout/checkout.html", {"form": form, "products": products, "services": services, "total": total, "error": e, "shipping": shipping_cost})
 
 
         user = request.user
@@ -100,4 +108,4 @@ class CheckoutView(View):
 
         total = self.order_service.get_total_cost_by_order_id(order.id)
 
-        return render(request, "checkout/success_cod.html", {"total": total})
+        return render(request, "checkout/success_cod.html", {"total": total, "identifier": order.identifier})
