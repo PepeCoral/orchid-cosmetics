@@ -90,7 +90,7 @@
 
               </div>
 
-              <!-- RIGHT COLUMN -->
+               <!-- RIGHT COLUMN -->
               <div class="col-md-5">
                 <div class="card border-0 shadow-sm">
                   <div class="card-body">
@@ -109,7 +109,18 @@
 
                     <hr>
 
-                    <h5 class="text-end fw-bold">Total: €{{ total }}</h5>
+                    <!-- SHIPPING COST -->
+                    <div class="d-flex justify-content-between small">
+                      <span>Gastos de envío:</span>
+                      <span>{{ shipping }}€</span>
+                    </div>
+
+                    <hr>
+
+                    <!-- TOTAL INCLUDING SHIPPING -->
+                    <h5 class="text-end fw-bold">
+                      Total: {{ total }}€
+                    </h5>
 
                   </div>
                 </div>
