@@ -17,7 +17,6 @@ def send_email(request, email, order_identifier):
         print("Error: SENDER_EMAIL no está configurada")
         return False
 
-    # El resto de tu código funciona perfectamente...
     base_url = request.build_absolute_uri('/')[:-1]
     order_url = f"{base_url}/orders/uuid/{order_identifier}"
 
