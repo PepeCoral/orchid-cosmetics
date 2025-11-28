@@ -47,7 +47,7 @@ class OrderService():
 
             self._create_order_items(cart_items, order)
             try:
-              cost = self.get_total_cost_by_order_id(order.id)
+              cost = self.get_total_cost_by_order_id(order.id) + order.shipping_costs
               send_email(email=email, order_identifier=order.identifier,request=request, address=address, cost=cost)
             except Exception as e:
               print(e)
