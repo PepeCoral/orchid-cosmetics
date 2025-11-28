@@ -4,11 +4,20 @@ import requests
 
 load_dotenv()
 
-BREVO_API_KEY = os.getenv("BREVO_API_KEY")  # Your Brevo API key
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+SENDER_NAME = os.getenv("SENDER_NAME", "Orchid Cosmetics")
 
 def send_email(request, email, order_identifier):
-    # Build URL based on the current host
-    base_url = request.build_absolute_uri('/')[:-1]  # remove trailing slash
+    if not BREVO_API_KEY:
+        print("Error: BREVO_API_KEY no está configurada")
+        return False
+
+    if not SENDER_EMAIL:
+        print("Error: SENDER_EMAIL no está configurada")
+        return False
+
+    base_url = request.build_absolute_uri('/')[:-1]
     order_url = f"{base_url}/orders/uuid/{order_identifier}"
 
     html_template = """
@@ -48,7 +57,6 @@ def send_email(request, email, order_identifier):
 
     html_content = html_template.replace("{{ORDER_URL}}", order_url)
 
-    # Brevo API endpoint
     url = "https://api.brevo.com/v3/smtp/email"
     headers = {
         "accept": "application/json",
@@ -57,7 +65,7 @@ def send_email(request, email, order_identifier):
     }
 
     data = {
-        "sender": {"name": "Orchid Cosmetics", "email": "emivazcru@alum.us.es"},
+        "sender": {"name": SENDER_NAME, "email": SENDER_EMAIL},
         "to": [{"email": email}],
         "subject": f"Detalles de tu pedido ({order_identifier}) - Orchid Cosmetics",
         "htmlContent": html_content
